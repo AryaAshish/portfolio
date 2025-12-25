@@ -317,21 +317,12 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
             >
               {cta.secondary.text}
             </Link>
-            {cta.tertiary.href.startsWith('#') ? (
-              <a
-                href={cta.tertiary.href}
-                className="px-8 py-4 bg-neutral-white/95 backdrop-blur-md border-2 border-neutral-white text-ocean-deep rounded-lg font-medium hover:bg-neutral-white hover:text-teal-base transition-all shadow-2xl transform hover:scale-105"
-              >
-                {cta.tertiary.text}
-              </a>
-            ) : (
-              <Link
-                href={cta.tertiary.href}
-                className="px-8 py-4 bg-neutral-white/95 backdrop-blur-md border-2 border-neutral-white text-ocean-deep rounded-lg font-medium hover:bg-neutral-white hover:text-teal-base transition-all shadow-2xl transform hover:scale-105"
-              >
-                {cta.tertiary.text}
-              </Link>
-            )}
+            <Link
+              href={cta.tertiary.href}
+              className="px-8 py-4 bg-neutral-white text-teal-base rounded-lg font-medium hover:bg-teal-base hover:text-neutral-white transition-all shadow-2xl border-2 border-neutral-white transform hover:scale-105 backdrop-blur-sm"
+            >
+              {cta.tertiary.text}
+            </Link>
           </motion.div>
         </motion.div>
       </div>
