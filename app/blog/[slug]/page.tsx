@@ -68,9 +68,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/blog"
-            className="text-teal-base hover:text-teal-dark mb-8 inline-block"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-ocean-pale/10 hover:bg-ocean-pale/20 text-ocean-deep rounded-lg font-medium transition-all mb-8 group"
           >
-            ← Back to Writing
+            <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Writing
           </Link>
 
           <header className="mb-12">

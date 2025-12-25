@@ -111,10 +111,10 @@ export default async function HomePage() {
             <div className="text-center">
               <Link
                 href="/blog"
-                className="text-teal-base hover:text-teal-dark font-medium inline-flex items-center gap-2"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-all shadow-md hover:shadow-lg group"
               >
                 View all posts
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </Link>
@@ -144,10 +144,10 @@ export default async function HomePage() {
             <div className="text-center">
               <Link
                 href="/life"
-                className="text-teal-light hover:text-teal-base font-medium inline-flex items-center gap-2"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-white text-teal-base rounded-lg font-medium hover:bg-teal-base hover:text-neutral-white transition-all shadow-md hover:shadow-lg border-2 border-neutral-white group"
               >
                 Explore more moments
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </Link>
@@ -169,10 +169,10 @@ export default async function HomePage() {
                 </p>
                 <Link
                   href="/about"
-                  className="text-teal-base hover:text-teal-dark font-medium inline-flex items-center gap-2"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-all shadow-md hover:shadow-lg group"
                 >
                   Read my full story
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
