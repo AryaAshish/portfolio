@@ -7,11 +7,16 @@ import { db } from '@/lib/db'
 const homeFilePath = path.join(process.cwd(), 'content', 'home.json')
 const useSupabase = process.env.USE_SUPABASE === 'true'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET() {
   try {
     if (useSupabase) {
       const content = await db.content.get('home')
       if (content) {
+        console.log('[API] Home content hero keys:', Object.keys(content?.hero || {}))
+        console.log('[API] Home content coralImages:', content?.hero?.coralImages?.length || 0)
         return NextResponse.json({ success: true, content })
       }
     }
