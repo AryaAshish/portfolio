@@ -79,7 +79,7 @@ function getDefaultHomeContent(): HomeContent {
       cta: {
         primary: { text: "View My Work", href: "/experience" },
         secondary: { text: "Read My Writing", href: "/blog" },
-        tertiary: { text: "Join the Newsletter", href: "/newsletter" },
+        tertiary: { text: "Join the Newsletter", href: "#newsletter" },
       },
     },
     whatImGoodAt: {
