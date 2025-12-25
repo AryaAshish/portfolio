@@ -307,19 +307,19 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
           >
             <Link
               href={cta.primary.href}
-              className="btn-primary px-8 py-4 bg-teal-base text-neutral-white rounded-lg font-medium relative z-10 shadow-xl hover:bg-teal-dark transition-all"
+              className="px-8 py-4 bg-teal-base text-neutral-white rounded-lg font-medium relative z-10 shadow-2xl hover:bg-teal-dark hover:shadow-teal-base/50 transition-all transform hover:scale-105 backdrop-blur-sm border-2 border-teal-base"
             >
               {cta.primary.text}
             </Link>
             <Link
               href={cta.secondary.href}
-              className="px-8 py-4 bg-neutral-white/95 backdrop-blur-sm border-2 border-teal-base text-teal-base rounded-lg font-medium hover:bg-teal-base hover:text-neutral-white transition-all shadow-xl"
+              className="px-8 py-4 bg-neutral-white text-teal-base rounded-lg font-medium hover:bg-teal-base hover:text-neutral-white transition-all shadow-2xl border-2 border-neutral-white transform hover:scale-105 backdrop-blur-sm"
             >
               {cta.secondary.text}
             </Link>
             <Link
               href={cta.tertiary.href}
-              className="px-8 py-4 bg-ocean-deep/90 backdrop-blur-sm border-2 border-ocean-pale text-neutral-white rounded-lg font-medium hover:bg-ocean-deep hover:border-teal-light transition-all shadow-xl"
+              className="px-8 py-4 bg-neutral-white/95 backdrop-blur-md border-2 border-neutral-white text-ocean-deep rounded-lg font-medium hover:bg-neutral-white hover:text-teal-base transition-all shadow-2xl transform hover:scale-105"
             >
               {cta.tertiary.text}
             </Link>
