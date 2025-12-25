@@ -11,12 +11,14 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default async function HomePage() {
-  const content = await getHomeContent()
-  const recentPosts = await getRecentPosts(3)
+  const [content, recentPosts, recentMoments] = await Promise.all([
+    getHomeContent(),
+    getRecentPosts(3),
+    getRecentLifeMoments(3),
+  ])
   
   // Debug logging
   console.log('[Home Page] Recent posts:', recentPosts.length)
-  const recentMoments = getRecentLifeMoments(3)
   const aboutTeaser = getAboutTeaser(200)
 
   return (

@@ -8,7 +8,7 @@ export const metadata = {
 }
 
 export default async function CoursesPage() {
-  const courses = getCourses()
+  const courses = await getCourses()
 
   return (
     <div className="min-h-screen bg-neutral-off">

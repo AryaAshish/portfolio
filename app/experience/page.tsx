@@ -11,9 +11,11 @@ export const metadata = {
 }
 
 export default async function ExperiencePage() {
-  const workExperience = getWorkExperience()
-  const skills = getSkills()
-  const pageContent = getExperiencePageContent()
+  const [workExperience, skills, pageContent] = await Promise.all([
+    getWorkExperience(),
+    getSkills(),
+    getExperiencePageContent(),
+  ])
 
   const totalYears = workExperience.length > 0 
     ? new Date().getFullYear() - new Date(workExperience[workExperience.length - 1].period.split(' - ')[0]).getFullYear()

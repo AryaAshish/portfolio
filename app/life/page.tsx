@@ -8,7 +8,7 @@ export const metadata = {
 }
 
 export default async function LifePage() {
-  const moments = getLifeMoments()
+  const moments = await getLifeMoments()
 
   return (
     <div className="min-h-screen bg-neutral-off">

@@ -8,9 +8,11 @@ export const metadata = {
 }
 
 export default async function HirePage() {
-  const workExperience = getWorkExperience()
-  const skills = getSkills()
-  const hireContent = await getHireContent()
+  const [workExperience, skills, hireContent] = await Promise.all([
+    getWorkExperience(),
+    getSkills(),
+    getHireContent(),
+  ])
   
   // Get top 3 most recent experiences
   const topExperiences = workExperience.slice(0, 3)

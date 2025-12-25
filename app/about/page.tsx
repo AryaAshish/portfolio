@@ -9,7 +9,7 @@ export const metadata = {
 }
 
 export default async function AboutPage() {
-  const timelineEvents = getAboutTimeline()
+  const timelineEvents = await getAboutTimeline()
 
   return (
     <div className="min-h-screen bg-neutral-off">
