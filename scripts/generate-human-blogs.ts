@@ -92,9 +92,8 @@ function addNaturalVariation(text: string): string {
 
 function injectInteractiveComponents(content: string, topic: BlogTopic): string {
   const sections = content.split(/\n\n+/)
-  const componentTypes = ['code', 'timeline', 'location', 'stats', 'locationCard']
   let componentCount = 0
-  const maxComponents = Math.min(4, Math.floor(sections.length / 2.5))
+  const maxComponents = Math.min(3, Math.floor(sections.length / 3))
   
   const usedTypes = new Set<string>()
   
@@ -105,23 +104,12 @@ function injectInteractiveComponents(content: string, topic: BlogTopic): string 
     let component: string | null = null
     let componentType: string | null = null
     
-    if ((sectionLower.includes('code') || sectionLower.includes('example') || sectionLower.includes('implementation')) && !usedTypes.has('code')) {
+    if ((sectionLower.includes('code') || sectionLower.includes('example') || sectionLower.includes('implementation') || sectionLower.includes('function') || sectionLower.includes('algorithm')) && !usedTypes.has('code')) {
       component = generateCodeComponent(topic)
       componentType = 'code'
-    } else if ((sectionLower.includes('step') || sectionLower.includes('process') || sectionLower.includes('journey')) && !usedTypes.has('timeline')) {
+    } else if ((sectionLower.includes('step') || sectionLower.includes('process') || sectionLower.includes('journey') || sectionLower.includes('learned') || sectionLower.includes('timeline') || sectionLower.includes('phase')) && !usedTypes.has('timeline')) {
       component = generateTimelineComponent(topic)
       componentType = 'timeline'
-    } else if ((sectionLower.includes('location') || sectionLower.includes('place') || sectionLower.includes('where')) && !usedTypes.has('location')) {
-      if (Math.random() > 0.5) {
-        component = generateLocationComponent(topic)
-        componentType = 'location'
-      } else {
-        component = generateLocationCardComponent(topic)
-        componentType = 'locationCard'
-      }
-    } else if ((sectionLower.includes('stat') || sectionLower.includes('number') || sectionLower.includes('metric')) && !usedTypes.has('stats')) {
-      component = generateStatsComponent(topic)
-      componentType = 'stats'
     }
     
     if (component && componentType) {
@@ -234,67 +222,6 @@ ${event.description}
 </StoryTimeline>`
 }
 
-function generateLocationComponent(topic: BlogTopic): string {
-  const locations = [
-    { name: 'San Francisco, CA', coords: [37.7749, -122.4194] },
-    { name: 'Bangalore, India', coords: [12.9716, 77.5946] },
-    { name: 'London, UK', coords: [51.5074, -0.1278] },
-    { name: 'New York, NY', coords: [40.7128, -74.0060] },
-    { name: 'Tokyo, Japan', coords: [35.6762, 139.6503] },
-    { name: 'Berlin, Germany', coords: [52.5200, 13.4050] },
-    { name: 'Sydney, Australia', coords: [-33.8688, 151.2093] }
-  ]
-  
-  const location = locations[Math.floor(Math.random() * locations.length)]
-  const types = ['work', 'personal', 'dive', 'ride']
-  const type = types[Math.floor(Math.random() * types.length)]
-  const date = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  
-  return `<JourneyMap 
-  location="${location.name}"
-  coordinates={[${location.coords[0]}, ${location.coords[1]}]}
-  type="${type}"
-  date="${date}"
-/>`
-}
-
-function generateLocationCardComponent(topic: BlogTopic): string {
-  const locations = [
-    { name: 'Coffee Shop', coords: [37.7749, -122.4194], narrative: 'Where I first learned about this concept' },
-    { name: 'Home Office', coords: [12.9716, 77.5946], narrative: 'Spent countless hours implementing this' },
-    { name: 'Co-working Space', coords: [51.5074, -0.1278], narrative: 'Collaborated with other developers here' },
-    { name: 'Library', coords: [40.7128, -74.0060], narrative: 'Deep research and study session' }
-  ]
-  
-  const location = locations[Math.floor(Math.random() * locations.length)]
-  const types = ['work', 'personal']
-  const type = types[Math.floor(Math.random() * types.length)]
-  const date = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  
-  return `<LocationCard 
-  name="${location.name}"
-  coordinates={[${location.coords[0]}, ${location.coords[1]}]}
-  date="${date}"
-  type="${type}"
-  narrative="${location.narrative}"
-/>`
-}
-
-function generateStatsComponent(topic: BlogTopic): string {
-  const stats = {
-    projects: Math.floor(Math.random() * 20) + 5,
-    hours: Math.floor(Math.random() * 500) + 100,
-    lines: Math.floor(Math.random() * 10000) + 1000,
-    commits: Math.floor(Math.random() * 200) + 50
-  }
-  
-  return `<JourneyStats 
-  cities={${stats.projects}}
-  kilometers={${stats.hours}}
-  rides={${stats.lines}}
-  countries={${stats.commits}}
-/>`
-}
 
 async function generateHumanLikeContent(topic: BlogTopic): Promise<string> {
   const prompt = `Write a comprehensive, engaging blog post about "${topic.title}". 
