@@ -5,8 +5,8 @@ import { HomeContent, getHomeContent } from './home'
 
 const contentDirectory = path.join(process.cwd(), 'content')
 
-export function getHomeContentData(): HomeContent {
-  return getHomeContent()
+export async function getHomeContentData(): Promise<HomeContent> {
+  return await getHomeContent()
 }
 
 export function getWorkExperience(): WorkExperience[] {
