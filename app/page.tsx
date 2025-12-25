@@ -7,9 +7,15 @@ import { getHomeContent } from '@/lib/home'
 import { getRecentPosts, getRecentLifeMoments, getAboutTeaser } from '@/lib/homepage'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function HomePage() {
   const content = getHomeContent()
   const recentPosts = await getRecentPosts(3)
+  
+  // Debug logging
+  console.log('[Home Page] Recent posts:', recentPosts.length)
   const recentMoments = getRecentLifeMoments(3)
   const aboutTeaser = getAboutTeaser(200)
 

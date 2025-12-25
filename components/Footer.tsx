@@ -36,6 +36,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/prep" className="text-neutral-white/80 hover:text-teal-light transition-colors">
+                  Prep Paths
+                </Link>
+              </li>
+              <li>
                 <Link href="/life" className="text-neutral-white/80 hover:text-teal-light transition-colors">
                   Life
                 </Link>

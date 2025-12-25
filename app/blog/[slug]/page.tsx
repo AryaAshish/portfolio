@@ -1,4 +1,4 @@
-import { getAllPosts, getPostBySlug } from '@/lib/mdx'
+import { db } from '@/lib/db'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { MarkdownContent } from '@/components/MarkdownContent'
 import { YouTubeEmbed } from '@/components/YouTubeEmbed'
@@ -15,8 +15,8 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = getAllPosts()
-  return posts.map((post) => ({
+  const posts = await db.blog.getAll()
+  return posts.filter(p => p.published).map((post) => ({
     slug: post.slug,
   }))
 }
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  const post = getPostBySlug(params.slug)
+  const post = await db.blog.getBySlug(params.slug)
 
   if (!post) {
     return {
@@ -56,7 +56,7 @@ export async function generateMetadata({
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug)
+  const post = await db.blog.getBySlug(params.slug)
 
   if (!post) {
     notFound()

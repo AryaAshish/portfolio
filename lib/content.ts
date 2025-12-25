@@ -18,6 +18,95 @@ export function getWorkExperience(): WorkExperience[] {
   return JSON.parse(fileContents) as WorkExperience[]
 }
 
+export interface ExperiencePageContent {
+  header: {
+    title: string
+    subtitle: string
+  }
+  stats: {
+    yearsExperience: {
+      value: string
+      label: string
+    }
+    companies: {
+      value: string | 'auto'
+      label: string
+    }
+    technologies: {
+      value: string
+      label: string
+    }
+  }
+  timeline: {
+    title: string
+    description: string
+  }
+  skills: {
+    title: string
+    description: string
+  }
+  cta: {
+    title: string
+    description: string
+    primaryButton: {
+      text: string
+      href: string
+    }
+    secondaryButton: {
+      text: string
+      href: string
+    }
+  }
+}
+
+export function getExperiencePageContent(): ExperiencePageContent {
+  const filePath = path.join(contentDirectory, 'experience-page.json')
+  if (!fs.existsSync(filePath)) {
+    return {
+      header: {
+        title: 'Career Journey',
+        subtitle: 'Building scalable systems, one impact at a time',
+      },
+      stats: {
+        yearsExperience: {
+          value: '4+',
+          label: 'Years Experience',
+        },
+        companies: {
+          value: 'auto',
+          label: 'Companies',
+        },
+        technologies: {
+          value: '10+',
+          label: 'Technologies',
+        },
+      },
+      timeline: {
+        title: 'Work Timeline',
+        description: 'A chronological journey through my career, showcasing impact and growth',
+      },
+      skills: {
+        title: 'Technical Skills',
+        description: 'Technologies and tools I work with, grouped by domain',
+      },
+      cta: {
+        title: "Let's Work Together",
+        description: "Interested in collaborating? I'm open to senior engineering roles, consulting, and technical mentorship.",
+        primaryButton: {
+          text: 'View Recruiter Summary',
+          href: '/hire',
+        },
+        secondaryButton: {
+          text: 'Get In Touch',
+          href: '/contact',
+        },
+      },
+    }
+  }
+  const fileContents = fs.readFileSync(filePath, 'utf8')
+  return JSON.parse(fileContents) as ExperiencePageContent
+}
+
 export function getSkills(): Skill[] {
   const filePath = path.join(contentDirectory, 'skills.json')
   if (!fs.existsSync(filePath)) {

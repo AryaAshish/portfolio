@@ -93,7 +93,7 @@ function addNaturalVariation(text: string): string {
 function injectInteractiveComponents(content: string, topic: BlogTopic): string {
   const sections = content.split(/\n\n+/)
   let componentCount = 0
-  const maxComponents = Math.min(3, Math.floor(sections.length / 3))
+  const maxComponents = Math.min(2, Math.floor(sections.length / 4)) // Reduced to 2 max
   
   const usedTypes = new Set<string>()
   
@@ -104,13 +104,12 @@ function injectInteractiveComponents(content: string, topic: BlogTopic): string 
     let component: string | null = null
     let componentType: string | null = null
     
+    // Only inject code components when code is explicitly mentioned
     if ((sectionLower.includes('code') || sectionLower.includes('example') || sectionLower.includes('implementation') || sectionLower.includes('function') || sectionLower.includes('algorithm')) && !usedTypes.has('code')) {
       component = generateCodeComponent(topic)
       componentType = 'code'
-    } else if ((sectionLower.includes('step') || sectionLower.includes('process') || sectionLower.includes('journey') || sectionLower.includes('learned') || sectionLower.includes('timeline') || sectionLower.includes('phase')) && !usedTypes.has('timeline')) {
-      component = generateTimelineComponent(topic)
-      componentType = 'timeline'
     }
+    // Don't inject timelines automatically - let the AI include them naturally if needed
     
     if (component && componentType) {
       sections.splice(i + 1, 0, '\n' + component + '\n')
@@ -224,41 +223,48 @@ ${event.description}
 
 
 async function generateHumanLikeContent(topic: BlogTopic): Promise<string> {
-  const prompt = `Write a comprehensive, engaging blog post about "${topic.title}". 
+  const prompt = `Write a comprehensive, engaging blog post in Medium style about "${topic.title}". 
 
-CRITICAL REQUIREMENTS FOR HUMAN-LIKE WRITING:
-1. Write in a natural, conversational style - like a real developer sharing their experience
-2. Use EXTREMELY varied sentence lengths - mix very short (3-5 words) with medium (10-15) and long (20-30 words)
-3. Make paragraph lengths UNEVEN - some 1-2 sentences, others 5-7 sentences
-4. Include personal anecdotes, mistakes, and "aha!" moments
-5. Add natural pauses, asides, and casual observations in parentheses
-6. Use contractions naturally (I've, we're, don't, can't, won't, etc.)
-7. Include some imperfect grammar that feels human:
-   - Occasional run-on sentences for emphasis
-   - Sentence fragments for dramatic effect
-   - Starting sentences with "And" or "But" occasionally
-   - Using "like" or "you know" naturally
-8. Vary paragraph lengths SIGNIFICANTLY - some paragraphs should be 1 sentence, others 8-10
-9. Include code examples, practical tips, and step-by-step guidance
-10. Make it 1800-2800 words
-11. Write in markdown format with proper headings (##, ###)
-12. Include sections that naturally lead to:
-    - Code examples (use phrases like "here's the code", "let me show you", "here's what I did")
-    - Timelines (use phrases like "here's how I learned", "my journey", "step by step")
-    - Location content (use phrases like "I was working from", "this happened when I was at")
-    - Stats/metrics (use phrases like "here are the numbers", "after X hours", "I tracked")
-13. Use natural transitions - avoid formulaic patterns
-14. Include uncertainty and learning moments ("I struggled with...", "took me a while to realize...", "I made this mistake...")
-15. Add personality - some humor, frustration, excitement
-16. Make word count per line UNEVEN - don't make it uniform
-17. Use varied punctuation - some sentences end with !, some with ..., some with ?
-18. Include rhetorical questions naturally
-19. Use "I" and "you" naturally - make it personal
-20. Include specific numbers, dates, and details that feel real
+WRITING STYLE (Based on successful Medium technical articles like iamayaz):
+1. **Opening Hook**: Start with a personal story, question, or relatable scenario that draws readers in immediately. Make it compelling.
+2. **Conversational Tone**: Write like you're talking to a friend over coffee - natural, authentic, personal. Use "I" and "you" liberally.
+3. **Story-Driven**: Weave personal experiences, failures, and successes throughout. Make it relatable. Share what you learned the hard way.
+4. **Practical Focus**: Every section should provide actionable advice, not just theory. Give readers something they can use immediately.
+5. **Clear Structure**: Use headings to break up content, but keep it natural - not overly formal. Use ## for main sections, ### for subsections.
+6. **Real Examples**: Include specific examples, numbers, dates, and real-world scenarios. Make it concrete, not abstract.
+7. **Varied Sentence Length**: Mix very short punchy sentences (3-5 words) with longer explanatory ones (15-25 words). Create rhythm.
+8. **Uneven Paragraphs**: Some paragraphs are 1-2 sentences for impact, others are 4-6 for depth. Vary them significantly.
+9. **Natural Language**: 
+   - Use contractions (I've, don't, can't, won't) naturally
+   - Start sentences with "And", "But", "So" when it feels right
+   - Use sentence fragments for emphasis
+   - Include rhetorical questions
+   - Add asides in parentheses naturally
+   - Use "like" or "you know" occasionally for authenticity
+10. **Code Examples**: Include practical code snippets that readers can actually use. Use CodeFromLocation component when showing code.
+11. **Step-by-Step Guides**: When explaining processes, break them into clear, actionable steps. Number them or use bullet points.
+12. **Length**: 2000-3000 words - comprehensive but not overwhelming. Quality over quantity.
+13. **Format**: Markdown format. Use > for blockquotes (1-2 impactful quotes per article).
+14. **Blockquotes**: Include 1-2 blockquotes using > in markdown for:
+    - Key insights or "aha!" moments
+    - Memorable quotes or principles
+    - Important takeaways that deserve emphasis
+    Make them impactful and quotable.
+15. **Personality**: Show your personality - excitement, frustration, humor, doubt. Be human. Don't be afraid to show vulnerability.
+16. **Ending**: Conclude with encouragement, key takeaways, or a call to action. Leave readers feeling motivated.
 
-Keywords to naturally incorporate (don't force them): ${topic.keywords.join(', ')}
+STRUCTURE:
+- Strong opening hook (personal story or question)
+- Problem/context setting
+- Your journey/experience
+- Practical advice with examples
+- Common mistakes to avoid
+- Resources/tools
+- Encouraging conclusion
 
-Write the content now, making it feel like a real person wrote it, not an AI. The writing should have natural rhythm and flow, with uneven pacing.`
+Keywords to naturally incorporate: ${topic.keywords.join(', ')}
+
+Write in Medium style - engaging, personal, practical, and authentic. Make readers feel like they're learning from a real person who's been there.`
 
   try {
     const completion = await openai.chat.completions.create({
@@ -266,7 +272,7 @@ Write the content now, making it feel like a real person wrote it, not an AI. Th
       messages: [
         {
           role: 'system',
-          content: 'You are an experienced software engineer and technical writer. You write in a natural, conversational style with personality. Your writing feels human and authentic, not AI-generated. You share real experiences, struggles, and insights.'
+          content: 'You are an experienced software engineer who writes popular Medium articles. Your writing style is: conversational, personal, story-driven, and practical. You share real experiences, failures, and successes. You write like you\'re talking to a friend - authentic, relatable, and engaging. Your articles have strong opening hooks, practical advice, and encouraging conclusions. You make complex topics accessible without dumbing them down.'
         },
         {
           role: 'user',

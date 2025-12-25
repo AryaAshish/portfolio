@@ -181,6 +181,14 @@ export default function AdminPage() {
           </Link>
 
           <Link
+            href="/admin/prep-paths"
+            className="bg-neutral-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-ocean-light/20"
+          >
+            <h3 className="font-serif text-2xl text-ocean-deep mb-2">Prep Paths</h3>
+            <p className="text-ocean-base text-sm">Manage interview prep learning paths</p>
+          </Link>
+
+          <Link
             href="/admin/content/hire"
             className="bg-neutral-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-ocean-light/20"
           >

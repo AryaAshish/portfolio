@@ -99,10 +99,10 @@ const mdxComponents = {
   ),
   blockquote: ({ children, ...props }: any) => (
     <blockquote
-      className="border-l-4 border-teal-base pl-6 italic text-ocean-base my-6 bg-ocean-pale/10 py-4 rounded-r-lg"
+      className="border-l-4 border-teal-base pl-6 pr-4 py-6 my-8 bg-gradient-to-r from-ocean-pale/20 via-ocean-pale/10 to-transparent rounded-r-lg shadow-sm backdrop-blur-sm"
       {...props}
     >
-      {children}
+      <p className="m-0 italic text-ocean-deep text-lg leading-relaxed font-serif">{children}</p>
     </blockquote>
   ),
   hr: ({ ...props }: any) => (
@@ -239,11 +239,13 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         a: ({ node, ...props }) => (
           <a className="text-teal-base hover:text-teal-dark underline transition-colors" {...props} />
         ),
-        blockquote: ({ node, ...props }) => (
+        blockquote: ({ node, children, ...props }: any) => (
           <blockquote
-            className="border-l-4 border-teal-base pl-6 italic text-ocean-base my-6 bg-ocean-pale/10 py-4 rounded-r-lg"
+            className="border-l-4 border-teal-base pl-6 pr-4 py-6 my-8 bg-gradient-to-r from-ocean-pale/20 via-ocean-pale/10 to-transparent rounded-r-lg shadow-sm backdrop-blur-sm"
             {...props}
-          />
+          >
+            <p className="m-0 italic text-ocean-deep text-lg leading-relaxed font-serif">{children}</p>
+          </blockquote>
         ),
         hr: ({ node, ...props }) => (
           <hr className="my-8 border-ocean-light/30" {...props} />

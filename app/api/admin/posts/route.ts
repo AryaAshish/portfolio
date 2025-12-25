@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
+import readingTime from 'reading-time'
 import { getAllPosts } from '@/lib/mdx'
 import { db } from '@/lib/db'
 
@@ -33,10 +34,50 @@ ${data.content}`
 export async function GET() {
   try {
     if (useSupabase) {
+      // For admin, we need ALL posts including drafts
       const posts = await db.blog.getAll()
       return NextResponse.json({ success: true, posts })
     } else {
-      const posts = getAllPosts()
+      // Fallback to files if Supabase is not enabled
+      if (!fs.existsSync(postsDirectory)) {
+        return NextResponse.json({ success: true, posts: [] })
+      }
+      
+      const slugs = fs
+        .readdirSync(postsDirectory)
+        .filter((file) => file.endsWith('.mdx') || file.endsWith('.md'))
+        .map((file) => file.replace(/\.(mdx|md)$/, ''))
+      
+      const posts = slugs
+        .map((slug) => {
+          const fullPath = path.join(postsDirectory, `${slug}.mdx`)
+          if (!fs.existsSync(fullPath)) {
+            return null
+          }
+          const fileContents = fs.readFileSync(fullPath, 'utf8')
+          const { data, content } = matter(fileContents)
+          const readingTimeResult = readingTime(content)
+          
+          return {
+            slug,
+            title: data.title || '',
+            description: data.description || '',
+            date: data.date || new Date().toISOString(),
+            publishedAt: data.publishedAt || data.date || new Date().toISOString(),
+            readingTime: Math.ceil(readingTimeResult.minutes),
+            tags: data.tags || [],
+            category: data.category || 'general',
+            published: data.published !== false,
+            content,
+            image: data.image || undefined,
+            videoUrl: data.videoUrl || undefined,
+          }
+        })
+        .filter((post): post is NonNullable<typeof post> => post !== null)
+        .sort((a, b) => {
+          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        })
+      
       return NextResponse.json({ success: true, posts })
     }
   } catch (error) {

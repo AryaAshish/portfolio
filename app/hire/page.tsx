@@ -105,8 +105,8 @@ export default async function HirePage() {
         {/* Professional Summary - ATS Friendly */}
         <section className="py-12 bg-gradient-to-b from-ocean-dark to-neutral-off" itemScope itemType="https://schema.org/Person">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-3xl text-ocean-deep mb-6">Professional Summary</h2>
-            <div className="bg-ocean-light/10 rounded-lg p-6 mb-6">
+            <h2 className="font-serif text-3xl text-neutral-white mb-6">Professional Summary</h2>
+            <div className="bg-neutral-white rounded-xl p-6 mb-6 shadow-lg border border-ocean-light/20">
               <div className="grid md:grid-cols-2 gap-6 text-ocean-base">
                 <div>
                   <p className="mb-2">
@@ -134,7 +134,7 @@ export default async function HirePage() {
             </div>
 
             {/* Contact Information - Plain Text for ATS */}
-            <div className="border-t border-ocean-light pt-6">
+            <div className="bg-neutral-white rounded-xl p-6 shadow-lg border border-ocean-light/20">
               <h3 className="font-semibold text-ocean-deep mb-4">Contact Information</h3>
               <div className="grid md:grid-cols-3 gap-4 text-sm text-ocean-base">
                 <div>

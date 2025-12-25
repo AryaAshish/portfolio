@@ -1,4 +1,4 @@
-import { getWorkExperience, getSkills } from '@/lib/content'
+import { getWorkExperience, getSkills, getExperiencePageContent } from '@/lib/content'
 import { TimelineWorkCard } from '@/components/TimelineWorkCard'
 import { SkillSection } from '@/components/SkillSection'
 import { AnimatedHeader } from '@/components/AnimatedHeader'
@@ -13,18 +13,23 @@ export const metadata = {
 export default async function ExperiencePage() {
   const workExperience = getWorkExperience()
   const skills = getSkills()
+  const pageContent = getExperiencePageContent()
 
   const totalYears = workExperience.length > 0 
     ? new Date().getFullYear() - new Date(workExperience[workExperience.length - 1].period.split(' - ')[0]).getFullYear()
     : 0
+
+  const companiesValue = pageContent.stats.companies.value === 'auto' 
+    ? workExperience.length.toString() 
+    : pageContent.stats.companies.value
 
   return (
     <div className="min-h-screen bg-neutral-off">
       <section className="py-20 bg-gradient-to-b from-ocean-deep to-ocean-dark text-neutral-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedHeader
-            title="Career Journey"
-            subtitle="Building scalable systems, one impact at a time"
+            title={pageContent.header.title}
+            subtitle={pageContent.header.subtitle}
           />
         </div>
       </section>
@@ -35,16 +40,16 @@ export default async function ExperiencePage() {
           <AnimatedSection>
             <div className="grid grid-cols-3 gap-6 text-center">
               <div className="bg-neutral-white rounded-xl p-6 shadow-lg border border-ocean-light/20">
-                <div className="font-serif text-4xl text-teal-base mb-2">{totalYears}+</div>
-                <div className="text-sm text-ocean-deep font-medium">Years Experience</div>
+                <div className="font-serif text-4xl text-teal-base mb-2">{pageContent.stats.yearsExperience.value}</div>
+                <div className="text-sm text-ocean-deep font-medium">{pageContent.stats.yearsExperience.label}</div>
               </div>
               <div className="bg-neutral-white rounded-xl p-6 shadow-lg border border-ocean-light/20">
-                <div className="font-serif text-4xl text-teal-base mb-2">{workExperience.length}</div>
-                <div className="text-sm text-ocean-deep font-medium">Companies</div>
+                <div className="font-serif text-4xl text-teal-base mb-2">{companiesValue}</div>
+                <div className="text-sm text-ocean-deep font-medium">{pageContent.stats.companies.label}</div>
               </div>
               <div className="bg-neutral-white rounded-xl p-6 shadow-lg border border-ocean-light/20">
-                <div className="font-serif text-4xl text-teal-base mb-2">10+</div>
-                <div className="text-sm text-ocean-deep font-medium">Technologies</div>
+                <div className="font-serif text-4xl text-teal-base mb-2">{pageContent.stats.technologies.value}</div>
+                <div className="text-sm text-ocean-deep font-medium">{pageContent.stats.technologies.label}</div>
               </div>
             </div>
           </AnimatedSection>
@@ -55,9 +60,9 @@ export default async function ExperiencePage() {
       <section className="py-20 bg-neutral-off">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
-            <h2 className="font-serif text-4xl text-ocean-deep mb-3">Work Timeline</h2>
+            <h2 className="font-serif text-4xl text-ocean-deep mb-3">{pageContent.timeline.title}</h2>
             <p className="text-ocean-base text-lg">
-              A chronological journey through my career, showcasing impact and growth
+              {pageContent.timeline.description}
             </p>
           </div>
 
@@ -90,9 +95,9 @@ export default async function ExperiencePage() {
       <section className="py-20 bg-gradient-to-br from-ocean-deep to-ocean-dark text-neutral-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h2 className="font-serif text-4xl mb-3">Technical Skills</h2>
+            <h2 className="font-serif text-4xl mb-3">{pageContent.skills.title}</h2>
             <p className="text-ocean-pale text-lg max-w-2xl mx-auto">
-              Technologies and tools I work with, grouped by domain
+              {pageContent.skills.description}
             </p>
           </div>
 
@@ -105,22 +110,22 @@ export default async function ExperiencePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="bg-gradient-to-br from-teal-base to-teal-dark rounded-2xl p-8 md:p-12 text-center text-neutral-white shadow-2xl">
-              <h2 className="font-serif text-3xl md:text-4xl mb-4">Let&apos;s Work Together</h2>
+              <h2 className="font-serif text-3xl md:text-4xl mb-4">{pageContent.cta.title}</h2>
               <p className="text-ocean-pale text-lg mb-8 max-w-2xl mx-auto">
-                Interested in collaborating? I&apos;m open to senior engineering roles, consulting, and technical mentorship.
+                {pageContent.cta.description}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href="/hire"
+                  href={pageContent.cta.primaryButton.href}
                   className="px-8 py-4 bg-neutral-white text-teal-base rounded-lg font-medium hover:bg-neutral-off transition-colors shadow-lg"
                 >
-                  View Recruiter Summary
+                  {pageContent.cta.primaryButton.text}
                 </Link>
                 <Link
-                  href="/contact"
+                  href={pageContent.cta.secondaryButton.href}
                   className="px-8 py-4 bg-transparent border-2 border-neutral-white text-neutral-white rounded-lg font-medium hover:bg-neutral-white/10 transition-colors"
                 >
-                  Get In Touch
+                  {pageContent.cta.secondaryButton.text}
                 </Link>
               </div>
             </div>

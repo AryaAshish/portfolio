@@ -23,6 +23,13 @@ export const metadata: Metadata = {
     template: '%s | Portfolio',
   },
   description: 'Android • Backend • Systems • Writing • Travel • Scuba • Motorcycles',
+  icons: {
+    icon: [
+      { url: '/logiimg.jpg', sizes: '32x32' },
+    ],
+    shortcut: '/logiimg.jpg',
+    apple: '/apple-icon.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',

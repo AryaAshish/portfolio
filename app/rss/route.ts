@@ -1,8 +1,9 @@
-import { getAllPosts } from '@/lib/mdx'
+import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const posts = getAllPosts()
+  const posts = await db.blog.getAll()
+  const publishedPosts = posts.filter(p => p.published)
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'
 
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
@@ -14,7 +15,7 @@ export async function GET() {
     <atom:link href="${baseUrl}/rss" rel="self" type="application/rss+xml" />
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    ${posts
+    ${publishedPosts
       .map(
         (post) => `    <item>
       <title>${post.title}</title>

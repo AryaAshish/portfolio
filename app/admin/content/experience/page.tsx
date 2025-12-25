@@ -4,9 +4,51 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { WorkExperience } from '@/types'
 
+interface ExperiencePageContent {
+  header: {
+    title: string
+    subtitle: string
+  }
+  stats: {
+    yearsExperience: {
+      value: string
+      label: string
+    }
+    companies: {
+      value: string | 'auto'
+      label: string
+    }
+    technologies: {
+      value: string
+      label: string
+    }
+  }
+  timeline: {
+    title: string
+    description: string
+  }
+  skills: {
+    title: string
+    description: string
+  }
+  cta: {
+    title: string
+    description: string
+    primaryButton: {
+      text: string
+      href: string
+    }
+    secondaryButton: {
+      text: string
+      href: string
+    }
+  }
+}
+
 export default function EditExperiencePage() {
   const router = useRouter()
   const [experiences, setExperiences] = useState<WorkExperience[]>([])
+  const [pageContent, setPageContent] = useState<ExperiencePageContent | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -20,6 +62,9 @@ export default function EditExperiencePage() {
       const data = await response.json()
       if (data.experiences) {
         setExperiences(data.experiences)
+      }
+      if (data.pageContent) {
+        setPageContent(data.pageContent)
       }
     } catch (error) {
       console.error('Failed to fetch content:', error)
@@ -36,7 +81,7 @@ export default function EditExperiencePage() {
       const response = await fetch('/api/admin/content/experience', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ experiences }),
+        body: JSON.stringify({ experiences, pageContent }),
       })
 
       const data = await response.json()
@@ -51,6 +96,20 @@ export default function EditExperiencePage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const updatePageContent = (field: string, value: any) => {
+    if (!pageContent) return
+    const keys = field.split('.')
+    const updated = { ...pageContent }
+    let current: any = updated
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+      current = current[keys[i]]
+    }
+    
+    current[keys[keys.length - 1]] = value
+    setPageContent(updated)
   }
 
   const addExperience = () => {
@@ -141,6 +200,210 @@ export default function EditExperiencePage() {
         </div>
 
         <form onSubmit={handleSave} className="space-y-6">
+          {/* Page Content Section */}
+          {pageContent && (
+            <div className="bg-neutral-white rounded-xl p-6 shadow-lg space-y-6 mb-8">
+              <h2 className="font-serif text-3xl text-ocean-deep mb-4">Page Content</h2>
+              
+              {/* Header */}
+              <div className="border-b border-ocean-light/20 pb-6">
+                <h3 className="font-semibold text-xl text-ocean-deep mb-4">Header</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Title</label>
+                    <input
+                      type="text"
+                      value={pageContent.header.title}
+                      onChange={(e) => updatePageContent('header.title', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Subtitle</label>
+                    <input
+                      type="text"
+                      value={pageContent.header.subtitle}
+                      onChange={(e) => updatePageContent('header.subtitle', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats */}
+              <div className="border-b border-ocean-light/20 pb-6">
+                <h3 className="font-semibold text-xl text-ocean-deep mb-4">Stats Banner</h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Years Experience Value</label>
+                    <input
+                      type="text"
+                      value={pageContent.stats.yearsExperience.value}
+                      onChange={(e) => updatePageContent('stats.yearsExperience.value', e.target.value)}
+                      placeholder="4+"
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                    <label className="block text-sm font-medium text-ocean-deep mb-2 mt-2">Label</label>
+                    <input
+                      type="text"
+                      value={pageContent.stats.yearsExperience.label}
+                      onChange={(e) => updatePageContent('stats.yearsExperience.label', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Companies Value</label>
+                    <input
+                      type="text"
+                      value={pageContent.stats.companies.value}
+                      onChange={(e) => updatePageContent('stats.companies.value', e.target.value)}
+                      placeholder="auto or specific number"
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                    <p className="text-xs text-ocean-light mt-1">Use "auto" to calculate from experiences</p>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2 mt-2">Label</label>
+                    <input
+                      type="text"
+                      value={pageContent.stats.companies.label}
+                      onChange={(e) => updatePageContent('stats.companies.label', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Technologies Value</label>
+                    <input
+                      type="text"
+                      value={pageContent.stats.technologies.value}
+                      onChange={(e) => updatePageContent('stats.technologies.value', e.target.value)}
+                      placeholder="10+"
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                    <label className="block text-sm font-medium text-ocean-deep mb-2 mt-2">Label</label>
+                    <input
+                      type="text"
+                      value={pageContent.stats.technologies.label}
+                      onChange={(e) => updatePageContent('stats.technologies.label', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div className="border-b border-ocean-light/20 pb-6">
+                <h3 className="font-semibold text-xl text-ocean-deep mb-4">Timeline Section</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Title</label>
+                    <input
+                      type="text"
+                      value={pageContent.timeline.title}
+                      onChange={(e) => updatePageContent('timeline.title', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Description</label>
+                    <textarea
+                      value={pageContent.timeline.description}
+                      onChange={(e) => updatePageContent('timeline.description', e.target.value)}
+                      rows={2}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Skills */}
+              <div className="border-b border-ocean-light/20 pb-6">
+                <h3 className="font-semibold text-xl text-ocean-deep mb-4">Skills Section</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Title</label>
+                    <input
+                      type="text"
+                      value={pageContent.skills.title}
+                      onChange={(e) => updatePageContent('skills.title', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Description</label>
+                    <textarea
+                      value={pageContent.skills.description}
+                      onChange={(e) => updatePageContent('skills.description', e.target.value)}
+                      rows={2}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div>
+                <h3 className="font-semibold text-xl text-ocean-deep mb-4">Call to Action Section</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Title</label>
+                    <input
+                      type="text"
+                      value={pageContent.cta.title}
+                      onChange={(e) => updatePageContent('cta.title', e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-ocean-deep mb-2">Description</label>
+                    <textarea
+                      value={pageContent.cta.description}
+                      onChange={(e) => updatePageContent('cta.description', e.target.value)}
+                      rows={2}
+                      className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-ocean-deep mb-2">Primary Button Text</label>
+                      <input
+                        type="text"
+                        value={pageContent.cta.primaryButton.text}
+                        onChange={(e) => updatePageContent('cta.primaryButton.text', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                      />
+                      <label className="block text-sm font-medium text-ocean-deep mb-2 mt-2">Primary Button Link</label>
+                      <input
+                        type="text"
+                        value={pageContent.cta.primaryButton.href}
+                        onChange={(e) => updatePageContent('cta.primaryButton.href', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-ocean-deep mb-2">Secondary Button Text</label>
+                      <input
+                        type="text"
+                        value={pageContent.cta.secondaryButton.text}
+                        onChange={(e) => updatePageContent('cta.secondaryButton.text', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                      />
+                      <label className="block text-sm font-medium text-ocean-deep mb-2 mt-2">Secondary Button Link</label>
+                      <input
+                        type="text"
+                        value={pageContent.cta.secondaryButton.href}
+                        onChange={(e) => updatePageContent('cta.secondaryButton.href', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Work Experience Section */}
+          <div className="mb-8">
+            <h2 className="font-serif text-3xl text-ocean-deep mb-4">Work Experience Entries</h2>
+          </div>
           {experiences.map((exp, index) => (
             <div key={index} className="bg-neutral-white rounded-xl p-6 shadow-lg space-y-4">
               <div className="flex justify-between items-center mb-4">

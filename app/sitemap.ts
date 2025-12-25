@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
-import { getAllPosts } from '@/lib/mdx'
+import { db } from '@/lib/db'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'
 
   const routes = [
@@ -20,12 +20,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : 0.8,
   }))
 
-  const posts = getAllPosts().map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.publishedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
+  const allPosts = await db.blog.getAll()
+  const posts = allPosts
+    .filter(p => p.published)
+    .map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.publishedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
 
   return [...routes, ...posts]
 }
