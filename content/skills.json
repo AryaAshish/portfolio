@@ -1,0 +1,49 @@
+[
+  {
+    "category": "Android (Primary)",
+    "items": [
+      "Kotlin",
+      "Java",
+      "Jetpack Compose",
+      "Coroutines",
+      "Flow",
+      "MVVM",
+      "Clean Architecture",
+      "Hilt/Dagger",
+      "Room",
+      "Retrofit",
+      "LiveData",
+      "ViewModel"
+    ]
+  },
+  {
+    "category": "Backend (Secondary)",
+    "items": [
+      "Go",
+      "Gin",
+      "gorm",
+      "RabbitMQ",
+      "Kubernetes",
+      "Docker",
+      "Postgres",
+      "Microservices",
+      "Event-driven Architecture",
+      "GraphQL"
+    ]
+  },
+  {
+    "category": "Tools & Testing",
+    "items": [
+      "Gradle",
+      "Git",
+      "GitHub Actions",
+      "Firebase",
+      "Jira",
+      "Figma",
+      "Postman",
+      "JUnit",
+      "Espresso",
+      "Mockito"
+    ]
+  }
+]

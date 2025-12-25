@@ -1,0 +1,47 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# Personal files (PDFs, videos, images not in public/)
+*.pdf
+*.mov
+*.mp4
+Ashish_Aryan_Android_4.6.pdf
+vecteezy_underwater-scene-multiple-clownfish-swimming-in-anemone_33344055.mov
+VID20220310080139_exported_421.jpg
+275594981_641387613759403_4598945770693618534_n.webp.jpg
+275828749_227700996211204_8693221892605276577_n.webp.jpg
+IMG20231127131252 Copy.JPG
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+

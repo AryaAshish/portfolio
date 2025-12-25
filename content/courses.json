@@ -1,0 +1,23 @@
+[
+  {
+    "id": "coming-soon-1",
+    "title": "Building Scalable Android Apps",
+    "description": "Learn to build Android applications that scale from prototype to production.",
+    "modules": [
+      {
+        "title": "Architecture Fundamentals",
+        "description": "Understanding MVVM and Clean Architecture",
+        "lessons": ["Introduction", "MVVM Pattern", "Clean Architecture", "Dependency Injection"]
+      },
+      {
+        "title": "Performance Optimization",
+        "description": "Making your apps fast and efficient",
+        "lessons": ["Profiling", "Memory Management", "Network Optimization"]
+      }
+    ],
+    "status": "coming-soon"
+  }
+]
+
+
+

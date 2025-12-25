@@ -1,0 +1,107 @@
+{
+  "hero": {
+    "title": "Engineer by craft.\nDiver by soul.\nRider by heart.",
+    "subtitle": "Android • Backend • Systems • Writing • Travel • Scuba • Motorcycles",
+    "cta": {
+      "primary": {
+        "text": "View My Work",
+        "href": "/experience"
+      },
+      "secondary": {
+        "text": "Read My Writing",
+        "href": "/blog"
+      },
+      "tertiary": {
+        "text": "Join the Newsletter",
+        "href": "/newsletter"
+      }
+    },
+    "videoUrl": "https://youtu.be/Dr4bhy4PsTo",
+    "backgroundVideoUrl": "https://youtu.be/Dr4bhy4PsTo",
+    "backgroundImageUrl": "/hero-background.jpg",
+    "coralImages": [
+      {
+        "url": "https://sxyfqzblgpqjhqxcomau.supabase.co/storage/v1/object/public/site-images/hero-corals/275594981_641387613759403_4598945770693618534_n.webp.jpg",
+        "cropX": 36,
+        "cropY": 100
+      },
+      {
+        "url": "https://sxyfqzblgpqjhqxcomau.supabase.co/storage/v1/object/public/site-images/hero-corals/IMG20231127131252_Copy.JPG",
+        "cropX": 50,
+        "cropY": 22
+      },
+      {
+        "url": "https://sxyfqzblgpqjhqxcomau.supabase.co/storage/v1/object/public/site-images/site-images/1766660501318-644cejgqhqo.jpg",
+        "cropX": 50,
+        "cropY": 50
+      }
+    ]
+  },
+  "whatImGoodAt": {
+    "title": "What I'm Good At",
+    "description": "Building scalable Android applications, designing robust backend systems, and writing code that stands the test of time.",
+    "items": [
+      {
+        "title": "Mobile Engineering",
+        "description": "Android development with Kotlin, Jetpack Compose, and modern architecture patterns. Focus on performance, accessibility, and user experience."
+      },
+      {
+        "title": "Backend Systems",
+        "description": "Scalable APIs, microservices architecture, event-driven systems. Go, Node.js, Kafka, Redis. Systems that handle scale gracefully."
+      },
+      {
+        "title": "Systems Thinking",
+        "description": "Architecture that scales, code that's maintainable, solutions that solve real problems. Clean code, clear patterns, thoughtful design."
+      }
+    ]
+  },
+  "whatIDontOptimizeFor": {
+    "title": "What I Don't Optimize For",
+    "description": "Maturity means knowing what not to chase. Here's what I skip.",
+    "items": [
+      {
+        "title": "Buzzword Bingo",
+        "description": "I don't chase the latest framework just because it's trending. I choose tools that solve real problems."
+      },
+      {
+        "title": "Over-Engineering",
+        "description": "Simple solutions first. Complexity only when necessary. YAGNI isn't just a principle—it's a discipline."
+      },
+      {
+        "title": "Velocity Over Quality",
+        "description": "Fast is good, but sustainable is better. I optimize for long-term maintainability, not short-term metrics."
+      },
+      {
+        "title": "Solo Heroics",
+        "description": "The best code is written by teams. I focus on collaboration, knowledge sharing, and building systems others can understand."
+      }
+    ]
+  },
+  "hiring": {
+    "title": "If You're Hiring",
+    "roles": [
+      "Senior Android Engineer",
+      "Backend Engineer (Go, Node.js)",
+      "Full-Stack Engineer",
+      "Systems Architect",
+      "Engineering Lead (hands-on)"
+    ],
+    "teams": [
+      "Product-focused teams building real user value",
+      "Teams that value code quality and maintainability",
+      "Environments that encourage learning and growth",
+      "Remote-first or hybrid cultures",
+      "Startups to mid-size companies (50-500 people)"
+    ],
+    "cta": {
+      "primary": {
+        "text": "View Experience",
+        "href": "/experience"
+      },
+      "secondary": {
+        "text": "Get In Touch",
+        "href": "/contact"
+      }
+    }
+  }
+}
