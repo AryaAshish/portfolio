@@ -2,41 +2,37 @@ export interface BlogPost {
   slug: string
   title: string
   description: string
+  content: string
   date: string
   publishedAt: string
   readingTime: number
   tags: string[]
   category: string
   published: boolean
-  content: string
   image?: string
   videoUrl?: string
 }
 
 export interface WorkExperience {
+  id?: string
   company: string
   role: string
   period: string
-  location?: string
+  location: string
+  description?: string
   impact: string[]
+  achievements?: string[]
   technologies: string[]
   metrics?: string[]
+  type?: 'full-time' | 'contract' | 'freelance' | 'internship'
 }
 
 export interface Skill {
+  name?: string
+  level?: 'beginner' | 'intermediate' | 'advanced' | 'expert'
   category: string
-  items: string[]
-}
-
-export interface Course {
-  id: string
-  title: string
-  description: string
-  modules: CourseModule[]
-  status: 'coming-soon' | 'live' | 'draft'
-  price?: number
-  currency?: string
-  thumbnail?: string
+  yearsOfExperience?: number
+  items?: string[]
 }
 
 export interface CourseModule {
@@ -45,10 +41,19 @@ export interface CourseModule {
   lessons: string[]
 }
 
-export interface NewsletterSubscriber {
-  email: string
-  name?: string
-  source?: string
+export interface Course {
+  id: string
+  title: string
+  description: string
+  duration?: string
+  level?: 'beginner' | 'intermediate' | 'advanced'
+  price?: number
+  currency?: string
+  image?: string
+  url?: string
+  published?: boolean
+  modules?: CourseModule[]
+  status?: 'coming-soon' | 'active' | 'completed'
 }
 
 export interface LifeMoment {
@@ -115,8 +120,8 @@ export interface ImportantItem {
   id: string
   title: string
   description?: string
-  type: 'note' | 'todo' | 'reminder' | 'goal' | 'idea'
-  priority: 'low' | 'medium' | 'high' | 'urgent'
+  type: 'note' | 'task' | 'reminder' | 'goal' | 'idea'
+  priority: 'low' | 'medium' | 'high'
   status: 'active' | 'completed' | 'archived'
   dueDate?: string
   tags: string[]
@@ -127,9 +132,70 @@ export interface ImportantItem {
 export interface FinanceAnalytics {
   totalIncome: number
   totalExpenses: number
+  balance: number
   netAmount: number
-  categoryBreakdown: { category: string; amount: number }[]
-  monthlyTrend: { month: string; income: number; expenses: number }[]
+  incomeByCategory: Record<string, number>
+  expensesByCategory: Record<string, number>
+  categoryBreakdown?: Record<string, { income: number; expenses: number }>
+  monthlyTrend: Array<{ month: string; income: number; expenses: number }>
+}
+
+export interface NewsletterSubscriber {
+  email: string
+  name?: string
+  source?: string
+}
+
+export interface PrepPath {
+  id: string
+  title: string
+  description: string
+  icon?: string
+  color: string
+  category: 'android' | 'system-design' | 'dsa' | 'frontend' | 'backend' | 'devops' | 'other'
+  difficulty: 'beginner' | 'intermediate' | 'advanced'
+  estimatedTime?: string
+  published: boolean
+  order: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PrepTopic {
+  id: string
+  prepPathId: string
+  title: string
+  description?: string
+  order: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PrepQuestion {
+  id: string
+  prepTopicId: string
+  question: string
+  answer?: string
+  difficulty: 'easy' | 'medium' | 'hard'
+  tags: string[]
+  relatedBlogPost?: string
+  order: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PrepResource {
+  id: string
+  prepPathId?: string
+  prepTopicId?: string
+  title: string
+  type: 'blog' | 'video' | 'documentation' | 'book' | 'course' | 'practice'
+  url: string
+  description?: string
+  author?: string
+  order: number
+  createdAt: string
+  updatedAt: string
 }
 
 export interface HirePageContent {
@@ -139,7 +205,7 @@ export interface HirePageContent {
   }
   summary: {
     yearsOfExperience: number
-    currentRole?: string
+    currentRole: string
     location: string
     availability: string
   }
@@ -152,44 +218,42 @@ export interface HirePageContent {
     phone: string
     location: string
   }
-  resumeUrl?: string
-}
-
-export interface SocialPost {
-  id: string
-  platform: 'youtube' | 'instagram'
-  externalId: string
-  title: string
-  description?: string
-  thumbnailUrl: string
-  url: string
-  publishedAt: string
-  metadata?: Record<string, any>
-  cachedAt: string
-}
-
-export interface YouTubeVideo {
-  id: string
-  title: string
-  description: string
-  thumbnailUrl: string
-  publishedAt: string
-  videoId: string
-  channelId: string
-  viewCount?: number
-  duration?: string
+  resumeUrl: string
 }
 
 export interface InstagramPost {
   id: string
   caption?: string
-  mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
   mediaUrl: string
   thumbnailUrl?: string
   permalink: string
   timestamp: string
+  mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
   likeCount?: number
   commentsCount?: number
 }
 
+export interface SocialPost {
+  id: string
+  platform: 'instagram' | 'twitter' | 'linkedin' | 'youtube'
+  content: string
+  mediaUrl?: string
+  permalink: string
+  timestamp: string
+  externalId?: string
+  title?: string
+}
 
+export interface YouTubeVideo {
+  id: string
+  videoId?: string
+  title: string
+  description?: string
+  thumbnailUrl: string
+  publishedAt: string
+  channelId: string
+  channelTitle?: string
+  viewCount?: number
+  likeCount?: number
+  duration?: string
+}

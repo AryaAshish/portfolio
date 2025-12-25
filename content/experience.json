@@ -10,7 +10,18 @@
       "Led the end-to-end development of YVBR experience Application on Android XR device",
       "Designed workflows using Go, Kubernetes, RabbitMQ, and Postgres for enterprise-grade platforms"
     ],
-    "technologies": ["Kotlin", "Jetpack Compose", "Coroutines", "GraphQL", "Mapbox", "Go", "Kubernetes", "RabbitMQ", "Postgres", "Android XR"],
+    "technologies": [
+      "Kotlin",
+      "Jetpack Compose",
+      "Coroutines",
+      "GraphQL",
+      "Mapbox",
+      "Go",
+      "Kubernetes",
+      "RabbitMQ",
+      "Postgres",
+      "Android XR"
+    ],
     "metrics": [
       "17+ languages supported",
       "Sub-millisecond playback accuracy",
@@ -32,7 +43,19 @@
       "Improved performance and scalability of logistics workflows by integrating resilient event-driven architecture",
       "Strengthened user adoption by optimizing UI/UX for suppliers and truck owners"
     ],
-    "technologies": ["Kotlin", "Java", "MVVM", "Jetpack", "Go", "Gin", "gorm", "RabbitMQ", "Kubernetes", "Microservices", "Event-Driven Architecture"],
+    "technologies": [
+      "Kotlin",
+      "Java",
+      "MVVM",
+      "Jetpack",
+      "Go",
+      "Gin",
+      "gorm",
+      "RabbitMQ",
+      "Kubernetes",
+      "Microservices",
+      "Event-Driven Architecture"
+    ],
     "metrics": [
       "Public-facing marketplace transformation",
       "Offline-first architecture",
@@ -48,7 +71,15 @@
       "Migrated core application to MVVM architecture, reducing technical debt and boosting development velocity",
       "Developed Android modules integrating Retrofit APIs, Pedometer & Accelerometer sensor data"
     ],
-    "technologies": ["Kotlin", "Java", "MVVM", "Retrofit", "Android Sensors", "Pedometer", "Accelerometer"],
+    "technologies": [
+      "Kotlin",
+      "Java",
+      "MVVM",
+      "Retrofit",
+      "Android Sensors",
+      "Pedometer",
+      "Accelerometer"
+    ],
     "metrics": [
       "Reduced technical debt",
       "Boosted development velocity"

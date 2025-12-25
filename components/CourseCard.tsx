@@ -11,7 +11,7 @@ interface CourseCardProps {
 
 export function CourseCard({ course, index }: CourseCardProps) {
   const isComingSoon = course.status === 'coming-soon'
-  const isDraft = course.status === 'draft'
+  const isDraft = !course.status
 
   return (
     <motion.div
@@ -28,14 +28,14 @@ export function CourseCard({ course, index }: CourseCardProps) {
             className={`text-xs font-semibold uppercase tracking-wide ${
               isComingSoon
                 ? 'text-ocean-light'
-                : course.status === 'live'
+                : course.status === 'active'
                 ? 'text-teal-base'
                 : 'text-gray-400'
             }`}
           >
-            {isComingSoon ? 'Coming Soon' : course.status === 'live' ? 'Live' : 'Draft'}
+            {isComingSoon ? 'Coming Soon' : course.status === 'active' ? 'Live' : 'Draft'}
           </span>
-          {course.price && course.status === 'live' && (
+          {course.price && course.status === 'active' && (
             <span className="text-lg font-bold text-ocean-deep">
               {course.currency || '$'}
               {course.price}
@@ -46,17 +46,17 @@ export function CourseCard({ course, index }: CourseCardProps) {
         <p className="text-ocean-base">{course.description}</p>
       </div>
 
-      {course.modules.length > 0 && (
+      {course.modules && course.modules.length > 0 && (
         <div className="mb-4">
           <p className="text-sm font-semibold text-ocean-deep mb-2">
-            {course.modules.length} Module{course.modules.length !== 1 ? 's' : ''}
+            {(course.modules || []).length} Module{(course.modules || []).length !== 1 ? 's' : ''}
           </p>
           <ul className="list-disc list-inside text-sm text-ocean-base space-y-1">
-            {course.modules.slice(0, 3).map((module, idx) => (
+            {(course.modules || []).slice(0, 3).map((module, idx) => (
               <li key={idx}>{module.title}</li>
             ))}
-            {course.modules.length > 3 && (
-              <li className="text-ocean-light">+{course.modules.length - 3} more</li>
+            {(course.modules || []).length > 3 && (
+              <li className="text-ocean-light">+{(course.modules || []).length - 3} more</li>
             )}
           </ul>
         </div>

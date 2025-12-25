@@ -167,12 +167,13 @@ export default function FinancesPage() {
           </div>
         </div>
 
-        {analytics && analytics.categoryBreakdown.length > 0 && (
+        {analytics && analytics.categoryBreakdown && Object.keys(analytics.categoryBreakdown).length > 0 && (
           <div className="bg-neutral-white rounded-xl p-6 shadow-lg mb-6">
             <h2 className="font-serif text-xl text-ocean-deep mb-4">Expense Breakdown</h2>
             <div className="space-y-3">
-              {analytics.categoryBreakdown
-                .sort((a, b) => b.amount - a.amount)
+              {Object.entries(analytics.categoryBreakdown)
+                .map(([category, data]) => ({ category, ...data }))
+                .sort((a, b) => b.expenses - a.expenses)
                 .map((item) => (
                   <div key={item.category} className="flex items-center justify-between">
                     <span className="text-ocean-base font-medium">{item.category}</span>
@@ -181,12 +182,12 @@ export default function FinancesPage() {
                         <div
                           className="bg-teal-base h-2 rounded-full"
                           style={{
-                            width: `${(item.amount / analytics.totalExpenses) * 100}%`,
+                            width: `${(item.expenses / analytics.totalExpenses) * 100}%`,
                           }}
                         />
                       </div>
                       <span className="text-ocean-deep font-semibold w-24 text-right">
-                        ₹{item.amount.toLocaleString()}
+                        ₹{item.expenses.toLocaleString()}
                       </span>
                     </div>
                   </div>

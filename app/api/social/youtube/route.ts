@@ -56,18 +56,12 @@ function convertToSocialPosts(videos: YouTubeVideo[]): SocialPost[] {
   return videos.map(video => ({
     id: video.id,
     platform: 'youtube' as const,
-    externalId: video.videoId,
+    externalId: video.id,
     title: video.title,
-    description: video.description.substring(0, 200),
-    thumbnailUrl: video.thumbnailUrl,
-    url: `https://www.youtube.com/watch?v=${video.videoId}`,
-    publishedAt: video.publishedAt,
-    metadata: {
-      viewCount: video.viewCount,
-      duration: video.duration,
-      channelId: video.channelId,
-    },
-    cachedAt: new Date().toISOString(),
+    content: video.description || video.title,
+    permalink: `https://www.youtube.com/watch?v=${video.id}`,
+    timestamp: video.publishedAt,
+    mediaUrl: video.thumbnailUrl,
   }))
 }
 

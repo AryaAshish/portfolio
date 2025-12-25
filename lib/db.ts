@@ -1,5 +1,5 @@
 import { supabase, supabaseAdmin } from './supabase'
-import { BlogPost, WorkExperience, Skill, Course, LifeMoment, NewsletterSubscriber, CalendarEvent, JournalEntry, FinanceTransaction, ImportantItem, FinanceAnalytics } from '@/types'
+import { BlogPost, WorkExperience, Skill, Course, LifeMoment, NewsletterSubscriber, CalendarEvent, JournalEntry, FinanceTransaction, ImportantItem, FinanceAnalytics, PrepPath, PrepTopic, PrepQuestion, PrepResource } from '@/types'
 import { HomeContent } from './home'
 import readingTime from 'reading-time'
 
@@ -8,18 +8,26 @@ const useSupabase = process.env.USE_SUPABASE === 'true' && supabaseAdmin !== nul
 export const db = {
   blog: {
     async getAll(): Promise<BlogPost[]> {
-      if (!useSupabase) return []
+      if (!useSupabase) {
+        console.warn('[db.blog.getAll] Supabase not enabled or admin client is null')
+        return []
+      }
       
       const { data, error } = await supabaseAdmin!
         .from('blog_posts')
         .select('*')
         .order('published_at', { ascending: false })
       
-      if (error) throw error
+      if (error) {
+        console.error('[db.blog.getAll] Supabase error:', error)
+        throw error
+      }
+      
+      console.log('[db.blog.getAll] Fetched', data?.length || 0, 'posts from Supabase')
       
       return (data || []).map((post: any) => {
         const readingTimeResult = readingTime(post.content || '')
-        const dateValue = post.date || post.published_at || new Date().toISOString()
+        const dateValue = post.published_at || new Date().toISOString()
         return {
           slug: post.slug,
           title: post.title,
@@ -89,7 +97,7 @@ export const db = {
       if (error) throw error
       
       const readingTimeResult = readingTime(data.content || '')
-      const dateValue = data.date || data.published_at || new Date().toISOString()
+      const dateValue = data.published_at || new Date().toISOString()
       return {
         slug: data.slug,
         title: data.title,
@@ -129,7 +137,7 @@ export const db = {
       if (error) throw error
       
       const readingTimeResult = readingTime(data.content || '')
-      const dateValue = data.date || data.published_at || new Date().toISOString()
+      const dateValue = data.published_at || new Date().toISOString()
       return {
         slug: data.slug,
         title: data.title,
@@ -706,11 +714,18 @@ export const db = {
           .filter(tx => tx.type === 'expense')
           .reduce((sum, tx) => sum + tx.amount, 0)
         
-        const categoryBreakdown: { [key: string]: number } = {}
+        const incomeByCategory: Record<string, number> = {}
+        transactions
+          .filter(tx => tx.type === 'income')
+          .forEach(tx => {
+            incomeByCategory[tx.category] = (incomeByCategory[tx.category] || 0) + tx.amount
+          })
+        
+        const expensesByCategory: Record<string, number> = {}
         transactions
           .filter(tx => tx.type === 'expense')
           .forEach(tx => {
-            categoryBreakdown[tx.category] = (categoryBreakdown[tx.category] || 0) + tx.amount
+            expensesByCategory[tx.category] = (expensesByCategory[tx.category] || 0) + tx.amount
           })
         
         const monthlyTrend: { [key: string]: { month: string; income: number; expenses: number } } = {}
@@ -726,11 +741,14 @@ export const db = {
           }
         })
         
+        const balance = totalIncome - totalExpenses
         return {
           totalIncome,
           totalExpenses,
-          netAmount: totalIncome - totalExpenses,
-          categoryBreakdown: Object.entries(categoryBreakdown).map(([category, amount]) => ({ category, amount })),
+          balance,
+          netAmount: balance,
+          incomeByCategory,
+          expensesByCategory,
           monthlyTrend: Object.values(monthlyTrend).sort((a, b) => a.month.localeCompare(b.month)),
         }
       },
@@ -873,6 +891,503 @@ export const db = {
         
         if (error) throw error
       },
+    },
+  },
+
+  prepPaths: {
+    async getAll(): Promise<PrepPath[]> {
+      if (!useSupabase) return []
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_paths')
+        .select('*')
+        .order('order', { ascending: true })
+      
+      if (error) throw error
+      
+      return (data || []).map((path: any) => ({
+        id: path.id,
+        title: path.title,
+        description: path.description,
+        icon: path.icon || undefined,
+        color: path.color || '#14a085',
+        category: path.category,
+        difficulty: path.difficulty,
+        estimatedTime: path.estimated_time || undefined,
+        published: path.published,
+        order: path.order || 0,
+        createdAt: path.created_at,
+        updatedAt: path.updated_at,
+      }))
+    },
+
+    async getById(id: string): Promise<PrepPath | null> {
+      if (!useSupabase) return null
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_paths')
+        .select('*')
+        .eq('id', id)
+        .single()
+      
+      if (error || !data) return null
+      
+      return {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        icon: data.icon || undefined,
+        color: data.color || '#14a085',
+        category: data.category,
+        difficulty: data.difficulty,
+        estimatedTime: data.estimated_time || undefined,
+        published: data.published,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async getByCategory(category: string): Promise<PrepPath[]> {
+      if (!useSupabase) return []
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_paths')
+        .select('*')
+        .eq('category', category)
+        .eq('published', true)
+        .order('order', { ascending: true })
+      
+      if (error) throw error
+      
+      return (data || []).map((path: any) => ({
+        id: path.id,
+        title: path.title,
+        description: path.description,
+        icon: path.icon || undefined,
+        color: path.color || '#14a085',
+        category: path.category,
+        difficulty: path.difficulty,
+        estimatedTime: path.estimated_time || undefined,
+        published: path.published,
+        order: path.order || 0,
+        createdAt: path.created_at,
+        updatedAt: path.updated_at,
+      }))
+    },
+
+    async create(path: Omit<PrepPath, 'id' | 'createdAt' | 'updatedAt'>): Promise<PrepPath> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_paths')
+        .insert({
+          title: path.title,
+          description: path.description,
+          icon: path.icon || null,
+          color: path.color,
+          category: path.category,
+          difficulty: path.difficulty,
+          estimated_time: path.estimatedTime || null,
+          published: path.published,
+          order: path.order,
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        icon: data.icon || undefined,
+        color: data.color || '#14a085',
+        category: data.category,
+        difficulty: data.difficulty,
+        estimatedTime: data.estimated_time || undefined,
+        published: data.published,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async update(id: string, path: Partial<Omit<PrepPath, 'id' | 'createdAt' | 'updatedAt'>>): Promise<PrepPath> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_paths')
+        .update({
+          title: path.title,
+          description: path.description,
+          icon: path.icon !== undefined ? path.icon : undefined,
+          color: path.color,
+          category: path.category,
+          difficulty: path.difficulty,
+          estimated_time: path.estimatedTime,
+          published: path.published,
+          order: path.order,
+        })
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        icon: data.icon || undefined,
+        color: data.color || '#14a085',
+        category: data.category,
+        difficulty: data.difficulty,
+        estimatedTime: data.estimated_time || undefined,
+        published: data.published,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async delete(id: string): Promise<void> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { error } = await supabaseAdmin!
+        .from('prep_paths')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+    },
+  },
+
+  prepTopics: {
+    async getByPathId(pathId: string): Promise<PrepTopic[]> {
+      if (!useSupabase) return []
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_topics')
+        .select('*')
+        .eq('prep_path_id', pathId)
+        .order('order', { ascending: true })
+      
+      if (error) throw error
+      
+      return (data || []).map((topic: any) => ({
+        id: topic.id,
+        prepPathId: topic.prep_path_id,
+        title: topic.title,
+        description: topic.description || undefined,
+        order: topic.order || 0,
+        createdAt: topic.created_at,
+        updatedAt: topic.updated_at,
+      }))
+    },
+
+    async create(topic: Omit<PrepTopic, 'id' | 'createdAt' | 'updatedAt'>): Promise<PrepTopic> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_topics')
+        .insert({
+          prep_path_id: topic.prepPathId,
+          title: topic.title,
+          description: topic.description || null,
+          order: topic.order,
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        prepPathId: data.prep_path_id,
+        title: data.title,
+        description: data.description || undefined,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async update(id: string, topic: Partial<Omit<PrepTopic, 'id' | 'createdAt' | 'updatedAt'>>): Promise<PrepTopic> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_topics')
+        .update({
+          title: topic.title,
+          description: topic.description !== undefined ? topic.description : undefined,
+          order: topic.order,
+        })
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        prepPathId: data.prep_path_id,
+        title: data.title,
+        description: data.description || undefined,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async delete(id: string): Promise<void> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { error } = await supabaseAdmin!
+        .from('prep_topics')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+    },
+  },
+
+  prepQuestions: {
+    async getByTopicId(topicId: string): Promise<PrepQuestion[]> {
+      if (!useSupabase) return []
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_questions')
+        .select('*')
+        .eq('prep_topic_id', topicId)
+        .order('order', { ascending: true })
+      
+      if (error) throw error
+      
+      return (data || []).map((q: any) => ({
+        id: q.id,
+        prepTopicId: q.prep_topic_id,
+        question: q.question,
+        answer: q.answer || undefined,
+        difficulty: q.difficulty,
+        tags: q.tags || [],
+        relatedBlogPost: q.related_blog_post || undefined,
+        order: q.order || 0,
+        createdAt: q.created_at,
+        updatedAt: q.updated_at,
+      }))
+    },
+
+    async create(question: Omit<PrepQuestion, 'id' | 'createdAt' | 'updatedAt'>): Promise<PrepQuestion> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_questions')
+        .insert({
+          prep_topic_id: question.prepTopicId,
+          question: question.question,
+          answer: question.answer || null,
+          difficulty: question.difficulty,
+          tags: question.tags || [],
+          related_blog_post: question.relatedBlogPost || null,
+          order: question.order,
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        prepTopicId: data.prep_topic_id,
+        question: data.question,
+        answer: data.answer || undefined,
+        difficulty: data.difficulty,
+        tags: data.tags || [],
+        relatedBlogPost: data.related_blog_post || undefined,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async update(id: string, question: Partial<Omit<PrepQuestion, 'id' | 'createdAt' | 'updatedAt'>>): Promise<PrepQuestion> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_questions')
+        .update({
+          question: question.question,
+          answer: question.answer !== undefined ? question.answer : undefined,
+          difficulty: question.difficulty,
+          tags: question.tags,
+          related_blog_post: question.relatedBlogPost,
+          order: question.order,
+        })
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        prepTopicId: data.prep_topic_id,
+        question: data.question,
+        answer: data.answer || undefined,
+        difficulty: data.difficulty,
+        tags: data.tags || [],
+        relatedBlogPost: data.related_blog_post || undefined,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async delete(id: string): Promise<void> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { error } = await supabaseAdmin!
+        .from('prep_questions')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+    },
+  },
+
+  prepResources: {
+    async getByPathId(pathId: string): Promise<PrepResource[]> {
+      if (!useSupabase) return []
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_resources')
+        .select('*')
+        .eq('prep_path_id', pathId)
+        .is('prep_topic_id', null)
+        .order('order', { ascending: true })
+      
+      if (error) throw error
+      
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        prepPathId: r.prep_path_id || undefined,
+        prepTopicId: r.prep_topic_id || undefined,
+        title: r.title,
+        type: r.type,
+        url: r.url,
+        description: r.description || undefined,
+        author: r.author || undefined,
+        order: r.order || 0,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+      }))
+    },
+
+    async getByTopicId(topicId: string): Promise<PrepResource[]> {
+      if (!useSupabase) return []
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_resources')
+        .select('*')
+        .eq('prep_topic_id', topicId)
+        .order('order', { ascending: true })
+      
+      if (error) throw error
+      
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        prepPathId: r.prep_path_id || undefined,
+        prepTopicId: r.prep_topic_id || undefined,
+        title: r.title,
+        type: r.type,
+        url: r.url,
+        description: r.description || undefined,
+        author: r.author || undefined,
+        order: r.order || 0,
+        createdAt: r.created_at,
+        updatedAt: r.updated_at,
+      }))
+    },
+
+    async create(resource: Omit<PrepResource, 'id' | 'createdAt' | 'updatedAt'>): Promise<PrepResource> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_resources')
+        .insert({
+          prep_path_id: resource.prepPathId || null,
+          prep_topic_id: resource.prepTopicId || null,
+          title: resource.title,
+          type: resource.type,
+          url: resource.url,
+          description: resource.description || null,
+          author: resource.author || null,
+          order: resource.order,
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        prepPathId: data.prep_path_id || undefined,
+        prepTopicId: data.prep_topic_id || undefined,
+        title: data.title,
+        type: data.type,
+        url: data.url,
+        description: data.description || undefined,
+        author: data.author || undefined,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async update(id: string, resource: Partial<Omit<PrepResource, 'id' | 'createdAt' | 'updatedAt'>>): Promise<PrepResource> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { data, error } = await supabaseAdmin!
+        .from('prep_resources')
+        .update({
+          title: resource.title,
+          type: resource.type,
+          url: resource.url,
+          description: resource.description !== undefined ? resource.description : undefined,
+          author: resource.author !== undefined ? resource.author : undefined,
+          order: resource.order,
+        })
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      return {
+        id: data.id,
+        prepPathId: data.prep_path_id || undefined,
+        prepTopicId: data.prep_topic_id || undefined,
+        title: data.title,
+        type: data.type,
+        url: data.url,
+        description: data.description || undefined,
+        author: data.author || undefined,
+        order: data.order || 0,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    },
+
+    async delete(id: string): Promise<void> {
+      if (!useSupabase) throw new Error('Supabase not configured')
+      
+      const { error } = await supabaseAdmin!
+        .from('prep_resources')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
     },
   },
 }

@@ -42,8 +42,8 @@ export default function PlannerDashboard() {
       const expenses = transactions.filter((t: FinanceTransaction) => t.type === 'expense').reduce((sum: number, t: FinanceTransaction) => sum + t.amount, 0)
       setMonthlyStats({ income, expenses })
 
-      const urgentItems = (itemsData.items || []).filter((item: ImportantItem) => 
-        item.priority === 'urgent' || item.priority === 'high'
+      const urgentItems = (itemsData.items || []).filter((item: ImportantItem) =>
+        item.priority === 'high'
       ).slice(0, 5)
       setPendingItems(urgentItems)
     } catch (error) {
@@ -207,8 +207,8 @@ export default function PlannerDashboard() {
                   <div key={item.id} className="p-3 rounded-lg border border-ocean-light/20">
                     <div className="flex items-center justify-between mb-1">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        item.priority === 'urgent' ? 'bg-red-100 text-red-700' :
-                        item.priority === 'high' ? 'bg-orange-100 text-orange-700' :
+                        item.priority === 'high' ? 'bg-red-100 text-red-700' :
+                        item.priority === 'medium' ? 'bg-orange-100 text-orange-700' :
                         'bg-yellow-100 text-yellow-700'
                       }`}>
                         {item.priority}

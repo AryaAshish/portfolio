@@ -99,15 +99,6 @@ export default function ContactPage() {
                   </a>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-ocean-deep mb-2">Phone</h3>
-                  <a
-                    href="tel:+919549305633"
-                    className="text-teal-base hover:text-teal-dark"
-                  >
-                    +91-9549305633
-                  </a>
-                </div>
-                <div>
                   <h3 className="font-semibold text-ocean-deep mb-2">Location</h3>
                   <p className="text-ocean-base">Bengaluru, India</p>
                 </div>
@@ -121,6 +112,22 @@ export default function ContactPage() {
                       className="text-teal-base hover:text-teal-dark"
                     >
                       LinkedIn
+                    </a>
+                    <a
+                      href="https://github.com/AryaAshish"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-base hover:text-teal-dark"
+                    >
+                      GitHub
+                    </a>
+                    <a
+                      href="https://www.instagram.com/musafir.codes/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-base hover:text-teal-dark"
+                    >
+                      Instagram
                     </a>
                     <a
                       href="https://leetcode.com/u/aryanAshish/"

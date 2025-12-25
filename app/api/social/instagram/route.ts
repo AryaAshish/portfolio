@@ -49,16 +49,14 @@ function convertToSocialPosts(posts: InstagramPost[]): SocialPost[] {
     platform: 'instagram' as const,
     externalId: post.id,
     title: post.caption ? post.caption.substring(0, 100) : 'Instagram Post',
+    content: post.caption || '',
+    permalink: post.permalink,
+    timestamp: post.timestamp,
     description: post.caption || undefined,
     thumbnailUrl: post.thumbnailUrl || '',
     url: post.permalink,
     publishedAt: post.timestamp,
-    metadata: {
-      mediaType: post.mediaType,
-      likeCount: post.likeCount,
-      commentsCount: post.commentsCount,
-    },
-    cachedAt: new Date().toISOString(),
+    mediaUrl: post.mediaUrl,
   }))
 }
 

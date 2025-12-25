@@ -9,7 +9,13 @@
     "lint": "next lint",
     "migrate:supabase": "tsx scripts/migrate-to-supabase.ts",
     "test:supabase": "tsx scripts/test-supabase-connection.ts",
-    "setup:supabase": "tsx scripts/setup-database.ts"
+    "setup:supabase": "tsx scripts/setup-database.ts",
+    "generate:blogs": "tsx scripts/generate-human-blogs.ts",
+    "update:blogs": "tsx scripts/update-existing-blogs.ts",
+    "create:android-prep": "tsx scripts/create-android-prep-path.ts",
+    "create:android-blogs": "tsx scripts/create-android-blog-posts.ts",
+    "create:all-android-blogs": "tsx scripts/create-android-blogs-complete.ts",
+    "migrate:blogs": "tsx scripts/migrate-blogs-to-supabase.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",

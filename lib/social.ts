@@ -24,12 +24,10 @@ export const social = {
       platform: post.platform,
       externalId: post.external_id,
       title: post.title,
-      description: post.description || undefined,
-      thumbnailUrl: post.thumbnail_url,
-      url: post.url,
-      publishedAt: post.published_at,
-      metadata: post.metadata || undefined,
-      cachedAt: post.cached_at,
+      content: post.description || post.title || '',
+      permalink: post.url || '',
+      timestamp: post.published_at || post.cached_at || new Date().toISOString(),
+      mediaUrl: post.thumbnail_url || undefined,
     }))
   },
 
@@ -40,11 +38,11 @@ export const social = {
       platform: post.platform,
       external_id: post.externalId,
       title: post.title,
-      description: post.description || null,
-      thumbnail_url: post.thumbnailUrl,
-      url: post.url,
-      published_at: post.publishedAt,
-      metadata: post.metadata || null,
+      description: post.content || null,
+      thumbnail_url: post.mediaUrl || null,
+      url: post.permalink,
+      published_at: post.timestamp,
+      metadata: null,
     }))
     
     const { error } = await supabaseAdmin!

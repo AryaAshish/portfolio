@@ -1,0 +1,341 @@
+{
+  "topics": [
+    {
+      "title": "How to Prepare for Software Engineering Interviews in 2024",
+      "keywords": ["software engineering interview", "coding interview", "tech interview preparation", "FAANG interview"],
+      "category": "career",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "System Design Interview Questions: Complete Guide for Beginners",
+      "keywords": ["system design interview", "distributed systems", "scalability", "architecture"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "Data Structures and Algorithms: Must-Know for Every Developer",
+      "keywords": ["data structures", "algorithms", "DSA", "programming fundamentals"],
+      "category": "technical",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Build a Full-Stack Application: Step-by-Step Guide",
+      "keywords": ["full-stack development", "web development", "MERN stack", "full stack tutorial"],
+      "category": "tutorial",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "React vs Vue vs Angular: Which Framework Should You Learn in 2024?",
+      "keywords": ["React", "Vue", "Angular", "frontend framework", "JavaScript framework comparison"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "Docker and Kubernetes: Complete Guide for DevOps Beginners",
+      "keywords": ["Docker", "Kubernetes", "containerization", "DevOps", "microservices"],
+      "category": "devops",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Get Your First Software Engineering Job: Complete Roadmap",
+      "keywords": ["first job", "software engineer job", "career roadmap", "entry level developer"],
+      "category": "career",
+      "targetAudience": ["final-year-students"]
+    },
+    {
+      "title": "Git and GitHub: Essential Version Control for Developers",
+      "keywords": ["Git", "GitHub", "version control", "source control", "collaboration"],
+      "category": "tools",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "REST API vs GraphQL: When to Use Which?",
+      "keywords": ["REST API", "GraphQL", "API design", "backend development"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "Database Design: SQL vs NoSQL Explained",
+      "keywords": ["SQL", "NoSQL", "database design", "MongoDB", "PostgreSQL"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Write Clean Code: Best Practices for Developers",
+      "keywords": ["clean code", "code quality", "best practices", "software engineering"],
+      "category": "best-practices",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "Microservices Architecture: Complete Beginner's Guide",
+      "keywords": ["microservices", "architecture", "distributed systems", "scalability"],
+      "category": "architecture",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a REST API with Node.js and Express",
+      "keywords": ["REST API", "Node.js", "Express", "backend development", "API tutorial"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "JavaScript Promises and Async/Await: Complete Guide",
+      "keywords": ["JavaScript", "Promises", "async await", "asynchronous programming"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Deploy Your Application: AWS, Vercel, and Heroku Compared",
+      "keywords": ["deployment", "AWS", "Vercel", "Heroku", "cloud hosting"],
+      "category": "devops",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "Object-Oriented Programming: OOP Concepts Explained",
+      "keywords": ["OOP", "object oriented programming", "inheritance", "polymorphism", "encapsulation"],
+      "category": "fundamentals",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Build a Portfolio Website: Step-by-Step Guide",
+      "keywords": ["portfolio website", "personal website", "developer portfolio", "web development"],
+      "category": "tutorial",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "CI/CD Pipeline: Complete Guide for Beginners",
+      "keywords": ["CI/CD", "continuous integration", "continuous deployment", "DevOps", "GitHub Actions"],
+      "category": "devops",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Optimize Your Code: Performance Tips for Developers",
+      "keywords": ["code optimization", "performance", "algorithm optimization", "efficiency"],
+      "category": "best-practices",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "Machine Learning Basics: Getting Started with ML",
+      "keywords": ["machine learning", "ML", "AI", "data science", "neural networks"],
+      "category": "ai-ml",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use ChatGPT for Coding: Developer's Guide",
+      "keywords": ["ChatGPT", "AI coding", "programming assistant", "AI tools"],
+      "category": "tools",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "TypeScript vs JavaScript: When to Use TypeScript?",
+      "keywords": ["TypeScript", "JavaScript", "type safety", "web development"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Mobile App: React Native vs Flutter",
+      "keywords": ["mobile development", "React Native", "Flutter", "cross-platform", "app development"],
+      "category": "mobile",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Learn Programming: Complete Roadmap for Beginners",
+      "keywords": ["learn programming", "coding roadmap", "programming for beginners", "how to code"],
+      "category": "career",
+      "targetAudience": ["final-year-students"]
+    },
+    {
+      "title": "Web Security: Common Vulnerabilities and How to Prevent Them",
+      "keywords": ["web security", "cybersecurity", "XSS", "SQL injection", "security best practices"],
+      "category": "security",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Real-Time Chat Application",
+      "keywords": ["real-time", "WebSocket", "chat application", "Socket.io", "live updates"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Git: Essential Commands Every Developer Should Know",
+      "keywords": ["Git commands", "version control", "Git tutorial", "source control"],
+      "category": "tools",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Build a REST API with Python and Flask",
+      "keywords": ["Python", "Flask", "REST API", "backend development", "API tutorial"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Prepare for Coding Interviews: LeetCode Strategy",
+      "keywords": ["coding interview", "LeetCode", "algorithm practice", "interview preparation"],
+      "category": "career",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Build a Todo App: Complete Tutorial",
+      "keywords": ["todo app", "web development tutorial", "beginner project", "full stack"],
+      "category": "tutorial",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Use GitHub: Complete Guide for Beginners",
+      "keywords": ["GitHub", "version control", "collaboration", "open source", "Git tutorial"],
+      "category": "tools",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Build a Blog with Next.js and Markdown",
+      "keywords": ["Next.js", "blog", "Markdown", "static site generation", "SSG"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Environment Variables: Security Best Practices",
+      "keywords": ["environment variables", "security", "configuration", "secrets management"],
+      "category": "security",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a CRUD Application: Complete Guide",
+      "keywords": ["CRUD", "database operations", "full stack", "web application"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use APIs: Complete Guide for Beginners",
+      "keywords": ["API", "REST API", "API integration", "web development"],
+      "category": "fundamentals",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Build a Responsive Website: CSS and HTML Guide",
+      "keywords": ["responsive design", "CSS", "HTML", "mobile-first", "web design"],
+      "category": "frontend",
+      "targetAudience": ["final-year-students", "developers"]
+    },
+    {
+      "title": "How to Use Linux: Essential Commands for Developers",
+      "keywords": ["Linux", "command line", "terminal", "bash", "Unix"],
+      "category": "tools",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Payment System: Stripe Integration Guide",
+      "keywords": ["payment integration", "Stripe", "e-commerce", "payment processing"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use MongoDB: Complete Database Guide",
+      "keywords": ["MongoDB", "NoSQL", "database", "data storage"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Authentication System: JWT and OAuth Explained",
+      "keywords": ["authentication", "JWT", "OAuth", "security", "user management"],
+      "category": "security",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Postman: API Testing Guide",
+      "keywords": ["Postman", "API testing", "REST API", "API development"],
+      "category": "tools",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Search Feature: Elasticsearch and Algolia",
+      "keywords": ["search", "Elasticsearch", "Algolia", "full-text search"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Redis: Caching Strategies for Developers",
+      "keywords": ["Redis", "caching", "performance", "data storage"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Real-Time Dashboard: WebSocket and Chart.js",
+      "keywords": ["real-time dashboard", "WebSocket", "data visualization", "charts"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use NPM: Package Management Guide",
+      "keywords": ["NPM", "package manager", "Node.js", "dependencies"],
+      "category": "tools",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a E-commerce Website: Complete Guide",
+      "keywords": ["e-commerce", "online store", "shopping cart", "payment integration"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Docker: Containerization Guide",
+      "keywords": ["Docker", "containers", "virtualization", "DevOps"],
+      "category": "devops",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Social Media App: Features and Architecture",
+      "keywords": ["social media", "real-time", "feed", "notifications"],
+      "category": "tutorial",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use GraphQL: Complete API Guide",
+      "keywords": ["GraphQL", "API", "query language", "data fetching"],
+      "category": "technical",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Video Streaming Platform: Architecture Guide",
+      "keywords": ["video streaming", "media server", "CDN", "real-time"],
+      "category": "architecture",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use AWS: Cloud Services Guide for Beginners",
+      "keywords": ["AWS", "cloud computing", "Amazon Web Services", "infrastructure"],
+      "category": "devops",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Machine Learning Model: Python Tutorial",
+      "keywords": ["machine learning", "Python", "scikit-learn", "data science"],
+      "category": "ai-ml",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Tailwind CSS: Utility-First CSS Framework",
+      "keywords": ["Tailwind CSS", "CSS framework", "styling", "frontend"],
+      "category": "frontend",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Chatbot: AI and NLP Guide",
+      "keywords": ["chatbot", "AI", "NLP", "natural language processing"],
+      "category": "ai-ml",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Use Firebase: Backend-as-a-Service Guide",
+      "keywords": ["Firebase", "BaaS", "backend", "database", "authentication"],
+      "category": "tools",
+      "targetAudience": ["developers", "final-year-students"]
+    },
+    {
+      "title": "How to Build a Recommendation System: ML Algorithms",
+      "keywords": ["recommendation system", "machine learning", "collaborative filtering"],
+      "category": "ai-ml",
+      "targetAudience": ["developers", "final-year-students"]
+    }
+  ]
+}
+

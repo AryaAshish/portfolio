@@ -1,9 +1,12 @@
 name: Deploy Dev Preview
 
+# Disabled - only main branch should deploy to production
+# on:
+#   push:
+#     branches:
+#       - dev
 on:
-  push:
-    branches:
-      - dev
+  workflow_dispatch:  # Only manual trigger, not automatic on push
 
 jobs:
   deploy-preview:

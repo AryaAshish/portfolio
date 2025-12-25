@@ -13,10 +13,12 @@ export async function getRecentPosts(limit: number = 3): Promise<BlogPost[]> {
       const posts = await db.blog.getAll()
       return posts.filter(p => p.published).slice(0, limit)
     } catch (error) {
-      console.error('Error fetching posts from Supabase, falling back to files:', error)
+      console.error('Error fetching posts from Supabase:', error)
+      return []
     }
   }
   
+  // Fallback to files if Supabase is not enabled
   const posts = getAllPosts()
   return posts.slice(0, limit)
 }

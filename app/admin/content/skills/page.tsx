@@ -69,19 +69,27 @@ export default function EditSkillsPage() {
 
   const updateItem = (categoryIndex: number, itemIndex: number, value: string) => {
     const updated = [...skills]
-    updated[categoryIndex].items[itemIndex] = value
+    if (!updated[categoryIndex].items) {
+      updated[categoryIndex].items = []
+    }
+    updated[categoryIndex].items![itemIndex] = value
     setSkills(updated)
   }
 
   const addItem = (categoryIndex: number) => {
     const updated = [...skills]
-    updated[categoryIndex].items.push('')
+    if (!updated[categoryIndex].items) {
+      updated[categoryIndex].items = []
+    }
+    updated[categoryIndex].items!.push('')
     setSkills(updated)
   }
 
   const removeItem = (categoryIndex: number, itemIndex: number) => {
     const updated = [...skills]
-    updated[categoryIndex].items = updated[categoryIndex].items.filter((_, i) => i !== itemIndex)
+    if (updated[categoryIndex].items) {
+      updated[categoryIndex].items = updated[categoryIndex].items!.filter((_, i) => i !== itemIndex)
+    }
     setSkills(updated)
   }
 
@@ -145,7 +153,7 @@ export default function EditSkillsPage() {
                     + Add Skill
                   </button>
                 </div>
-                {skill.items.map((item, itemIndex) => (
+                {(skill.items || []).map((item, itemIndex) => (
                   <div key={itemIndex} className="flex gap-2 mb-2">
                     <input
                       type="text"
