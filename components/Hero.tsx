@@ -75,11 +75,11 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
       {heroImages.length > 0 && (
         <div className="absolute inset-0 w-full h-full">
           {heroImages.map((image, index) => {
-          const objectPosition = image.cropX && image.cropY 
-            ? `${image.cropX}% ${image.cropY}%` 
-            : 'center center'
-          
-          return (
+            const objectPosition = image.cropX && image.cropY 
+              ? `${image.cropX}% ${image.cropY}%` 
+              : 'center center'
+            
+            return (
             <motion.div
               key={image.url}
               className="absolute inset-0 w-full h-full"
@@ -103,7 +103,7 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
                 unoptimized={image.url.includes('supabase.co')}
               />
             </motion.div>
-          )
+            )
           })}
           <div className="absolute inset-0 bg-gradient-to-b from-ocean-deep/40 via-transparent to-ocean-base/30 z-10" />
         </div>
