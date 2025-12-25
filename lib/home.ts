@@ -1,7 +1,9 @@
 import fs from 'fs'
 import path from 'path'
+import { db } from './db'
 
 const homeFilePath = path.join(process.cwd(), 'content', 'home.json')
+const useSupabase = process.env.USE_SUPABASE === 'true'
 
 export interface HomeContent {
   hero: {
@@ -44,7 +46,18 @@ export interface HomeContent {
   }
 }
 
-export function getHomeContent(): HomeContent {
+export async function getHomeContent(): Promise<HomeContent> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('home')
+      if (content) {
+        return content as HomeContent
+      }
+    } catch (error) {
+      console.error('Error fetching home content from Supabase:', error)
+    }
+  }
+
   if (!fs.existsSync(homeFilePath)) {
     return getDefaultHomeContent()
   }

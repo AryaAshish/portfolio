@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default async function HomePage() {
-  const content = getHomeContent()
+  const content = await getHomeContent()
   const recentPosts = await getRecentPosts(3)
   
   // Debug logging

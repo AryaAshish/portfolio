@@ -2,11 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import { AboutTimelineEvent } from '@/lib/content'
+import { db } from '@/lib/db'
 
 const timelineFilePath = path.join(process.cwd(), 'content', 'about-timeline.json')
+const useSupabase = process.env.USE_SUPABASE === 'true'
 
 export async function GET() {
   try {
+    if (useSupabase) {
+      const timeline = await db.content.get('about-timeline')
+      if (timeline) {
+        return NextResponse.json({ success: true, timeline })
+      }
+    }
+
     if (!fs.existsSync(timelineFilePath)) {
       return NextResponse.json({ success: true, timeline: [] })
     }
@@ -25,6 +34,11 @@ export async function PUT(request: NextRequest) {
 
     if (!Array.isArray(timeline)) {
       return NextResponse.json({ success: false, message: 'Invalid timeline data' }, { status: 400 })
+    }
+
+    if (useSupabase) {
+      await db.content.set('about-timeline', timeline)
+      return NextResponse.json({ success: true })
     }
 
     fs.writeFileSync(timelineFilePath, JSON.stringify(timeline, null, 2), 'utf8')
