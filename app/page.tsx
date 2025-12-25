@@ -182,7 +182,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section id="newsletter" className="py-20 bg-gradient-to-br from-ocean-dark to-ocean-base">
+      <section className="py-20 bg-gradient-to-br from-ocean-dark to-ocean-base">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <NewsletterSignup source="homepage" />
         </div>
