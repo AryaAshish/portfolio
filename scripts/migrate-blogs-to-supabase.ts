@@ -110,7 +110,9 @@ async function migrateBlogPosts() {
 }
 
 migrateBlogPosts()
-  .then(({ migrated, errors }) => {
+  .then((result) => {
+    if (!result) return
+    const { migrated, errors } = result
     if (errors.length === 0 && migrated.length > 0) {
       console.log(`\n💡 Next step: Delete local MDX files after verifying in Supabase`)
       console.log(`   Files to delete: ${migrated.map(s => `content/blog/${s}.mdx`).join(', ')}`)

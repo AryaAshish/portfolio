@@ -14,35 +14,46 @@ export interface BlogPost {
 }
 
 export interface WorkExperience {
-  id: string
+  id?: string
   company: string
   role: string
   period: string
   location: string
-  description: string
-  achievements: string[]
+  description?: string
+  impact: string[]
+  achievements?: string[]
   technologies: string[]
-  type: 'full-time' | 'contract' | 'freelance' | 'internship'
+  metrics?: string[]
+  type?: 'full-time' | 'contract' | 'freelance' | 'internship'
 }
 
 export interface Skill {
-  name: string
-  level: 'beginner' | 'intermediate' | 'advanced' | 'expert'
+  name?: string
+  level?: 'beginner' | 'intermediate' | 'advanced' | 'expert'
   category: string
   yearsOfExperience?: number
+  items?: string[]
+}
+
+export interface CourseModule {
+  title: string
+  description: string
+  lessons: string[]
 }
 
 export interface Course {
   id: string
   title: string
   description: string
-  duration: string
-  level: 'beginner' | 'intermediate' | 'advanced'
+  duration?: string
+  level?: 'beginner' | 'intermediate' | 'advanced'
   price?: number
   currency?: string
   image?: string
   url?: string
-  published: boolean
+  published?: boolean
+  modules?: CourseModule[]
+  status?: 'coming-soon' | 'active' | 'completed'
 }
 
 export interface LifeMoment {
@@ -122,8 +133,10 @@ export interface FinanceAnalytics {
   totalIncome: number
   totalExpenses: number
   balance: number
+  netAmount: number
   incomeByCategory: Record<string, number>
   expensesByCategory: Record<string, number>
+  categoryBreakdown?: Record<string, { income: number; expenses: number }>
   monthlyTrend: Array<{ month: string; income: number; expenses: number }>
 }
 
@@ -183,4 +196,64 @@ export interface PrepResource {
   order: number
   createdAt: string
   updatedAt: string
+}
+
+export interface HirePageContent {
+  hero: {
+    title: string
+    subtitle: string
+  }
+  summary: {
+    yearsOfExperience: number
+    currentRole: string
+    location: string
+    availability: string
+  }
+  cta: {
+    title: string
+    description: string
+  }
+  contact: {
+    email: string
+    phone: string
+    location: string
+  }
+  resumeUrl: string
+}
+
+export interface InstagramPost {
+  id: string
+  caption?: string
+  mediaUrl: string
+  thumbnailUrl?: string
+  permalink: string
+  timestamp: string
+  mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
+  likeCount?: number
+  commentsCount?: number
+}
+
+export interface SocialPost {
+  id: string
+  platform: 'instagram' | 'twitter' | 'linkedin' | 'youtube'
+  content: string
+  mediaUrl?: string
+  permalink: string
+  timestamp: string
+  externalId?: string
+  title?: string
+}
+
+export interface YouTubeVideo {
+  id: string
+  videoId?: string
+  title: string
+  description?: string
+  thumbnailUrl: string
+  publishedAt: string
+  channelId: string
+  channelTitle?: string
+  viewCount?: number
+  likeCount?: number
+  duration?: string
 }

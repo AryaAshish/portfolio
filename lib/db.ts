@@ -741,10 +741,12 @@ export const db = {
           }
         })
         
+        const balance = totalIncome - totalExpenses
         return {
           totalIncome,
           totalExpenses,
-          balance: totalIncome - totalExpenses,
+          balance,
+          netAmount: balance,
           incomeByCategory,
           expensesByCategory,
           monthlyTrend: Object.values(monthlyTrend).sort((a, b) => a.month.localeCompare(b.month)),

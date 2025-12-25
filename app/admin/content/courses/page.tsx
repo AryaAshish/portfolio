@@ -78,7 +78,10 @@ export default function EditCoursesPage() {
 
   const addModule = (courseIndex: number) => {
     const updated = [...courses]
-    updated[courseIndex].modules.push({
+    if (!updated[courseIndex].modules) {
+      updated[courseIndex].modules = []
+    }
+    updated[courseIndex].modules!.push({
       title: '',
       description: '',
       lessons: [''],
@@ -88,7 +91,9 @@ export default function EditCoursesPage() {
 
   const removeModule = (courseIndex: number, moduleIndex: number) => {
     const updated = [...courses]
-    updated[courseIndex].modules = updated[courseIndex].modules.filter((_, i) => i !== moduleIndex)
+    if (updated[courseIndex].modules) {
+      updated[courseIndex].modules = updated[courseIndex].modules!.filter((_, i) => i !== moduleIndex)
+    }
     setCourses(updated)
   }
 
@@ -99,8 +104,11 @@ export default function EditCoursesPage() {
     value: any
   ) => {
     const updated = [...courses]
-    updated[courseIndex].modules[moduleIndex] = {
-      ...updated[courseIndex].modules[moduleIndex],
+    if (!updated[courseIndex].modules) {
+      updated[courseIndex].modules = []
+    }
+    updated[courseIndex].modules![moduleIndex] = {
+      ...updated[courseIndex].modules![moduleIndex],
       [field]: value,
     }
     setCourses(updated)
@@ -108,15 +116,21 @@ export default function EditCoursesPage() {
 
   const addLesson = (courseIndex: number, moduleIndex: number) => {
     const updated = [...courses]
-    updated[courseIndex].modules[moduleIndex].lessons.push('')
+    if (!updated[courseIndex].modules) {
+      updated[courseIndex].modules = []
+    }
+    if (!updated[courseIndex].modules![moduleIndex]) {
+      updated[courseIndex].modules![moduleIndex] = { title: '', description: '', lessons: [] }
+    }
+    updated[courseIndex].modules![moduleIndex].lessons.push('')
     setCourses(updated)
   }
 
   const removeLesson = (courseIndex: number, moduleIndex: number, lessonIndex: number) => {
     const updated = [...courses]
-    updated[courseIndex].modules[moduleIndex].lessons = updated[courseIndex].modules[
-      moduleIndex
-    ].lessons.filter((_, i) => i !== lessonIndex)
+    if (updated[courseIndex].modules && updated[courseIndex].modules![moduleIndex]) {
+      updated[courseIndex].modules![moduleIndex].lessons = updated[courseIndex].modules![moduleIndex].lessons.filter((_, i) => i !== lessonIndex)
+    }
     setCourses(updated)
   }
 
@@ -227,7 +241,7 @@ export default function EditCoursesPage() {
                     + Add Module
                   </button>
                 </div>
-                {course.modules.map((module, moduleIndex) => (
+                {(course.modules || []).map((module, moduleIndex) => (
                   <div key={moduleIndex} className="mb-4 p-4 bg-ocean-pale/10 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="font-medium text-ocean-deep">Module {moduleIndex + 1}</h4>
@@ -272,7 +286,9 @@ export default function EditCoursesPage() {
                               value={lesson}
                               onChange={(e) => {
                                 const updated = [...courses]
-                                updated[courseIndex].modules[moduleIndex].lessons[lessonIndex] = e.target.value
+                                if (updated[courseIndex].modules && updated[courseIndex].modules![moduleIndex]) {
+                                  updated[courseIndex].modules![moduleIndex].lessons[lessonIndex] = e.target.value
+                                }
                                 setCourses(updated)
                               }}
                               placeholder="Lesson name"

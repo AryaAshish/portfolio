@@ -260,7 +260,7 @@ export default function EditExperiencePage() {
                       placeholder="auto or specific number"
                       className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
                     />
-                    <p className="text-xs text-ocean-light mt-1">Use "auto" to calculate from experiences</p>
+                    <p className="text-xs text-ocean-light mt-1">Use &quot;auto&quot; to calculate from experiences</p>
                     <label className="block text-sm font-medium text-ocean-deep mb-2 mt-2">Label</label>
                     <input
                       type="text"

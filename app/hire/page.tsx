@@ -34,7 +34,7 @@ export default async function HirePage() {
   const yearsOfExp = calculateYearsOfExperience()
 
   // Flatten all skills for ATS keyword matching
-  const allSkills = skills.flatMap(skill => skill.items)
+  const allSkills = skills.flatMap(skill => skill.items || [])
   const topSkills = allSkills.slice(0, 20)
 
   // Structured data for ATS/SEO
@@ -178,7 +178,7 @@ export default async function HirePage() {
                   <div key={idx}>
                     <h3 className="font-semibold text-ocean-base mb-2">{skill.category}</h3>
                     <p className="text-sm text-ocean-base/80">
-                      {skill.items.join(', ')}
+                      {(skill.items || []).join(', ')}
                     </p>
                   </div>
                 ))}
