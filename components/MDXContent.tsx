@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { evaluate } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import {
@@ -30,20 +30,31 @@ interface MDXContentProps {
 }
 
 export function MDXContent({ content }: MDXContentProps) {
-  const Component = useMemo(() => {
-    try {
-      const { default: MDXComponent } = evaluate(content, {
-        ...runtime,
-        development: false,
+  const [mdxComponent, setMdxComponent] = useState<React.ComponentType | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    evaluate(content, {
+      ...runtime,
+      development: false,
+    })
+      .then(({ default: Component }) => {
+        setMdxComponent(() => Component)
       })
-      return MDXComponent
-    } catch (error) {
-      console.error('MDX compilation error:', error)
-      return () => <div className="text-red-500">Error rendering MDX content</div>
-    }
+      .catch((err) => {
+        console.error('MDX compilation error:', err)
+        setError(err.message)
+      })
   }, [content])
 
+  if (error) {
+    return <div className="text-red-500">Error rendering MDX content: {error}</div>
+  }
+
+  if (!mdxComponent) {
+    return <div className="text-ocean-base p-4 bg-ocean-pale/10 rounded-lg">Loading content...</div>
+  }
+
+  const Component = mdxComponent as React.ComponentType<{ components?: any }>
   return <Component components={components} />
 }
-
-

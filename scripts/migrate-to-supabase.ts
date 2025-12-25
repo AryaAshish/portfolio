@@ -7,7 +7,7 @@ config({ path: resolve(process.cwd(), '.env.local') })
 import fs from 'fs'
 import path from 'path'
 import { getAllPosts } from '../lib/mdx'
-import { getHomeContent, getWorkExperience, getSkills, getCourses, getLifeMoments } from '../lib/content'
+import { getHomeContentData, getWorkExperience, getSkills, getCourses, getLifeMoments } from '../lib/content'
 
 // Create supabase admin client directly
 const { createClient } = require('@supabase/supabase-js')

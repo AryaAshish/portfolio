@@ -50,7 +50,7 @@ function convertToSocialPosts(posts: InstagramPost[]): SocialPost[] {
     externalId: post.id,
     title: post.caption ? post.caption.substring(0, 100) : 'Instagram Post',
     description: post.caption || undefined,
-    thumbnailUrl: post.thumbnailUrl,
+    thumbnailUrl: post.thumbnailUrl || '',
     url: post.permalink,
     publishedAt: post.timestamp,
     metadata: {

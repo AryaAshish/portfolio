@@ -75,16 +75,18 @@ export function JourneyMap({
             className="border-0"
             title={`Map of ${location}`}
           />
-          <div className="absolute bottom-2 right-2">
-            <a
-              href={`https://www.openstreetmap.org/?mlat=${coordinates[0]}&mlon=${coordinates[1]}&zoom=${zoom}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-ocean-base/70 hover:text-teal-base transition-colors bg-white/90 px-2 py-1 rounded"
-            >
-              View larger map
-            </a>
-          </div>
+          {coordinates && (
+            <div className="absolute bottom-2 right-2">
+              <a
+                href={`https://www.openstreetmap.org/?mlat=${coordinates[0]}&mlon=${coordinates[1]}&zoom=${zoom}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-ocean-base/70 hover:text-teal-base transition-colors bg-white/90 px-2 py-1 rounded"
+              >
+                View larger map
+              </a>
+            </div>
+          )}
         </div>
       ) : (
         <div className="h-64 bg-ocean-pale/10 flex items-center justify-center">

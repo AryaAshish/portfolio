@@ -309,7 +309,7 @@ function TransactionForm({
   const [category, setCategory] = useState(transaction?.category || '')
   const [amount, setAmount] = useState(transaction?.amount.toString() || '')
   const [description, setDescription] = useState(transaction?.description || '')
-  const [paymentMethod, setPaymentMethod] = useState(transaction?.paymentMethod || 'cash')
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'bank_transfer' | 'upi'>(transaction?.paymentMethod || 'cash')
   const [tags, setTags] = useState(transaction?.tags.join(', ') || '')
   const [saving, setSaving] = useState(false)
 
@@ -446,7 +446,10 @@ function TransactionForm({
             <label className="block text-sm font-medium text-ocean-deep mb-2">Payment Method</label>
             <select
               value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value as 'cash' | 'card' | 'bank_transfer' | 'upi'
+                if (value) setPaymentMethod(value)
+              }}
               className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
             >
               <option value="cash">Cash</option>

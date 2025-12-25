@@ -190,7 +190,7 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
       )
     }
 
-    const Component = mdxComponent
+    const Component = mdxComponent as React.ComponentType<{ components?: any }>
     return <Component components={mdxComponents} />
   }
 

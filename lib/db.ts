@@ -1,5 +1,6 @@
 import { supabase, supabaseAdmin } from './supabase'
-import { BlogPost, WorkExperience, Skill, Course, LifeMoment, HomeContent, NewsletterSubscriber, CalendarEvent, JournalEntry, FinanceTransaction, ImportantItem, FinanceAnalytics } from '@/types'
+import { BlogPost, WorkExperience, Skill, Course, LifeMoment, NewsletterSubscriber, CalendarEvent, JournalEntry, FinanceTransaction, ImportantItem, FinanceAnalytics } from '@/types'
+import { HomeContent } from './home'
 import readingTime from 'reading-time'
 
 const useSupabase = process.env.USE_SUPABASE === 'true' && supabaseAdmin !== null
@@ -18,6 +19,7 @@ export const db = {
       
       return (data || []).map((post: any) => {
         const readingTimeResult = readingTime(post.content || '')
+        const dateValue = post.date || post.published_at || new Date().toISOString()
         return {
           slug: post.slug,
           title: post.title,
@@ -26,7 +28,8 @@ export const db = {
           tags: post.tags || [],
           category: post.category || 'general',
           published: post.published,
-          publishedAt: post.published_at,
+          date: dateValue,
+          publishedAt: post.published_at || dateValue,
           readingTime: Math.ceil(readingTimeResult.minutes),
           image: post.image || undefined,
           videoUrl: post.video_url || undefined,
@@ -46,6 +49,7 @@ export const db = {
       if (error || !data) return null
       
       const readingTimeResult = readingTime(data.content || '')
+      const dateValue = data.date || data.published_at || new Date().toISOString()
       return {
         slug: data.slug,
         title: data.title,
@@ -54,7 +58,8 @@ export const db = {
         tags: data.tags || [],
         category: data.category || 'general',
         published: data.published,
-        publishedAt: data.published_at,
+        date: dateValue,
+        publishedAt: data.published_at || dateValue,
         readingTime: Math.ceil(readingTimeResult.minutes),
         image: data.image || undefined,
         videoUrl: data.video_url || undefined,
@@ -84,6 +89,7 @@ export const db = {
       if (error) throw error
       
       const readingTimeResult = readingTime(data.content || '')
+      const dateValue = data.date || data.published_at || new Date().toISOString()
       return {
         slug: data.slug,
         title: data.title,
@@ -92,7 +98,8 @@ export const db = {
         tags: data.tags || [],
         category: data.category || 'general',
         published: data.published,
-        publishedAt: data.published_at,
+        date: dateValue,
+        publishedAt: data.published_at || dateValue,
         readingTime: Math.ceil(readingTimeResult.minutes),
         image: data.image || undefined,
         videoUrl: data.video_url || undefined,
@@ -122,6 +129,7 @@ export const db = {
       if (error) throw error
       
       const readingTimeResult = readingTime(data.content || '')
+      const dateValue = data.date || data.published_at || new Date().toISOString()
       return {
         slug: data.slug,
         title: data.title,
@@ -130,7 +138,8 @@ export const db = {
         tags: data.tags || [],
         category: data.category || 'general',
         published: data.published,
-        publishedAt: data.published_at,
+        date: dateValue,
+        publishedAt: data.published_at || dateValue,
         readingTime: Math.ceil(readingTimeResult.minutes),
         image: data.image || undefined,
         videoUrl: data.video_url || undefined,

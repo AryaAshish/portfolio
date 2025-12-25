@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
         tags: data.tags || [],
         category: data.category || 'general',
         published: data.published ?? false,
+        date: data.date || data.publishedAt || new Date().toISOString(),
         publishedAt: data.publishedAt || data.date || new Date().toISOString(),
         image: data.image || undefined,
       })

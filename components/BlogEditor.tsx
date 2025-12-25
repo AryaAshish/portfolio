@@ -276,7 +276,7 @@ export function BlogEditor({ post, onSave }: BlogEditorProps) {
           className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
         />
         <p className="text-xs text-ocean-light mt-1">
-          Add a YouTube video URL to embed it in your blog post. You can also use <code className="text-xs bg-ocean-pale/20 px-1 py-0.5 rounded">&lt;YouTubeEmbed videoId="..." /&gt;</code> in your content.
+          Add a YouTube video URL to embed it in your blog post. You can also use <code className="text-xs bg-ocean-pale/20 px-1 py-0.5 rounded">&lt;YouTubeEmbed videoId=&quot;...&quot; /&gt;</code> in your content.
         </p>
       </div>
 

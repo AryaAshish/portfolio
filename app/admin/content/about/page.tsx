@@ -53,10 +53,12 @@ export default function EditAboutPage() {
     }
   }
 
-  const updateEvent = (index: number, field: keyof AboutTimelineEvent, value: string) => {
+  const updateEvent = (index: number, field: keyof AboutTimelineEvent, value: string | undefined) => {
     const updated = [...timeline]
-    updated[index] = { ...updated[index], [field]: value }
-    setTimeline(updated)
+    if (value !== undefined) {
+      updated[index] = { ...updated[index], [field]: value }
+      setTimeline(updated)
+    }
   }
 
   const addEvent = () => {
@@ -147,7 +149,10 @@ export default function EditAboutPage() {
                   <label className="block text-sm font-medium text-ocean-deep mb-2">Type</label>
                   <select
                     value={event.type || 'milestone'}
-                    onChange={(e) => updateEvent(index, 'type', e.target.value as AboutTimelineEvent['type'])}
+                    onChange={(e) => {
+                      const value: string = e.target.value || 'milestone'
+                      updateEvent(index, 'type', value as AboutTimelineEvent['type'])
+                    }}
                     className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
                   >
                     <option value="career">Career</option>

@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       console.error('Supabase upload error:', error)
       
       // Provide helpful error message for file size issues
-      if (error.message?.includes('exceeded') || error.message?.includes('413') || error.statusCode === '413') {
+      if (error.message?.includes('exceeded') || error.message?.includes('413')) {
         return NextResponse.json({ 
           success: false, 
           message: 'File too large for direct upload. Supabase free plan has a 50MB limit. Please upload via Supabase Dashboard or use the manual URL option.' 
