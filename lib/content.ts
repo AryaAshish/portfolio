@@ -2,14 +2,27 @@ import fs from 'fs'
 import path from 'path'
 import { WorkExperience, Skill, Course, LifeMoment } from '@/types'
 import { HomeContent, getHomeContent } from './home'
+import { db } from './db'
 
 const contentDirectory = path.join(process.cwd(), 'content')
+const useSupabase = process.env.USE_SUPABASE === 'true'
 
-export function getHomeContentData(): HomeContent {
-  return getHomeContent()
+export async function getHomeContentData(): Promise<HomeContent> {
+  return await getHomeContent()
 }
 
-export function getWorkExperience(): WorkExperience[] {
+export async function getWorkExperience(): Promise<WorkExperience[]> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('experience')
+      if (content && Array.isArray(content)) {
+        return content as WorkExperience[]
+      }
+    } catch (error) {
+      console.error('Error fetching experience from Supabase:', error)
+    }
+  }
+
   const filePath = path.join(contentDirectory, 'experience.json')
   if (!fs.existsSync(filePath)) {
     return []
@@ -59,7 +72,18 @@ export interface ExperiencePageContent {
   }
 }
 
-export function getExperiencePageContent(): ExperiencePageContent {
+export async function getExperiencePageContent(): Promise<ExperiencePageContent> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('experience-page')
+      if (content) {
+        return content as ExperiencePageContent
+      }
+    } catch (error) {
+      console.error('Error fetching experience-page from Supabase:', error)
+    }
+  }
+
   const filePath = path.join(contentDirectory, 'experience-page.json')
   if (!fs.existsSync(filePath)) {
     return {
@@ -107,7 +131,18 @@ export function getExperiencePageContent(): ExperiencePageContent {
   return JSON.parse(fileContents) as ExperiencePageContent
 }
 
-export function getSkills(): Skill[] {
+export async function getSkills(): Promise<Skill[]> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('skills')
+      if (content && Array.isArray(content)) {
+        return content as Skill[]
+      }
+    } catch (error) {
+      console.error('Error fetching skills from Supabase:', error)
+    }
+  }
+
   const filePath = path.join(contentDirectory, 'skills.json')
   if (!fs.existsSync(filePath)) {
     return []
@@ -116,7 +151,18 @@ export function getSkills(): Skill[] {
   return JSON.parse(fileContents) as Skill[]
 }
 
-export function getCourses(): Course[] {
+export async function getCourses(): Promise<Course[]> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('courses')
+      if (content && Array.isArray(content)) {
+        return content as Course[]
+      }
+    } catch (error) {
+      console.error('Error fetching courses from Supabase:', error)
+    }
+  }
+
   const filePath = path.join(contentDirectory, 'courses.json')
   if (!fs.existsSync(filePath)) {
     return []
@@ -125,7 +171,21 @@ export function getCourses(): Course[] {
   return JSON.parse(fileContents) as Course[]
 }
 
-export function getLifeMoments(): LifeMoment[] {
+export async function getLifeMoments(): Promise<LifeMoment[]> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('life')
+      if (content && Array.isArray(content)) {
+        const moments = content as LifeMoment[]
+        return moments.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime()
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching life moments from Supabase:', error)
+    }
+  }
+
   const filePath = path.join(contentDirectory, 'life.json')
   if (!fs.existsSync(filePath)) {
     return []
@@ -153,7 +213,18 @@ export interface AboutTimelineEvent {
   icon?: string
 }
 
-export function getAboutTimeline(): AboutTimelineEvent[] {
+export async function getAboutTimeline(): Promise<AboutTimelineEvent[]> {
+  if (useSupabase) {
+    try {
+      const content = await db.content.get('about-timeline')
+      if (content && Array.isArray(content)) {
+        return content as AboutTimelineEvent[]
+      }
+    } catch (error) {
+      console.error('Error fetching about-timeline from Supabase:', error)
+    }
+  }
+
   const filePath = path.join(contentDirectory, 'about-timeline.json')
   if (fs.existsSync(filePath)) {
     const fileContents = fs.readFileSync(filePath, 'utf8')

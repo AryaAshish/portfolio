@@ -57,15 +57,11 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
     generateBubbles()
   }, [])
 
-  const defaultCoralImages: CoralImage[] = [
-    { url: '/275594981_641387613759403_4598945770693618534_n.webp.jpg', cropX: 50, cropY: 50 },
-    { url: '/275828749_227700996211204_8693221892605276577_n.webp.jpg', cropX: 50, cropY: 50 },
-    { url: '/IMG20231127131252 Copy.JPG', cropX: 50, cropY: 50 },
-  ]
-
-  const heroImages = coralImages && coralImages.length > 0 ? coralImages : defaultCoralImages
+  const heroImages = coralImages && coralImages.length > 0 ? coralImages : []
 
   useEffect(() => {
+    if (heroImages.length === 0) return
+    
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)
     }, 5000) // Change image every 5 seconds
@@ -76,13 +72,14 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-ocean-deep via-ocean-dark to-ocean-base">
       {/* Coral Images as Background - Auto-sliding Carousel */}
-      <div className="absolute inset-0 w-full h-full">
-        {heroImages.map((image, index) => {
-          const objectPosition = image.cropX && image.cropY 
-            ? `${image.cropX}% ${image.cropY}%` 
-            : 'center center'
-          
-          return (
+      {heroImages.length > 0 && (
+        <div className="absolute inset-0 w-full h-full">
+          {heroImages.map((image, index) => {
+            const objectPosition = image.cropX && image.cropY 
+              ? `${image.cropX}% ${image.cropY}%` 
+              : 'center center'
+            
+            return (
             <motion.div
               key={image.url}
               className="absolute inset-0 w-full h-full"
@@ -106,10 +103,11 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
                 unoptimized={image.url.includes('supabase.co')}
               />
             </motion.div>
-          )
-        })}
-        <div className="absolute inset-0 bg-gradient-to-b from-ocean-deep/40 via-transparent to-ocean-base/30 z-10" />
-      </div>
+            )
+          })}
+          <div className="absolute inset-0 bg-gradient-to-b from-ocean-deep/40 via-transparent to-ocean-base/30 z-10" />
+        </div>
+      )}
 
       {/* Original Background Image - Kept for reference but not used when coral images are present */}
       {/* 
@@ -284,7 +282,7 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.h1
-            className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-neutral-white mb-6 whitespace-pre-line heading-serif"
+            className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-neutral-white mb-8 whitespace-pre-line heading-serif leading-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -292,7 +290,7 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
             {title}
           </motion.h1>
           <motion.p
-            className="text-xl md:text-2xl lg:text-3xl text-neutral-white mb-12 leading-relaxed px-6 py-3 rounded-lg bg-neutral-white/10 backdrop-blur-md border border-neutral-white/20 shadow-xl inline-block"
+            className="text-base md:text-lg lg:text-xl text-neutral-white mb-12 leading-relaxed px-8 py-4 rounded-full bg-neutral-white/20 backdrop-blur-lg border-2 border-neutral-white/30 shadow-2xl inline-block font-medium"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -307,19 +305,19 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
           >
             <Link
               href={cta.primary.href}
-              className="btn-primary px-8 py-4 bg-teal-base text-neutral-white rounded-lg font-medium relative z-10 shadow-xl hover:bg-teal-dark transition-all"
+              className="px-8 py-4 bg-neutral-white text-ocean-deep rounded-lg font-medium relative z-10 shadow-xl hover:bg-ocean-pale hover:shadow-2xl transition-all transform hover:scale-105"
             >
               {cta.primary.text}
             </Link>
             <Link
               href={cta.secondary.href}
-              className="px-8 py-4 bg-neutral-white/95 backdrop-blur-sm border-2 border-teal-base text-teal-base rounded-lg font-medium hover:bg-teal-base hover:text-neutral-white transition-all shadow-xl"
+              className="px-8 py-4 bg-ocean-deep text-neutral-white rounded-lg font-medium hover:bg-ocean-dark hover:shadow-2xl transition-all shadow-xl transform hover:scale-105"
             >
               {cta.secondary.text}
             </Link>
             <Link
               href={cta.tertiary.href}
-              className="px-8 py-4 bg-ocean-deep/90 backdrop-blur-sm border-2 border-ocean-pale text-neutral-white rounded-lg font-medium hover:bg-ocean-deep hover:border-teal-light transition-all shadow-xl"
+              className="px-8 py-4 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark hover:shadow-2xl transition-all shadow-xl transform hover:scale-105"
             >
               {cta.tertiary.text}
             </Link>

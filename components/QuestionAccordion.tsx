@@ -145,10 +145,10 @@ export function QuestionAccordion({ question }: QuestionAccordionProps) {
                     {question.relatedBlogPost ? (
                       <Link
                         href={`/blog/${question.relatedBlogPost}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-teal-base hover:text-teal-dark text-sm font-medium transition-colors underline"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-base text-neutral-white rounded-lg text-sm font-medium hover:bg-teal-dark transition-all shadow-sm hover:shadow-md group mt-2"
                       >
                         Read more
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                       </Link>

@@ -23,8 +23,8 @@ export async function getRecentPosts(limit: number = 3): Promise<BlogPost[]> {
   return posts.slice(0, limit)
 }
 
-export function getRecentLifeMoments(limit: number = 3): LifeMoment[] {
-  const moments = getLifeMoments()
+export async function getRecentLifeMoments(limit: number = 3): Promise<LifeMoment[]> {
+  const moments = await getLifeMoments()
   return moments.slice(0, limit)
 }
 

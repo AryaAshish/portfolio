@@ -2,11 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import { LifeMoment } from '@/types'
+import { db } from '@/lib/db'
 
 const lifeFilePath = path.join(process.cwd(), 'content', 'life.json')
+const useSupabase = process.env.USE_SUPABASE === 'true'
 
 export async function GET() {
   try {
+    if (useSupabase) {
+      const moments = await db.content.get('life')
+      if (moments) {
+        return NextResponse.json({ success: true, moments })
+      }
+    }
+
     if (!fs.existsSync(lifeFilePath)) {
       return NextResponse.json({ success: true, moments: [] })
     }
@@ -24,6 +33,11 @@ export async function PUT(request: NextRequest) {
 
     if (!Array.isArray(moments)) {
       return NextResponse.json({ success: false, message: 'Invalid data format' }, { status: 400 })
+    }
+
+    if (useSupabase) {
+      await db.content.set('life', moments)
+      return NextResponse.json({ success: true })
     }
 
     fs.writeFileSync(lifeFilePath, JSON.stringify(moments, null, 2), 'utf8')

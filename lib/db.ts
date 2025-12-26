@@ -176,7 +176,20 @@ export const db = {
         .eq('page_type', pageType)
         .single()
       
-      if (error || !data) return null
+      if (error) {
+        console.error(`[db.content.get] Error fetching ${pageType}:`, error)
+        return null
+      }
+      
+      if (!data) {
+        console.log(`[db.content.get] No data found for ${pageType}`)
+        return null
+      }
+      
+      if (pageType === 'home' && data.content?.hero) {
+        console.log(`[db.content.get] Home hero keys:`, Object.keys(data.content.hero))
+        console.log(`[db.content.get] Home coralImages count:`, data.content.hero.coralImages?.length || 0)
+      }
       
       return data.content
     },

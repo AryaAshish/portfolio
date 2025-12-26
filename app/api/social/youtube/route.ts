@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { social } from '@/lib/social'
 import { SocialPost, YouTubeVideo } from '@/types'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
 const YOUTUBE_CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID
 

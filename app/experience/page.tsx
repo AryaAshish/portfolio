@@ -11,9 +11,11 @@ export const metadata = {
 }
 
 export default async function ExperiencePage() {
-  const workExperience = getWorkExperience()
-  const skills = getSkills()
-  const pageContent = getExperiencePageContent()
+  const [workExperience, skills, pageContent] = await Promise.all([
+    getWorkExperience(),
+    getSkills(),
+    getExperiencePageContent(),
+  ])
 
   const totalYears = workExperience.length > 0 
     ? new Date().getFullYear() - new Date(workExperience[workExperience.length - 1].period.split(' - ')[0]).getFullYear()
@@ -123,7 +125,7 @@ export default async function ExperiencePage() {
                 </Link>
                 <Link
                   href={pageContent.cta.secondaryButton.href}
-                  className="px-8 py-4 bg-transparent border-2 border-neutral-white text-neutral-white rounded-lg font-medium hover:bg-neutral-white/10 transition-colors"
+                  className="px-8 py-4 bg-neutral-white text-teal-base border-2 border-teal-base rounded-lg font-medium hover:bg-teal-base hover:text-neutral-white transition-colors shadow-lg"
                 >
                   {pageContent.cta.secondaryButton.text}
                 </Link>

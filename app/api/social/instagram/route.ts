@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { social } from '@/lib/social'
 import { SocialPost, InstagramPost } from '@/types'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const INSTAGRAM_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN
 const INSTAGRAM_USER_ID = process.env.INSTAGRAM_USER_ID
 
