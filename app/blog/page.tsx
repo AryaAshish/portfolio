@@ -21,116 +21,68 @@ export default async function BlogPage() {
   console.log('[Blog Page] Total posts from Supabase:', allPosts.length)
   console.log('[Blog Page] Published posts:', posts.length)
   
-  // Extract unique tags and categories from posts
+  // Extract unique tags from posts
   const tagSet = new Set<string>()
-  const categorySet = new Set<string>()
   posts.forEach(post => {
     post.tags.forEach(tag => tagSet.add(tag))
-    categorySet.add(post.category)
   })
   const allTags = Array.from(tagSet).sort()
-  const categories = Array.from(categorySet).sort()
 
-  // Group tags by category with main tags
-  const tagGroups: Array<{ mainTag: string; mainTagSlug: string; childTags: string[] }> = []
-
-  // Define tag mappings
-  const androidTags = ['activity', 'fragment', 'intent', 'lifecycle', 'android-fundamentals']
-  const architectureTags = ['mvvm', 'clean-architecture', 'repository', 'architecture', 'design-patterns', 'dependency-injection', 'hilt', 'dagger']
-  const uiTags = ['recyclerview', 'listview', 'viewholder', 'constraintlayout', 'material-design', 'ui', 'layout', 'views']
-  const performanceTags = ['memory', 'leaks', 'optimization', 'performance', 'proguard', 'r8', 'profiling']
-  const networkingTags = ['retrofit', 'networking', 'api', 'http', 'error-handling', 'retry']
-  const kotlinTags = ['coroutines', 'flow', 'livedata', 'suspend', 'rxjava', 'reactive', 'async', 'concurrency']
-  const interviewTags = ['interview-prep']
-
-  // Group tags
-  const groupedTags: Record<string, string[]> = {
-    'android': [],
-    'architecture': [],
-    'ui': [],
-    'performance': [],
-    'networking': [],
-    'kotlin': [],
-    'interview-prep': [],
-    'other': [],
-  }
-
-  allTags.forEach(tag => {
-    const lowerTag = tag.toLowerCase()
-    if (androidTags.some(t => lowerTag.includes(t)) || lowerTag === 'android') {
-      if (lowerTag !== 'android') groupedTags['android'].push(tag)
-    } else if (architectureTags.some(t => lowerTag.includes(t)) || lowerTag === 'architecture') {
-      if (lowerTag !== 'architecture') groupedTags['architecture'].push(tag)
-    } else if (uiTags.some(t => lowerTag.includes(t)) || lowerTag === 'ui') {
-      if (lowerTag !== 'ui') groupedTags['ui'].push(tag)
-    } else if (performanceTags.some(t => lowerTag.includes(t)) || lowerTag === 'performance') {
-      if (lowerTag !== 'performance') groupedTags['performance'].push(tag)
-    } else if (networkingTags.some(t => lowerTag.includes(t)) || lowerTag === 'networking') {
-      if (lowerTag !== 'networking') groupedTags['networking'].push(tag)
-    } else if (kotlinTags.some(t => lowerTag.includes(t)) || lowerTag === 'kotlin') {
-      if (lowerTag !== 'kotlin') groupedTags['kotlin'].push(tag)
-    } else if (interviewTags.some(t => lowerTag.includes(t)) || lowerTag === 'interview-prep') {
-      if (lowerTag !== 'interview-prep') groupedTags['interview-prep'].push(tag)
-    } else {
-      groupedTags['other'].push(tag)
-    }
-  })
-
-  // Create tag groups with main tags
-  if (groupedTags['android'].length > 0 || allTags.some(t => t.toLowerCase() === 'android')) {
-    tagGroups.push({
-      mainTag: 'Android',
+  // Define 4-6 main tag categories with their child tags
+  const mainTagCategories = [
+    {
+      mainTag: 'Android Development',
       mainTagSlug: 'android',
-      childTags: groupedTags['android']
-    })
-  }
-  if (groupedTags['kotlin'].length > 0 || allTags.some(t => t.toLowerCase() === 'kotlin')) {
-    tagGroups.push({
-      mainTag: 'Kotlin',
-      mainTagSlug: 'kotlin',
-      childTags: groupedTags['kotlin']
-    })
-  }
-  if (groupedTags['architecture'].length > 0 || allTags.some(t => t.toLowerCase() === 'architecture')) {
-    tagGroups.push({
-      mainTag: 'Architecture',
+      childTags: ['activity', 'fragment', 'intent', 'lifecycle', 'android-fundamentals', 'recyclerview', 'listview', 'viewholder', 'constraintlayout', 'material-design', 'ui', 'layout', 'views', 'android']
+    },
+    {
+      mainTag: 'Architecture & Design',
       mainTagSlug: 'architecture',
-      childTags: groupedTags['architecture']
-    })
-  }
-  if (groupedTags['ui'].length > 0 || allTags.some(t => t.toLowerCase() === 'ui')) {
-    tagGroups.push({
-      mainTag: 'UI/UX',
-      mainTagSlug: 'ui',
-      childTags: groupedTags['ui']
-    })
-  }
-  if (groupedTags['performance'].length > 0 || allTags.some(t => t.toLowerCase() === 'performance')) {
-    tagGroups.push({
-      mainTag: 'Performance',
+      childTags: ['mvvm', 'clean-architecture', 'repository', 'architecture', 'design-patterns', 'dependency-injection', 'hilt', 'dagger']
+    },
+    {
+      mainTag: 'Kotlin & Coroutines',
+      mainTagSlug: 'kotlin',
+      childTags: ['kotlin', 'coroutines', 'flow', 'livedata', 'suspend', 'rxjava', 'reactive', 'async', 'concurrency']
+    },
+    {
+      mainTag: 'Performance & Optimization',
       mainTagSlug: 'performance',
-      childTags: groupedTags['performance']
-    })
-  }
-  if (groupedTags['networking'].length > 0 || allTags.some(t => t.toLowerCase() === 'networking')) {
-    tagGroups.push({
-      mainTag: 'Networking',
+      childTags: ['memory', 'leaks', 'optimization', 'performance', 'proguard', 'r8', 'profiling']
+    },
+    {
+      mainTag: 'Networking & APIs',
       mainTagSlug: 'networking',
-      childTags: groupedTags['networking']
-    })
-  }
-  if (groupedTags['interview-prep'].length > 0 || allTags.some(t => t.toLowerCase() === 'interview-prep')) {
-    tagGroups.push({
+      childTags: ['retrofit', 'networking', 'api', 'http', 'error-handling', 'retry']
+    },
+    {
       mainTag: 'Interview Prep',
       mainTagSlug: 'interview-prep',
-      childTags: groupedTags['interview-prep']
-    })
-  }
+      childTags: ['interview-prep']
+    }
+  ]
 
-  // Add standalone tags (tags that don't belong to any group)
-  const standaloneTags = groupedTags['other'].filter(tag => {
-    const lowerTag = tag.toLowerCase()
-    return !['android', 'kotlin', 'architecture', 'ui', 'performance', 'networking', 'interview-prep'].includes(lowerTag)
+  // Check which main tags have matching posts
+  const activeMainTags = mainTagCategories.filter(category => {
+    return allTags.some(tag => {
+      const lowerTag = tag.toLowerCase()
+      return category.childTags.some(childTag => lowerTag.includes(childTag.toLowerCase()) || lowerTag === childTag.toLowerCase())
+    })
+  })
+
+  // Get child tags for each active main tag
+  const tagGroups = activeMainTags.map(category => {
+    const childTags = allTags.filter(tag => {
+      const lowerTag = tag.toLowerCase()
+      return category.childTags.some(childTag => 
+        lowerTag.includes(childTag.toLowerCase()) || lowerTag === childTag.toLowerCase()
+      ) && lowerTag !== category.mainTagSlug.toLowerCase()
+    })
+    return {
+      mainTag: category.mainTag,
+      mainTagSlug: category.mainTagSlug,
+      childTags: childTags
+    }
   })
 
   return (
@@ -146,10 +98,10 @@ export default async function BlogPage() {
 
       <section className="py-20 bg-gradient-to-b from-ocean-dark to-neutral-off">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {(tagGroups.length > 0 || standaloneTags.length > 0) && (
+          {tagGroups.length > 0 && (
             <div className="mb-12">
-              <h2 className="font-serif text-2xl text-ocean-deep mb-4">Tags</h2>
-              <div className="flex flex-wrap gap-2">
+              <h2 className="font-serif text-2xl text-ocean-deep mb-4">Browse by Topic</h2>
+              <div className="flex flex-wrap gap-3">
                 {tagGroups.map((group) => (
                   <TagGroup
                     key={group.mainTag}
@@ -157,15 +109,6 @@ export default async function BlogPage() {
                     mainTagSlug={group.mainTagSlug}
                     childTags={group.childTags}
                   />
-                ))}
-                {standaloneTags.map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/blog/tag/${tag}`}
-                    className="px-4 py-2 bg-neutral-white text-ocean-deep rounded-lg text-sm font-medium hover:bg-teal-base hover:text-neutral-white transition-colors shadow-md border border-ocean-light/20"
-                  >
-                    {tag}
-                  </Link>
                 ))}
               </div>
             </div>
