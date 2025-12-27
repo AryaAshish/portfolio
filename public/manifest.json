@@ -1,0 +1,43 @@
+{
+  "name": "Portfolio - Engineer by craft. Diver by soul. Rider by heart.",
+  "short_name": "Portfolio",
+  "description": "Personal portfolio platform with calendar, blog, and notifications",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a2540",
+  "theme_color": "#0a2540",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logiimg.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logiimg.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["portfolio", "productivity", "lifestyle"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Calendar",
+      "short_name": "Calendar",
+      "description": "View calendar events",
+      "url": "/admin/planner/calendar",
+      "icons": [{ "src": "/logiimg.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Blog",
+      "short_name": "Blog",
+      "description": "Read blog posts",
+      "url": "/blog",
+      "icons": [{ "src": "/logiimg.jpg", "sizes": "192x192" }]
+    }
+  ]
+}
+
