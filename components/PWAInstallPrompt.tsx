@@ -16,12 +16,11 @@ export function PWAInstallPrompt() {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone
+
     const checkIfInstalled = () => {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        setIsInstalled(true)
-        return true
-      }
-      if ((window.navigator as any).standalone) {
+      if (isStandalone) {
         setIsInstalled(true)
         return true
       }
@@ -38,25 +37,34 @@ export function PWAInstallPrompt() {
       setShowPrompt(true)
     }
 
-    window.addEventListener('beforeinstallprompt', handler)
+    if (!isIOS) {
+      window.addEventListener('beforeinstallprompt', handler)
+    }
 
     setTimeout(() => {
       if (!checkIfInstalled() && !localStorage.getItem('pwa-install-dismissed')) {
-        if (promptRef.current) {
+        if (isIOS || promptRef.current) {
           setShowPrompt(true)
         }
       }
     }, 3000)
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler)
+      if (!isIOS) {
+        window.removeEventListener('beforeinstallprompt', handler)
+      }
     }
   }, [])
 
   const handleInstall = async () => {
-    if (!deferredPrompt) {
-      console.log('Install prompt not available. Showing manual instructions.')
-      alert('To install this app:\n\nChrome/Edge: Click the install icon in the address bar\nSafari (iOS): Tap Share > Add to Home Screen\nFirefox: Menu > Install')
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    
+    if (isIOS || !deferredPrompt) {
+      const instructions = isIOS
+        ? 'To install on iOS:\n\n1. Tap the Share button (square with arrow)\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" in the top right'
+        : 'To install this app:\n\nChrome/Edge: Click the install icon in the address bar\nFirefox: Menu > Install\nSafari (macOS): File > Add to Dock'
+      
+      alert(instructions)
       return
     }
 
@@ -88,6 +96,7 @@ export function PWAInstallPrompt() {
     return null
   }
 
+  const isIOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
   const hasInstallPrompt = deferredPrompt !== null
 
   return (
@@ -102,17 +111,18 @@ export function PWAInstallPrompt() {
           <div className="flex-1">
             <h3 className="font-serif text-lg font-bold mb-1">Install Portfolio App</h3>
             <p className="text-sm text-ocean-pale mb-4">
-              {hasInstallPrompt 
-                ? 'Add to your home screen for quick access and notifications'
-                : 'Install this app for quick access and notifications'}
+              {isIOS
+                ? 'Add to your home screen for quick access'
+                : hasInstallPrompt 
+                  ? 'Add to your home screen for quick access and notifications'
+                  : 'Install this app for quick access and notifications'}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={handleInstall}
-                className="px-4 py-2 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!hasInstallPrompt}
+                className="px-4 py-2 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-colors"
               >
-                {hasInstallPrompt ? 'Install' : 'How to Install'}
+                {isIOS ? 'How to Install' : hasInstallPrompt ? 'Install' : 'How to Install'}
               </button>
               <button
                 onClick={handleDismiss}
@@ -121,7 +131,12 @@ export function PWAInstallPrompt() {
                 Not now
               </button>
             </div>
-            {!hasInstallPrompt && (
+            {isIOS && (
+              <p className="text-xs text-ocean-pale mt-2">
+                Tap Share button → Add to Home Screen
+              </p>
+            )}
+            {!isIOS && !hasInstallPrompt && (
               <p className="text-xs text-ocean-pale mt-2">
                 Look for the install icon in your browser&apos;s address bar
               </p>

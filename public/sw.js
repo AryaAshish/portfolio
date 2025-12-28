@@ -40,13 +40,25 @@ self.addEventListener('fetch', (event) => {
           return cachedResponse
         }
         return fetch(event.request).then((response) => {
-          if (response.status === 200) {
+          if (response && response.status === 200 && response.type !== 'error') {
             const responseToCache = response.clone()
             caches.open(RUNTIME_CACHE).then((cache) => {
-              cache.put(event.request, responseToCache)
+              cache.put(event.request, responseToCache).catch(() => {
+                // Ignore cache errors
+              })
+            }).catch(() => {
+              // Ignore cache errors
             })
           }
           return response
+        }).catch(() => {
+          // Return network error, don't cache
+          return new Response('Network error', { status: 408 })
+        })
+      }).catch(() => {
+        // If cache match fails, try network
+        return fetch(event.request).catch(() => {
+          return new Response('Offline', { status: 503 })
         })
       })
     )
