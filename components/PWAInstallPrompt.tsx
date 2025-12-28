@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -11,6 +11,7 @@ export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showPrompt, setShowPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
+  const promptRef = useRef<BeforeInstallPromptEvent | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -31,7 +32,9 @@ export function PWAInstallPrompt() {
 
     const handler = (e: Event) => {
       e.preventDefault()
-      setDeferredPrompt(e as BeforeInstallPromptEvent)
+      const promptEvent = e as BeforeInstallPromptEvent
+      promptRef.current = promptEvent
+      setDeferredPrompt(promptEvent)
       setShowPrompt(true)
     }
 
@@ -39,7 +42,9 @@ export function PWAInstallPrompt() {
 
     setTimeout(() => {
       if (!checkIfInstalled() && !localStorage.getItem('pwa-install-dismissed')) {
-        setShowPrompt(true)
+        if (promptRef.current) {
+          setShowPrompt(true)
+        }
       }
     }, 3000)
 
@@ -50,18 +55,28 @@ export function PWAInstallPrompt() {
 
   const handleInstall = async () => {
     if (!deferredPrompt) {
+      console.log('Install prompt not available. Showing manual instructions.')
+      alert('To install this app:\n\nChrome/Edge: Click the install icon in the address bar\nSafari (iOS): Tap Share > Add to Home Screen\nFirefox: Menu > Install')
       return
     }
 
-    deferredPrompt.prompt()
-    const { outcome } = await deferredPrompt.userChoice
+    try {
+      await deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
 
-    if (outcome === 'accepted') {
-      setIsInstalled(true)
+      if (outcome === 'accepted') {
+        setIsInstalled(true)
+        console.log('User accepted the install prompt')
+      } else {
+        console.log('User dismissed the install prompt')
+      }
+
+      setDeferredPrompt(null)
+      setShowPrompt(false)
+    } catch (error) {
+      console.error('Error showing install prompt:', error)
+      alert('Unable to show install prompt. Please use your browser&apos;s menu to install this app.')
     }
-
-    setDeferredPrompt(null)
-    setShowPrompt(false)
   }
 
   const handleDismiss = () => {
@@ -72,6 +87,8 @@ export function PWAInstallPrompt() {
   if (isInstalled || !showPrompt) {
     return null
   }
+
+  const hasInstallPrompt = deferredPrompt !== null
 
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-sm">
@@ -85,14 +102,17 @@ export function PWAInstallPrompt() {
           <div className="flex-1">
             <h3 className="font-serif text-lg font-bold mb-1">Install Portfolio App</h3>
             <p className="text-sm text-ocean-pale mb-4">
-              Add to your home screen for quick access and notifications
+              {hasInstallPrompt 
+                ? 'Add to your home screen for quick access and notifications'
+                : 'Install this app for quick access and notifications'}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={handleInstall}
-                className="px-4 py-2 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-colors"
+                className="px-4 py-2 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!hasInstallPrompt}
               >
-                Install
+                {hasInstallPrompt ? 'Install' : 'How to Install'}
               </button>
               <button
                 onClick={handleDismiss}
@@ -101,6 +121,11 @@ export function PWAInstallPrompt() {
                 Not now
               </button>
             </div>
+            {!hasInstallPrompt && (
+              <p className="text-xs text-ocean-pale mt-2">
+                Look for the install icon in your browser&apos;s address bar
+              </p>
+            )}
           </div>
           <button
             onClick={handleDismiss}
