@@ -109,7 +109,7 @@ export function PWAInstallPrompt() {
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-serif text-lg font-bold mb-1">Install Portfolio App</h3>
+            <h3 className="font-serif text-lg font-bold mb-1">Install Musafir App</h3>
             <p className="text-sm text-ocean-pale mb-4">
               {isIOS
                 ? 'Add to your home screen for quick access'
