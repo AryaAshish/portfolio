@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      compiled: result.default ? 'success' : 'no-default',
+      compiled: typeof result.default !== 'undefined' ? 'success' : 'no-default',
     })
   } catch (error: any) {
     console.error('MDX compilation error on server:', error)

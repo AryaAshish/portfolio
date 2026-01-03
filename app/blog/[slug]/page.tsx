@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
-import { MarkdownContent } from '@/components/MarkdownContent'
+import { ServerMarkdownContent } from '@/components/ServerMarkdownContent'
 import { YouTubeEmbed } from '@/components/YouTubeEmbed'
 import { format } from 'date-fns'
 import { notFound } from 'next/navigation'
@@ -138,7 +138,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </header>
 
             <div className="bg-neutral-white rounded-xl p-8 md:p-12 shadow-lg">
-              <MarkdownContent content={post.content} />
+              <ServerMarkdownContent content={post.content} />
             </div>
           </div>
         </article>
