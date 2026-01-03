@@ -153,6 +153,8 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
   useEffect(() => {
     if (hasMDXComponents(content)) {
+      let cancelled = false
+      
       const evaluateOptions: any = {
         ...runtime,
         development: false,
@@ -166,6 +168,8 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
       
       evaluate(content, evaluateOptions)
         .then((module: any) => {
+          if (cancelled) return
+          
           if (module.default) {
             setMdxComponent(() => module.default)
             setError(null)
@@ -174,6 +178,8 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
           }
         })
         .catch((err: any) => {
+          if (cancelled) return
+          
           console.error('MDX compilation error:', err)
           console.error('Error details:', {
             message: err.message,
@@ -185,13 +191,17 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
           
           let errorMessage = 'Failed to render MDX content.'
           if (err.message?.includes('latitude') || err.message?.includes('longitude')) {
-            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components. If you see this error with correct coordinates, there may be a bug in the MDX compiler.'
+            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components.'
           } else if (err.message) {
             errorMessage = `MDX Error: ${err.message}`
           }
           
           setError(errorMessage)
         })
+      
+      return () => {
+        cancelled = true
+      }
     }
   }, [content])
 

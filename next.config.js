@@ -27,6 +27,12 @@ const nextConfig = {
         crypto: false,
       }
     }
+    
+    config.optimization = {
+      ...config.optimization,
+      minimize: true,
+    }
+    
     return config
   },
 }
