@@ -181,11 +181,11 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
             name: err.name,
             cause: err.cause,
           })
-          console.error('Content that failed:', content.substring(0, 500))
+          console.error('Content that failed (first 1000 chars):', content.substring(0, 1000))
           
           let errorMessage = 'Failed to render MDX content.'
           if (err.message?.includes('latitude') || err.message?.includes('longitude')) {
-            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components.'
+            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components. If you see this error with correct coordinates, there may be a bug in the MDX compiler.'
           } else if (err.message) {
             errorMessage = `MDX Error: ${err.message}`
           }
