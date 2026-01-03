@@ -191,7 +191,7 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
           
           let errorMessage = 'Failed to render MDX content.'
           if (err.message?.includes('latitude') || err.message?.includes('longitude')) {
-            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components.'
+            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components. If this error persists, the MDX compiler may have issues with array props in production builds.'
           } else if (err.message) {
             errorMessage = `MDX Error: ${err.message}`
           }
