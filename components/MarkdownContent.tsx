@@ -153,16 +153,21 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
   useEffect(() => {
     if (hasMDXComponents(content)) {
-      evaluate(content, {
+      const evaluateOptions = {
         ...runtime,
         development: false,
-      })
+        baseUrl: typeof window !== 'undefined' ? window.location.href : undefined,
+      }
+      
+      Object.assign(evaluateOptions, mdxComponents)
+      
+      evaluate(content, evaluateOptions)
         .then(({ default: Component }) => {
           setMdxComponent(() => Component)
         })
         .catch((err) => {
           console.error('MDX compilation error:', err)
-          setError(err.message)
+          setError(err.message || 'Failed to render MDX content. Check for undefined variables in your blog post.')
         })
     }
   }, [content])

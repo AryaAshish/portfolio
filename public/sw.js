@@ -26,7 +26,10 @@ self.addEventListener('activate', (event) => {
           .filter((cacheName) => {
             return cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE
           })
-          .map((cacheName) => caches.delete(cacheName))
+          .map((cacheName) => {
+            return caches.delete(cacheName)
+          })
+      )
     })
   )
   self.clients.claim()
