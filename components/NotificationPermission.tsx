@@ -11,6 +11,12 @@ export function NotificationPermission() {
       return
     }
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    
+    if (isIOS) {
+      return
+    }
+
     setPermission(Notification.permission)
 
     if (Notification.permission === 'default') {

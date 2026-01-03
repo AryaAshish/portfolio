@@ -24,8 +24,11 @@ export function ServiceWorkerRegistration() {
             })
           }
         })
-      } catch (error) {
+      } catch (error: any) {
         console.error('Service worker registration failed:', error)
+        if (error?.message?.includes('evaluation failed')) {
+          console.warn('Service worker script may have syntax errors. Check sw.js file.')
+        }
       }
     }
 

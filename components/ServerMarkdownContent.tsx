@@ -1,10 +1,7 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import { evaluate } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   JourneyMap,
   DiveLog,
@@ -17,7 +14,7 @@ import {
 } from '@/components/blog'
 import { YouTubeEmbed } from '@/components/YouTubeEmbed'
 
-interface MarkdownContentProps {
+interface ServerMarkdownContentProps {
   content: string
 }
 
@@ -147,95 +144,39 @@ const hasMDXComponents = (content: string): boolean => {
   return componentNames.some((name) => content.includes(`<${name}`))
 }
 
-export function MarkdownContent({ content }: MarkdownContentProps) {
-  const [mdxComponent, setMdxComponent] = useState<React.ComponentType | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (hasMDXComponents(content)) {
-      let cancelled = false
-      
+export async function ServerMarkdownContent({ content }: ServerMarkdownContentProps) {
+  if (hasMDXComponents(content)) {
+    try {
       const evaluateOptions: any = {
         ...runtime,
         development: false,
-        baseUrl: typeof window !== 'undefined' ? window.location.href : undefined,
         format: 'mdx',
       }
-      
+
       Object.keys(mdxComponents).forEach((key) => {
         evaluateOptions[key] = mdxComponents[key as keyof typeof mdxComponents]
       })
-      
-      evaluate(content, evaluateOptions)
-        .then((module: any) => {
-          if (cancelled) return
-          
-          if (module.default) {
-            setMdxComponent(() => module.default)
-            setError(null)
-          } else {
-            throw new Error('MDX compilation did not return a default export')
-          }
-        })
-        .catch((err: any) => {
-          if (cancelled) return
-          
-          console.error('MDX compilation error:', err)
-          console.error('Error details:', {
-            message: err.message,
-            stack: err.stack,
-            name: err.name,
-            cause: err.cause,
-          })
-          console.error('Content that failed (first 1000 chars):', content.substring(0, 1000))
-          
-          let errorMessage = 'Failed to render MDX content.'
-          if (err.message?.includes('latitude') || err.message?.includes('longitude')) {
-            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components. If this error persists, the MDX compiler may have issues with array props in production builds.'
-          } else if (err.message) {
-            errorMessage = `MDX Error: ${err.message}`
-          }
-          
-          setError(errorMessage)
-        })
-      
-      return () => {
-        cancelled = true
+
+      const mdxModule = await evaluate(content, evaluateOptions)
+
+      if (mdxModule && typeof mdxModule.default !== 'undefined') {
+        const Component = mdxModule.default as React.ComponentType<{ components?: any }>
+        return <Component components={mdxComponents} />
+      } else {
+        throw new Error('MDX compilation did not return a default export')
       }
-    }
-  }, [content])
+    } catch (error: any) {
+      console.error('Server-side MDX compilation error:', error)
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      })
+      console.error('Content that failed (first 1000 chars):', content.substring(0, 1000))
 
-  if (hasMDXComponents(content)) {
-    if (error) {
       return (
         <div className="text-red-500 p-4 bg-red-50 rounded-lg">
-          <p>Error rendering MDX content: {error}</p>
-          <details className="mt-2">
-            <summary className="cursor-pointer">Show fallback markdown</summary>
-            <div className="mt-4">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-            </div>
-          </details>
-        </div>
-      )
-    }
-
-    if (!mdxComponent) {
-      return (
-        <div className="text-ocean-base p-4 bg-ocean-pale/10 rounded-lg">
-          Loading content...
-        </div>
-      )
-    }
-
-    try {
-      const Component = mdxComponent as React.ComponentType<{ components?: any }>
-      return <Component components={mdxComponents} />
-    } catch (renderError: any) {
-      console.error('Error rendering MDX component:', renderError)
-      return (
-        <div className="text-red-500 p-4 bg-red-50 rounded-lg">
-          <p>Error rendering MDX component: {renderError.message || 'Unknown error'}</p>
+          <p>Error rendering MDX content: {error.message || 'Unknown error'}</p>
           <details className="mt-2">
             <summary className="cursor-pointer">Show fallback markdown</summary>
             <div className="mt-4">
@@ -318,5 +259,4 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
     </ReactMarkdown>
   )
 }
-
 

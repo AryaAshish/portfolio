@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -11,16 +11,16 @@ export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showPrompt, setShowPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
+  const promptRef = useRef<BeforeInstallPromptEvent | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone
+
     const checkIfInstalled = () => {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        setIsInstalled(true)
-        return true
-      }
-      if ((window.navigator as any).standalone) {
+      if (isStandalone) {
         setIsInstalled(true)
         return true
       }
@@ -31,37 +31,60 @@ export function PWAInstallPrompt() {
 
     const handler = (e: Event) => {
       e.preventDefault()
-      setDeferredPrompt(e as BeforeInstallPromptEvent)
+      const promptEvent = e as BeforeInstallPromptEvent
+      promptRef.current = promptEvent
+      setDeferredPrompt(promptEvent)
       setShowPrompt(true)
     }
 
-    window.addEventListener('beforeinstallprompt', handler)
+    if (!isIOS) {
+      window.addEventListener('beforeinstallprompt', handler)
+    }
 
     setTimeout(() => {
       if (!checkIfInstalled() && !localStorage.getItem('pwa-install-dismissed')) {
-        setShowPrompt(true)
+        if (isIOS || promptRef.current) {
+          setShowPrompt(true)
+        }
       }
     }, 3000)
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler)
+      if (!isIOS) {
+        window.removeEventListener('beforeinstallprompt', handler)
+      }
     }
   }, [])
 
   const handleInstall = async () => {
-    if (!deferredPrompt) {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    
+    if (isIOS || !deferredPrompt) {
+      const instructions = isIOS
+        ? 'To install on iOS:\n\n1. Tap the Share button (square with arrow)\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" in the top right'
+        : 'To install this app:\n\nChrome/Edge: Click the install icon in the address bar\nFirefox: Menu > Install\nSafari (macOS): File > Add to Dock'
+      
+      alert(instructions)
       return
     }
 
-    deferredPrompt.prompt()
-    const { outcome } = await deferredPrompt.userChoice
+    try {
+      await deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
 
-    if (outcome === 'accepted') {
-      setIsInstalled(true)
+      if (outcome === 'accepted') {
+        setIsInstalled(true)
+        console.log('User accepted the install prompt')
+      } else {
+        console.log('User dismissed the install prompt')
+      }
+
+      setDeferredPrompt(null)
+      setShowPrompt(false)
+    } catch (error) {
+      console.error('Error showing install prompt:', error)
+      alert('Unable to show install prompt. Please use your browser&apos;s menu to install this app.')
     }
-
-    setDeferredPrompt(null)
-    setShowPrompt(false)
   }
 
   const handleDismiss = () => {
@@ -73,6 +96,9 @@ export function PWAInstallPrompt() {
     return null
   }
 
+  const isIOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+  const hasInstallPrompt = deferredPrompt !== null
+
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-sm">
       <div className="bg-ocean-deep text-neutral-white rounded-lg shadow-2xl p-6 border-2 border-ocean-pale">
@@ -83,16 +109,20 @@ export function PWAInstallPrompt() {
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="font-serif text-lg font-bold mb-1">Install Portfolio App</h3>
+            <h3 className="font-serif text-lg font-bold mb-1">Install Musafir App</h3>
             <p className="text-sm text-ocean-pale mb-4">
-              Add to your home screen for quick access and notifications
+              {isIOS
+                ? 'Add to your home screen for quick access'
+                : hasInstallPrompt 
+                  ? 'Add to your home screen for quick access and notifications'
+                  : 'Install this app for quick access and notifications'}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={handleInstall}
                 className="px-4 py-2 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-colors"
               >
-                Install
+                {isIOS ? 'How to Install' : hasInstallPrompt ? 'Install' : 'How to Install'}
               </button>
               <button
                 onClick={handleDismiss}
@@ -101,6 +131,16 @@ export function PWAInstallPrompt() {
                 Not now
               </button>
             </div>
+            {isIOS && (
+              <p className="text-xs text-ocean-pale mt-2">
+                Tap Share button → Add to Home Screen
+              </p>
+            )}
+            {!isIOS && !hasInstallPrompt && (
+              <p className="text-xs text-ocean-pale mt-2">
+                Look for the install icon in your browser&apos;s address bar
+              </p>
+            )}
           </div>
           <button
             onClick={handleDismiss}

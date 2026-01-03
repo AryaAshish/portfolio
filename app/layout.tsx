@@ -23,8 +23,8 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Portfolio | Engineer by craft. Diver by soul. Rider by heart.',
-    template: '%s | Portfolio',
+    default: 'Musafir | Engineer by craft. Diver by soul. Rider by heart.',
+    template: '%s | Musafir',
   },
   description: 'Android • Backend • Systems • Writing • Travel • Scuba • Motorcycles',
   manifest: '/manifest.json',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'Portfolio',
+    siteName: 'Musafir',
   },
   twitter: {
     card: 'summary_large_image',
@@ -46,7 +46,10 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Portfolio',
+    title: 'Musafir',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
   },
 }
 
