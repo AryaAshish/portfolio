@@ -153,21 +153,44 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
   useEffect(() => {
     if (hasMDXComponents(content)) {
-      const evaluateOptions = {
+      const evaluateOptions: any = {
         ...runtime,
         development: false,
         baseUrl: typeof window !== 'undefined' ? window.location.href : undefined,
+        format: 'mdx',
       }
       
-      Object.assign(evaluateOptions, mdxComponents)
+      Object.keys(mdxComponents).forEach((key) => {
+        evaluateOptions[key] = mdxComponents[key as keyof typeof mdxComponents]
+      })
       
       evaluate(content, evaluateOptions)
-        .then(({ default: Component }) => {
-          setMdxComponent(() => Component)
+        .then((module: any) => {
+          if (module.default) {
+            setMdxComponent(() => module.default)
+            setError(null)
+          } else {
+            throw new Error('MDX compilation did not return a default export')
+          }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error('MDX compilation error:', err)
-          setError(err.message || 'Failed to render MDX content. Check for undefined variables in your blog post.')
+          console.error('Error details:', {
+            message: err.message,
+            stack: err.stack,
+            name: err.name,
+            cause: err.cause,
+          })
+          console.error('Content that failed:', content.substring(0, 500))
+          
+          let errorMessage = 'Failed to render MDX content.'
+          if (err.message?.includes('latitude') || err.message?.includes('longitude')) {
+            errorMessage = 'Error: Make sure coordinates use literal numbers like [11.8, 92.7], not variables like [latitude, longitude]. Check your JourneyMap or LocationCard components.'
+          } else if (err.message) {
+            errorMessage = `MDX Error: ${err.message}`
+          }
+          
+          setError(errorMessage)
         })
     }
   }, [content])
@@ -195,8 +218,23 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
       )
     }
 
-    const Component = mdxComponent as React.ComponentType<{ components?: any }>
-    return <Component components={mdxComponents} />
+    try {
+      const Component = mdxComponent as React.ComponentType<{ components?: any }>
+      return <Component components={mdxComponents} />
+    } catch (renderError: any) {
+      console.error('Error rendering MDX component:', renderError)
+      return (
+        <div className="text-red-500 p-4 bg-red-50 rounded-lg">
+          <p>Error rendering MDX component: {renderError.message || 'Unknown error'}</p>
+          <details className="mt-2">
+            <summary className="cursor-pointer">Show fallback markdown</summary>
+            <div className="mt-4">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+            </div>
+          </details>
+        </div>
+      )
+    }
   }
 
   return (
