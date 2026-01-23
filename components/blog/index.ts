@@ -5,5 +5,6 @@ export { CodeFromLocation } from './CodeFromLocation'
 export { JourneyStats } from './JourneyStats'
 export { LocationCard } from './LocationCard'
 export { StoryTimeline, TimelineEvent } from './StoryTimeline'
+export { TripDetails } from './TripDetails'
 
 

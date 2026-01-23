@@ -27,7 +27,7 @@ export function BlogCard({ post, index }: BlogCardProps) {
               alt={post.title}
               fill
               className="object-cover"
-              unoptimized={post.image.includes('supabase.co')}
+              unoptimized={post.image?.includes('supabase.co') || false}
             />
           </div>
         )}

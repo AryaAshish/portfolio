@@ -45,7 +45,14 @@ export default function EditHomePage() {
 
       const data = await response.json()
       if (data.success) {
-        alert('Home page updated successfully!')
+        // Clear service worker image cache
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({
+            type: 'CLEAR_IMAGE_CACHE'
+          })
+        }
+        
+        alert('Home page updated successfully! Image cache cleared.')
         router.push('/admin')
       } else {
         alert(data.message || 'Failed to save')
@@ -426,7 +433,7 @@ export default function EditHomePage() {
               <label className="block text-sm font-medium text-ocean-deep mb-2">Title</label>
               <input
                 type="text"
-                value={content.hiring.title}
+                value={content.hiring?.title || ''}
                 onChange={(e) => updateSection('hiring', 'title', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
               />
@@ -442,7 +449,7 @@ export default function EditHomePage() {
                   + Add
                 </button>
               </div>
-              {content.hiring.roles.map((role, index) => (
+              {(content.hiring?.roles || []).map((role, index) => (
                 <div key={index} className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -471,7 +478,7 @@ export default function EditHomePage() {
                   + Add
                 </button>
               </div>
-              {content.hiring.teams.map((team, index) => (
+              {(content.hiring?.teams || []).map((team, index) => (
                 <div key={index} className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -494,7 +501,7 @@ export default function EditHomePage() {
                 <label className="block text-sm font-medium text-ocean-deep mb-2">Primary CTA Text</label>
                 <input
                   type="text"
-                  value={content.hiring.cta.primary.text}
+                  value={content.hiring?.cta?.primary?.text || ''}
                   onChange={(e) => updateHiringCta('primary', 'text', e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
                 />
@@ -503,7 +510,7 @@ export default function EditHomePage() {
                 <label className="block text-sm font-medium text-ocean-deep mb-2">Primary CTA Link</label>
                 <input
                   type="text"
-                  value={content.hiring.cta.primary.href}
+                  value={content.hiring?.cta?.primary?.href || ''}
                   onChange={(e) => updateHiringCta('primary', 'href', e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
                 />
@@ -512,7 +519,7 @@ export default function EditHomePage() {
                 <label className="block text-sm font-medium text-ocean-deep mb-2">Secondary CTA Text</label>
                 <input
                   type="text"
-                  value={content.hiring.cta.secondary.text}
+                  value={content.hiring?.cta?.secondary?.text || ''}
                   onChange={(e) => updateHiringCta('secondary', 'text', e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
                 />
@@ -521,7 +528,7 @@ export default function EditHomePage() {
                 <label className="block text-sm font-medium text-ocean-deep mb-2">Secondary CTA Link</label>
                 <input
                   type="text"
-                  value={content.hiring.cta.secondary.href}
+                  value={content.hiring?.cta?.secondary?.href || ''}
                   onChange={(e) => updateHiringCta('secondary', 'href', e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
                 />

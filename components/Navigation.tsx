@@ -9,7 +9,6 @@ import { Logo } from './Logo'
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/experience', label: 'Experience' },
   { href: '/blog', label: 'Writing' },
   { href: '/prep', label: 'Prep' },
   { href: '/life', label: 'Life' },

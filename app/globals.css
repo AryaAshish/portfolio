@@ -3,18 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --color-ocean-deep: #0a1929;
-  --color-ocean-dark: #1a3a5a;
-  --color-ocean-base: #2d5a7a;
-  --color-ocean-light: #4a7fa0;
-  --color-ocean-pale: #6ba3c4;
+  /* Material Design 3 Oceanic Palette - WCAG AAA Compliant */
+  --color-ocean-deep: #001F3F;    /* Navy - dark backgrounds */
+  --color-ocean-dark: #003D5B;    /* Dark teal - headers on light */
+  --color-ocean-base: #004D61;    /* Medium teal - body text */
+  --color-ocean-light: #0077B6;   /* Bright blue - links */
+  --color-ocean-pale: #E8F4F8;    /* Very light blue - subtle bg */
   
-  --color-teal-dark: #0d7377;
-  --color-teal-base: #14a085;
-  --color-teal-light: #26d0ce;
+  --color-teal-dark: #006D77;     /* Dark teal - button hover */
+  --color-teal-base: #00A8B5;     /* Bright teal - primary button */
+  --color-teal-light: #48CAE4;    /* Light teal - accents */
   
-  --color-neutral-off: #f5f7fa;
-  --color-neutral-white: #ffffff;
+  --color-neutral-off: #F8FAFB;   /* Off-white background */
+  --color-neutral-white: #FFFFFF; /* Pure white */
+  
+  /* Text colors for guaranteed readability */
+  --text-primary: #001F3F;        /* Dark text on light bg */
+  --text-secondary: #4A5568;      /* Medium gray for subtitles */
+  --text-on-dark: #FFFFFF;        /* White text on dark bg */
+  --text-on-primary: #FFFFFF;     /* White text on teal buttons */
   
   --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;

@@ -191,6 +191,16 @@ export const db = {
         console.log(`[db.content.get] Home coralImages count:`, data.content.hero.coralImages?.length || 0)
       }
       
+      if (pageType === 'life') {
+        console.log(`[db.content.get] Life data type:`, typeof data.content)
+        console.log(`[db.content.get] Life is array:`, Array.isArray(data.content))
+        console.log(`[db.content.get] Life length:`, data.content?.length)
+        if (Array.isArray(data.content)) {
+          console.log(`[db.content.get] Life first item:`, data.content[0]?.title)
+          console.log(`[db.content.get] Life last item:`, data.content[data.content.length - 1]?.title)
+        }
+      }
+      
       return data.content
     },
 

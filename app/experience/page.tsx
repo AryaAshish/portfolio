@@ -5,6 +5,9 @@ import { AnimatedHeader } from '@/components/AnimatedHeader'
 import { AnimatedSection } from '@/components/AnimatedSection'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export const metadata = {
   title: 'Experience & Skills',
   description: 'Work experience, skills, and technical expertise',

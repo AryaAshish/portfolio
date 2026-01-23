@@ -3,6 +3,9 @@ import { AnimatedHeader } from '@/components/AnimatedHeader'
 import { AnimatedSection } from '@/components/AnimatedSection'
 import { TimelineAboutCard } from '@/components/TimelineAboutCard'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export const metadata = {
   title: 'About Me',
   description: 'Personal journey, career timeline, and values',
