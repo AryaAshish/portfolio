@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { LifeMoment } from '@/types'
+import { MarkdownContent } from '@/components/MarkdownContent'
 
 export default function EditLifePage() {
   const router = useRouter()
   const [moments, setMoments] = useState<LifeMoment[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null)
 
   useEffect(() => {
     fetchContent()
@@ -75,6 +77,40 @@ export default function EditLifePage() {
     const updated = [...moments]
     updated[index] = { ...updated[index], [field]: value }
     setMoments(updated)
+  }
+
+  const insertDiveLog = (index: number) => {
+    const template = `\n\n<DiveLog 
+  site="Dive Site Name"
+  location="Location"
+  depth={18}
+  visibility={25}
+  temperature={28}
+  duration="45 min"
+  highlights={["Marine life 1", "Marine life 2"]}
+  date="2024-01-01"
+/>\n\n`
+    const current = moments[index].description
+    updateMoment(index, 'description', current + template)
+  }
+
+  const insertTripDetails = (index: number) => {
+    const template = `\n\n<TripDetails 
+  duration="Dec 24 - Jan 1"
+  route="Place A → Place B → Place C"
+  stay="Hotel/Hostel Name (₹600/night)"
+  weather="Weather conditions"
+  cost="~₹8000 (breakdown)"
+  companions="Number of people"
+/>\n\n`
+    const current = moments[index].description
+    updateMoment(index, 'description', current + template)
+  }
+
+  const insertBlockquote = (index: number) => {
+    const template = `\n\n> Your inspiring quote or key insight here.\n\n`
+    const current = moments[index].description
+    updateMoment(index, 'description', current + template)
   }
 
   if (loading) {
@@ -154,14 +190,70 @@ export default function EditLifePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-ocean-deep mb-2">Description *</label>
-                <textarea
-                  value={moment.description}
-                  onChange={(e) => updateMoment(index, 'description', e.target.value)}
-                  rows={3}
-                  className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
-                  required
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-ocean-deep">Description * (Markdown/MDX supported)</label>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewIndex(previewIndex === index ? null : index)}
+                    className="px-3 py-1 bg-ocean-light text-white rounded text-sm hover:bg-ocean-dark transition-colors"
+                  >
+                    {previewIndex === index ? 'Edit' : 'Preview'}
+                  </button>
+                </div>
+                
+                {previewIndex === index ? (
+                  <div className="w-full p-6 rounded-lg border-2 border-teal-base bg-neutral-white min-h-[400px] max-h-[600px] overflow-y-auto">
+                    <MarkdownContent content={moment.description} />
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex gap-2 mb-2">
+                      <button
+                        type="button"
+                        onClick={() => insertDiveLog(index)}
+                        className="px-3 py-1 bg-teal-base/10 text-teal-base rounded text-xs hover:bg-teal-base/20 transition-colors"
+                        title="Insert DiveLog component"
+                      >
+                        + DiveLog
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertTripDetails(index)}
+                        className="px-3 py-1 bg-teal-base/10 text-teal-base rounded text-xs hover:bg-teal-base/20 transition-colors"
+                        title="Insert TripDetails component"
+                      >
+                        + TripDetails
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertBlockquote(index)}
+                        className="px-3 py-1 bg-teal-base/10 text-teal-base rounded text-xs hover:bg-teal-base/20 transition-colors"
+                        title="Insert blockquote"
+                      >
+                        + Quote
+                      </button>
+                    </div>
+                    <textarea
+                      value={moment.description}
+                      onChange={(e) => updateMoment(index, 'description', e.target.value)}
+                      rows={20}
+                      className="w-full px-4 py-3 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base font-mono text-sm"
+                      required
+                      placeholder="Write your story here... Use Markdown for formatting.
+
+**Bold text**, *italic text*
+
+## Headers
+
+- Bullet points
+- More items
+
+> Blockquotes for key insights
+
+<DiveLog /> and <TripDetails /> components available via buttons above"
+                    />
+                  </>
+                )}
               </div>
 
               <div>

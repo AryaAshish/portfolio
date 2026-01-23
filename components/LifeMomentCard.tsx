@@ -4,6 +4,7 @@ import { LifeMoment } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format } from 'date-fns'
 import { YouTubeEmbed } from './YouTubeEmbed'
+import { MarkdownContent } from './MarkdownContent'
 import Image from 'next/image'
 import { useState } from 'react'
 
@@ -38,7 +39,7 @@ export function LifeMomentCard({ moment, index }: LifeMomentCardProps) {
               alt={moment.title}
               fill
               className="object-cover"
-              unoptimized={moment.image.includes('supabase.co')}
+              unoptimized={moment.image?.includes('supabase.co') || false}
             />
           </div>
         )}
@@ -121,11 +122,13 @@ export function LifeMomentCard({ moment, index }: LifeMomentCardProps) {
                         alt={moment.title}
                         fill
                         className="object-cover"
-                        unoptimized={moment.image.includes('supabase.co')}
+                        unoptimized={moment.image?.includes('supabase.co') || false}
                       />
                     </div>
                   )}
-                  <p className="text-ocean-base text-lg leading-relaxed mb-6">{moment.description}</p>
+                  <div className="text-ocean-base text-lg leading-relaxed mb-6">
+                    <MarkdownContent content={moment.description} />
+                  </div>
                   {moment.videoUrl && (
                     <div className="mt-6">
                       <YouTubeEmbed videoId={moment.videoUrl} title={moment.title} />

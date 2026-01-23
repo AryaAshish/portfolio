@@ -1,8 +1,10 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+const openai = process.env.OPENAI_API_KEY 
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null
 
 export interface AIBlogSuggestion {
   type: 'outline' | 'improve' | 'seo' | 'meta' | 'explain' | 'topics'
@@ -11,6 +13,10 @@ export interface AIBlogSuggestion {
 }
 
 export async function generateBlogOutline(topic: string, style?: string): Promise<string> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured')
+  }
+
   const prompt = `You are a technical blog writing assistant. Generate a detailed blog post outline for the topic: "${topic}".
 
 ${style ? `Writing style: ${style}` : 'Writing style: Professional, clear, and engaging. Focus on practical insights and real-world examples.'}
@@ -48,6 +54,10 @@ Format the response as a structured outline with clear headings and bullet point
 }
 
 export async function improveWriting(content: string, focus?: string): Promise<string> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured')
+  }
+
   const prompt = `Improve the following blog post content. Make it more engaging, clear, and professional.
 
 ${focus ? `Focus on: ${focus}` : 'Focus on: Clarity, flow, engagement, and technical accuracy.'}
@@ -86,6 +96,10 @@ export async function optimizeSEO(title: string, content: string): Promise<{
   metaDescription: string
   keywords: string[]
 }> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured')
+  }
+
   const prompt = `Analyze this blog post for SEO optimization:
 
 Title: ${title}
@@ -134,6 +148,10 @@ Format as JSON:
 }
 
 export async function generateMetaDescription(title: string, content: string): Promise<string> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured')
+  }
+
   const prompt = `Generate a compelling meta description (150-160 characters) for this blog post:
 
 Title: ${title}
@@ -170,6 +188,10 @@ The meta description should:
 }
 
 export async function explainCodeSnippet(code: string, language?: string): Promise<string> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured')
+  }
+
   const prompt = `Explain this code snippet in a clear, educational way suitable for a technical blog post:
 
 ${language ? `Language: ${language}` : ''}
@@ -212,6 +234,10 @@ Keep it concise but informative.`
 }
 
 export async function suggestRelatedTopics(title: string, content: string, existingTopics: string[]): Promise<string[]> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured')
+  }
+
   const prompt = `Based on this blog post, suggest 5-7 related topics that would make good follow-up posts:
 
 Title: ${title}

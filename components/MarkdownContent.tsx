@@ -14,6 +14,7 @@ import {
   LocationCard,
   StoryTimeline,
   TimelineEvent,
+  TripDetails,
 } from '@/components/blog'
 import { YouTubeEmbed } from '@/components/YouTubeEmbed'
 
@@ -30,6 +31,7 @@ const mdxComponents = {
   LocationCard,
   StoryTimeline,
   TimelineEvent,
+  TripDetails,
   YouTubeEmbed,
   h1: ({ children, ...props }: any) => (
     <h1 className="font-serif text-4xl md:text-5xl text-ocean-deep mb-6 mt-10 heading-serif" {...props}>
@@ -99,10 +101,10 @@ const mdxComponents = {
   ),
   blockquote: ({ children, ...props }: any) => (
     <blockquote
-      className="border-l-4 border-teal-base pl-6 pr-4 py-6 my-8 bg-gradient-to-r from-ocean-pale/20 via-ocean-pale/10 to-transparent rounded-r-lg shadow-sm backdrop-blur-sm"
+      className="border-l-4 border-teal-base pl-6 pr-4 py-6 my-8 bg-white rounded-lg shadow-lg"
       {...props}
     >
-      <p className="m-0 italic text-ocean-deep text-lg leading-relaxed font-serif">{children}</p>
+      <p className="m-0 italic text-gray-800 text-lg leading-relaxed font-serif">{children}</p>
     </blockquote>
   ),
   hr: ({ ...props }: any) => (
@@ -143,6 +145,7 @@ const hasMDXComponents = (content: string): boolean => {
     'LocationCard',
     'StoryTimeline',
     'TimelineEvent',
+    'TripDetails',
   ]
   return componentNames.some((name) => content.includes(`<${name}`))
 }
@@ -294,10 +297,10 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         ),
         blockquote: ({ node, children, ...props }: any) => (
           <blockquote
-            className="border-l-4 border-teal-base pl-6 pr-4 py-6 my-8 bg-gradient-to-r from-ocean-pale/20 via-ocean-pale/10 to-transparent rounded-r-lg shadow-sm backdrop-blur-sm"
+            className="border-l-4 border-teal-base pl-6 pr-4 py-6 my-8 bg-white rounded-lg shadow-lg"
             {...props}
           >
-            <p className="m-0 italic text-ocean-deep text-lg leading-relaxed font-serif">{children}</p>
+            <p className="m-0 italic text-gray-800 text-lg leading-relaxed font-serif">{children}</p>
           </blockquote>
         ),
         hr: ({ node, ...props }) => (

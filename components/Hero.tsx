@@ -100,7 +100,7 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
                   objectPosition: objectPosition,
                 }}
                 quality={90}
-                unoptimized={image.url.includes('supabase.co')}
+                unoptimized={image.url?.includes('supabase.co') || false}
               />
             </motion.div>
             )
@@ -123,7 +123,7 @@ export function Hero({ title, subtitle, backgroundImageUrl, coralImages, cta }: 
               objectPosition: 'center center',
             }}
             quality={90}
-            unoptimized={backgroundImageUrl.includes('supabase.co')}
+            unoptimized={backgroundImageUrl?.includes('supabase.co') || false}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-ocean-deep/60 via-ocean-dark/40 to-ocean-base/50 z-[1]" />
         </div>

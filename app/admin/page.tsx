@@ -133,6 +133,14 @@ export default function AdminPage() {
           </Link>
 
           <Link
+            href="/admin/clear-cache"
+            className="bg-gradient-to-br from-orange-500 to-red-500 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 text-neutral-white"
+          >
+            <h3 className="font-serif text-2xl mb-2">🔄 Clear Cache</h3>
+            <p className="text-neutral-white/90 text-sm">Fix stale images & content</p>
+          </Link>
+
+          <Link
             href="/admin/content/home"
             className="bg-neutral-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-ocean-light/20"
           >
@@ -165,7 +173,7 @@ export default function AdminPage() {
           </Link>
 
           <Link
-            href="/admin/content/life"
+            href="/admin/life"
             className="bg-neutral-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-ocean-light/20"
           >
             <h3 className="font-serif text-2xl text-ocean-deep mb-2">Life Moments</h3>
