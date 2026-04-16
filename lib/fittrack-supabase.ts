@@ -38,6 +38,7 @@ export interface UserProfile {
   goal: string | null
   daily_protein_target: number | null
   daily_calorie_target: number | null
+  weekly_gym_target: number
   notes: string | null
   created_at: string
   updated_at: string
