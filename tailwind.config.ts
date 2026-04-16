@@ -29,6 +29,7 @@ const config: Config = {
       fontFamily: {
         serif: ['var(--font-serif)', 'serif'],
         sans: ['var(--font-sans)', 'sans-serif'],
+        grotesk: ['var(--font-space-grotesk)', 'sans-serif'],
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
