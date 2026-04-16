@@ -78,11 +78,13 @@ export function WorkoutCard({
   exerciseLogs,
   comparisons,
   linkableExercises = false,
+  editable = false,
 }: {
   workout: Workout
   exerciseLogs: ExerciseLog[]
   comparisons?: ExerciseComparison[]
   linkableExercises?: boolean
+  editable?: boolean
 }) {
   const wc = workoutColor(workout.type)
   const title = workout.title || workout.notes || 'Workout'
@@ -112,10 +114,19 @@ export function WorkoutCard({
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-3 text-xs mb-2" style={{ color: FT.textMuted }}>
+          <div className="flex flex-wrap items-center gap-3 text-xs mb-2" style={{ color: FT.textMuted }}>
             {workout.duration_mins != null && <span>{workout.duration_mins} min</span>}
             {vol && <span>{vol}</span>}
             {workout.calories_burned != null && <span>{workout.calories_burned} cal</span>}
+            {editable && (
+              <Link
+                href={`/fittrack/train/${workout.id}/edit`}
+                className="ml-auto text-xs font-medium underline-offset-2 hover:underline"
+                style={{ color: FT.accent }}
+              >
+                Edit
+              </Link>
+            )}
           </div>
 
           {groups.length > 0 ? (
