@@ -372,6 +372,18 @@ export async function getWorkoutForDate(date: string): Promise<Workout | null> {
   return data as Workout
 }
 
+export async function getWorkoutById(id: string): Promise<Workout | null> {
+  const { data, error } = await getFittrackDb()
+    .from('workouts')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error?.code === 'PGRST116') return null
+  if (error) throw error
+  return data as Workout
+}
+
 export async function getAllWorkoutsForDate(date: string): Promise<Workout[]> {
   const { data, error } = await getFittrackDb()
     .from('workouts')
