@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { LogWorkoutResult } from '../workouts/actions'
+import type { LogWorkoutResult } from '../workouts/types'
 import { logMotraWorkoutFromForm } from '../workouts/actions'
 import { FT, WORKOUT_COLORS } from './tokens'
 
