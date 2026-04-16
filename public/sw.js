@@ -1,5 +1,5 @@
-const CACHE_NAME = 'portfolio-v2'
-const RUNTIME_CACHE = 'portfolio-runtime-v2'
+const CACHE_NAME = 'portfolio-v3'
+const RUNTIME_CACHE = 'portfolio-runtime-v3'
 
 const STATIC_ASSETS = [
   '/',
@@ -38,8 +38,12 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
   
-  // Skip caching for admin routes
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/admin')) {
+  if (
+    url.pathname.startsWith('/admin') ||
+    url.pathname.startsWith('/api/admin') ||
+    url.pathname.startsWith('/fittrack') ||
+    url.pathname.startsWith('/api/fittrack')
+  ) {
     return
   }
   

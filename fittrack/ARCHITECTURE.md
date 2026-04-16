@@ -287,15 +287,17 @@ https://motra.com/share/workout/...
 | Phase | Scope | Status |
 |-------|-------|--------|
 | 0 | Schema migration — exercise_logs + indexes | ✅ Done |
-| 1 | Next.js layout + navigation shell | ⬜ Next |
-| 2 | Supabase data layer (fittrack-supabase.ts) | ⬜ |
-| 3 | Overview screen | ⬜ |
-| 4 | Calendar screen | ⬜ |
-| 5 | Progress charts | ⬜ |
-| 6 | Motra paste + workout logging | ⬜ |
-| 7 | Meal library + templates | ⬜ |
-| 8 | Health markers screen | ⬜ |
-| 9 | PWA config + deployment | ⬜ |
+| 1 | Next.js layout + navigation shell | ✅ Done |
+| 2 | Supabase data layer (fittrack-supabase.ts) | ✅ Done |
+| 3 | Overview screen | ✅ Done |
+| 4 | Calendar screen | ✅ Done |
+| 5 | Progress charts | ✅ Done |
+| 6 | Motra paste + workout logging | ✅ Done |
+| 7 | Meal library + templates | ✅ Done (v1) |
+| 8 | Health markers screen | ✅ Done |
+| 9 | PWA config + deployment | ✅ Done (manifest + icon) |
+
+Write API: `POST /api/fittrack/log-workout` with `Authorization: Bearer FITTRACK_INGEST_SECRET` (set in Vercel / `.env.local`). Duplicate pastes are allowed unless you add dedupe later.
 
 ### Per-phase checklist
 Before marking any phase done:
