@@ -19,7 +19,7 @@ function groupByExercise(logs: ExerciseLog[]): SetGroup[] {
     }
     g.sets.push(log)
   }
-  return groups
+  return groups.sort((a, b) => a.name.localeCompare(b.name))
 }
 
 function parseNamesFromTitle(title: string): string[] {
@@ -37,7 +37,7 @@ function parseNamesFromTitle(title: string): string[] {
       names.push(cleaned)
     }
   }
-  return names
+  return names.sort((a, b) => a.localeCompare(b))
 }
 
 function formatSet(s: ExerciseLog): string {

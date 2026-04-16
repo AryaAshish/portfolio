@@ -754,7 +754,7 @@ export async function getExercisesForWorkoutType(
     }
   }
 
-  return Array.from(byName.values())
+  return Array.from(byName.values()).sort((a, b) => a.name.localeCompare(b.name))
 }
 
 export async function getTrainingStreak(): Promise<number> {

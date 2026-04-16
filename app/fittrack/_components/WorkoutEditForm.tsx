@@ -64,6 +64,7 @@ function buildInitialState(logs: ExerciseLog[]): {
     })
   }
 
+  groups.sort((a, b) => a.name.localeCompare(b.name))
   return { groups, sets }
 }
 
