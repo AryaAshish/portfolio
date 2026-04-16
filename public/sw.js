@@ -1,5 +1,5 @@
-const CACHE_NAME = 'portfolio-v3'
-const RUNTIME_CACHE = 'portfolio-runtime-v3'
+const CACHE_NAME = 'portfolio-v4'
+const RUNTIME_CACHE = 'portfolio-runtime-v4'
 
 const STATIC_ASSETS = [
   '/',
@@ -46,8 +46,24 @@ self.addEventListener('fetch', (event) => {
   ) {
     return
   }
+
+  if (
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.startsWith('/_next/data/') ||
+    url.pathname.includes('hot-update')
+  ) {
+    return
+  }
+
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request).catch(() =>
+        caches.match(event.request).then((cached) => cached || new Response('Offline', { status: 503 }))
+      )
+    )
+    return
+  }
   
-  // Network-first strategy for images to prevent stale cached images
   if (event.request.destination === 'image' || url.pathname.includes('/_next/image')) {
     event.respondWith(
       fetch(event.request)
