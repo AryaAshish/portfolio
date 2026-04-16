@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { getWorkoutById, getExerciseLogsForWorkout } from '@/lib/fittrack-supabase'
 import { FT } from '../../../_components/tokens'
 import { WorkoutEditForm } from '../../../_components/WorkoutEditForm'
+import { BackLink } from '../../../_components/BackLink'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,13 +19,7 @@ export default async function EditWorkoutPage({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Link
-          href="/fittrack/train"
-          className="text-xs"
-          style={{ color: FT.textMuted }}
-        >
-          ← Train
-        </Link>
+        <BackLink />
         <p className="text-xs" style={{ color: FT.textMuted }}>
           {workout.date}
         </p>

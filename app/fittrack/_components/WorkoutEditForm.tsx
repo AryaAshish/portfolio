@@ -185,7 +185,7 @@ export function WorkoutEditForm({
     })
     setPending(false)
     if (r.ok) {
-      router.push('/fittrack/train')
+      router.back()
       router.refresh()
     } else {
       setError(r.message)
