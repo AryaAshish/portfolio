@@ -1,0 +1,201 @@
+[
+  {
+    "systemName": "Money",
+    "title": "Review Monthly Budget",
+    "description": "Review and adjust monthly budget allocations",
+    "frequency": "monthly",
+    "defaultPoints": 10,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Money",
+    "title": "Track Daily Expenses",
+    "description": "Log all expenses for the day",
+    "frequency": "daily",
+    "defaultPoints": 5,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Learning",
+    "title": "Core Skill Block",
+    "description": "Dedicated time for core skill development",
+    "frequency": "daily",
+    "defaultPoints": 10,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Learning",
+    "title": "Build/Experiment Session",
+    "description": "Work on a project or experiment with new technology",
+    "frequency": "daily",
+    "defaultPoints": 15,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Health",
+    "title": "Morning Exercise",
+    "description": "30 minutes of physical activity",
+    "frequency": "daily",
+    "defaultPoints": 10,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Health",
+    "title": "Meditation",
+    "description": "10 minutes of mindfulness meditation",
+    "frequency": "daily",
+    "defaultPoints": 5,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Content",
+    "title": "Write Thought",
+    "description": "Capture and write down a thought or idea",
+    "frequency": "daily",
+    "defaultPoints": 5,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Content",
+    "title": "Publish Blog Post",
+    "description": "Publish a blog post or article",
+    "frequency": "weekly",
+    "defaultPoints": 20,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Daily Closure",
+    "title": "Night Closure Review",
+    "description": "Review the day and check system adherence",
+    "frequency": "daily",
+    "defaultPoints": 5,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": null
+  },
+  {
+    "systemName": "Money",
+    "title": "Send ₹20,000 to Brother",
+    "description": "Transfer monthly support to brother",
+    "frequency": "monthly",
+    "defaultPoints": 5,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Pay Credit Card – ₹50,000",
+    "description": "Aggressive credit card repayment (cleanup phase)",
+    "frequency": "monthly",
+    "defaultPoints": 25,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-02-01",
+    "endDate": "2026-03-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Pay Remaining Credit Card Balance",
+    "description": "Clear all remaining credit card dues completely",
+    "frequency": "monthly",
+    "defaultPoints": 30,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-03-01",
+    "endDate": "2026-03-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Save ₹20,000 (Foundation Savings)",
+    "description": "Initial savings while in debt-clearance phase",
+    "frequency": "monthly",
+    "defaultPoints": 10,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-02-01",
+    "endDate": "2026-03-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Pay Friend – ₹13,000",
+    "description": "Monthly repayment to friend (ends April)",
+    "frequency": "monthly",
+    "defaultPoints": 5,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": "2026-04-01"
+  },
+  {
+    "systemName": "Money",
+    "title": "Allocate ₹50,000 to Savings",
+    "description": "Emergency fund + safety buffer growth",
+    "frequency": "monthly",
+    "defaultPoints": 15,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-04-01",
+    "endDate": "2026-12-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Allocate ₹20,000 to Travel Fund",
+    "description": "Monthly travel / workation allocation",
+    "frequency": "monthly",
+    "defaultPoints": 8,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-04-01",
+    "endDate": "2026-12-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Move Remaining Balance to Overflow",
+    "description": "Any unspent or extra money goes into overflow buffer",
+    "frequency": "monthly",
+    "defaultPoints": 5,
+    "isOptional": true,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31"
+  },
+  {
+    "systemName": "Money",
+    "title": "Monthly Money Closure",
+    "description": "Confirm all money tasks completed and close the month",
+    "frequency": "monthly",
+    "defaultPoints": 10,
+    "isOptional": false,
+    "autoGenerate": true,
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31"
+  }
+]
+

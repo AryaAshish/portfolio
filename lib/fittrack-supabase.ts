@@ -758,45 +758,39 @@ export async function getExercisesForWorkoutType(
   return Array.from(byName.values()).sort((a, b) => a.name.localeCompare(b.name))
 }
 
-export async function getTrainingStreak(): Promise<number> {
+export async function getWeeklyGymStreak(): Promise<
+  import('./fittrack/weekly-streak').WeeklyStreakResult
+> {
+  const { computeWeeklyStreak } = await import('./fittrack/weekly-streak')
+  const today = new Date().toISOString().slice(0, 10)
+
+  const profile = await getUserProfile()
+  const target = profile?.weekly_gym_target ?? 3
+
   const { data, error } = await getFittrackDb()
     .from('workouts')
-    .select('date')
+    .select('date, type')
+    .gte('date', shiftISODate(today, -365))
     .order('date', { ascending: false })
-    .limit(100)
 
   if (error) throw error
 
-  const dates = [...new Set((data ?? []).map((w: { date: string }) => w.date))].sort().reverse()
-  if (dates.length === 0) return 0
+  const rows = (data ?? []) as { date: string; type: import('./fittrack/weekly-streak').StreakWorkoutType }[]
+  return computeWeeklyStreak(rows, target, today)
+}
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+function shiftISODate(iso: string, days: number): string {
+  const d = new Date(`${iso}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + days)
+  return d.toISOString().slice(0, 10)
+}
 
-  let streak = 0
-  let checkDate = new Date(today)
-
-  const firstWorkoutDate = new Date(dates[0] + 'T00:00:00')
-  if (firstWorkoutDate < new Date(today.getTime() - 86_400_000)) {
-    return 0
-  }
-
-  const dateSet = new Set(dates)
-
-  for (let i = 0; i < 100; i++) {
-    const iso = checkDate.toISOString().split('T')[0]
-    if (dateSet.has(iso)) {
-      streak++
-      checkDate.setDate(checkDate.getDate() - 1)
-    } else if (i === 0) {
-      checkDate.setDate(checkDate.getDate() - 1)
-      continue
-    } else {
-      break
-    }
-  }
-
-  return streak
+export async function updateWeeklyGymTarget(target: number): Promise<void> {
+  const safe = Math.max(0, Math.floor(target))
+  const { error } = await getFittrackDb()
+    .from('user_profile')
+    .update({ weekly_gym_target: safe })
+  if (error) throw error
 }
 
 // ─────────────────────────────────────────────────────────────
