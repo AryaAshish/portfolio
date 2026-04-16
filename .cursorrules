@@ -1,0 +1,59 @@
+# Cursor Rules
+
+## Development Process
+
+### Plan before every task
+Before writing any code:
+1. Read all relevant existing files
+2. Write a clear phase plan — list every file to create or edit, what it does, and why
+3. Get explicit approval from Ashish before starting
+4. Only then write code
+
+Never assume. Never start typing code while the plan is still being discussed.
+
+### Phase-based development
+Every piece of work is broken into small, focused phases.
+
+Each phase must be:
+- Scoped to one concern — one screen, one layer, one config block
+- Fully developed before the next phase begins
+- Lint-checked: the lint command passes with zero errors
+- Build-checked: the build completes without errors or warnings
+- Manually verified — describe exactly what was tested and how
+- Committed locally with a clear message
+- Signed off by Ashish before moving on
+
+Never start Phase N+1 if Phase N has open issues, a failing lint, a broken build, or missing sign-off.
+
+### Commit convention
+feat(phase-N): short description of what was built
+fix(phase-N): short description of what was fixed
+chore: config or tooling change
+
+One commit per completed phase. Not per file.
+
+---
+
+## Code Style
+
+### General
+- No TypeScript unless explicitly agreed
+- No class components — functional only
+- Async/await everywhere — no .then() chains
+- Catch errors at the boundary, not throughout — one try/catch per operation
+- console.error for caught errors only — no console.log in production paths
+- No comments unless the logic is genuinely non-obvious
+
+### Components
+- One component per file
+- Screen components own their own data fetching — no prop drilling data down multiple levels
+- Loading states always rendered — never return null while loading
+- Error boundaries at screen level only
+
+### Do not
+- Add dependencies without discussing it first
+- Abstract something that only exists once
+- Add error handling for scenarios that cannot happen
+- Add features, refactors, or "improvements" beyond what was asked
+- Skip lint or build checks to move faster
+- Move to the next phase without a completed, committed, signed-off current phase
