@@ -8,7 +8,7 @@ import {
   getExerciseComparisons,
   getAllWorkouts,
   getExercisesForWorkoutType,
-  getTrainingStreak,
+  getWeeklyGymStreak,
 } from '@/lib/fittrack-supabase'
 import {
   currentPhase,
@@ -47,7 +47,7 @@ export default async function TodayPage() {
       getWorkoutForDate(today),
       getWorkoutsForWeek(mondayDate),
       getAllWorkouts(3),
-      getTrainingStreak(),
+      getWeeklyGymStreak(),
     ])
 
   const exerciseLogs = todayWorkout
@@ -86,19 +86,35 @@ export default async function TodayPage() {
 
   return (
     <div className="space-y-5">
-      {/* Greeting + Streak */}
-      <div className="flex items-center justify-between">
+      {/* Greeting + Weekly Streak */}
+      <div className="flex items-center justify-between gap-2">
         <p className="text-xs font-medium" style={{ color: FT.textMuted }}>
           Day {dayNum} of 84 &middot; {activePhase.name} phase
         </p>
-        {streak > 0 && (
-          <span
-            className="text-xs font-bold px-2 py-0.5 rounded-full"
-            style={{ background: FT.warningBg, color: FT.warning }}
-          >
-            {streak} day streak
-          </span>
-        )}
+        <div className="flex items-center gap-1.5">
+          {streak.thisWeek.target > 0 && (
+            <span
+              className="text-xs font-semibold px-2 py-0.5 rounded-full"
+              style={{
+                background: streak.thisWeek.met ? FT.successBg : FT.surface,
+                color: streak.thisWeek.met ? FT.success : FT.textSecondary,
+                border: `1px solid ${FT.border}`,
+              }}
+              title="Gym days this week (push / pull / legs / auxiliary)"
+            >
+              {streak.thisWeek.count}/{streak.thisWeek.target} this week
+            </span>
+          )}
+          {streak.weeksStreak > 0 && (
+            <span
+              className="text-xs font-bold px-2 py-0.5 rounded-full"
+              style={{ background: FT.warningBg, color: FT.warning }}
+              title="Consecutive weeks hitting your gym target"
+            >
+              {streak.weeksStreak}w streak
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Quick Log */}

@@ -787,9 +787,12 @@ function shiftISODate(iso: string, days: number): string {
 
 export async function updateWeeklyGymTarget(target: number): Promise<void> {
   const safe = Math.max(0, Math.floor(target))
+  const profile = await getUserProfile()
+  if (!profile) throw new Error('No user profile found')
   const { error } = await getFittrackDb()
     .from('user_profile')
     .update({ weekly_gym_target: safe })
+    .eq('id', profile.id)
   if (error) throw error
 }
 

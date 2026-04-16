@@ -15,6 +15,7 @@ import { MealForm } from '../_components/MealForm'
 import { MealList } from '../_components/MealList'
 import { WeightChart } from '../_components/WeightChart'
 import { BodyDateNav } from '../_components/BodyDateNav'
+import { WeeklyTargetEditor } from '../_components/WeeklyTargetEditor'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Body' }
@@ -94,6 +95,9 @@ export default async function BodyPage({
 
       {/* Meals for selected date */}
       <MealList meals={meals} isToday={isToday} />
+
+      {/* Weekly Gym Target */}
+      <WeeklyTargetEditor current={profile?.weekly_gym_target ?? 3} />
 
       {/* Weight Trend */}
       <div
