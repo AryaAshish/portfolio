@@ -5,20 +5,35 @@ import { BlogCard } from '@/components/BlogCard'
 import { LifeMomentCard } from '@/components/LifeMomentCard'
 import { getHomeContent } from '@/lib/home'
 import { getRecentPosts, getRecentLifeMoments, getAboutTeaser } from '@/lib/homepage'
+import { verifyCookie } from '@/lib/auth/cookie'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-export default async function HomePage() {
+type HomePageProps = {
+  searchParams?: { public?: string }
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const publicMode = searchParams?.public === '1'
+  const cookieStore = cookies()
+  const ftSessionRaw = cookieStore.get('ft_session')?.value
+  const ftDefault = cookieStore.get('ft_default_landing')?.value === '1'
+  const ftSession = !publicMode && ftSessionRaw ? await verifyCookie(ftSessionRaw) : null
+
+  if (ftSession && ftSession.role === 'fittrack' && ftDefault) {
+    redirect('/fittrack')
+  }
+
   const [content, recentPosts, recentMoments] = await Promise.all([
     getHomeContent(),
     getRecentPosts(3),
     getRecentLifeMoments(3),
   ])
-  
-  // Debug logging
-  console.log('[Home Page] Recent posts:', recentPosts.length)
+
   const aboutTeaser = getAboutTeaser(200)
 
   return (
