@@ -35,6 +35,14 @@ export default async function PlanPage() {
         </h2>
         <DefaultLandingToggle initialEnabled={ftDefault} />
         <a
+          href="/api/fittrack/export"
+          download
+          className="block text-xs underline"
+          style={{ color: FT.textSecondary }}
+        >
+          Download my data (JSON)
+        </a>
+        <a
           href="/?public=1"
           className="block text-xs underline"
           style={{ color: FT.textSecondary }}

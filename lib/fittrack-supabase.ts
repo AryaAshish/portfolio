@@ -1058,3 +1058,57 @@ export async function getRecentSummaries(days: number): Promise<DailySummary[]> 
   if (error) throw error
   return (data ?? []) as DailySummary[]
 }
+
+// ─────────────────────────────────────────────────────────────
+// Export
+// ─────────────────────────────────────────────────────────────
+
+export async function fetchAllFitTrackRows() {
+  const db = getFittrackDb()
+  const [
+    userProfile,
+    weightLogs,
+    workouts,
+    exerciseLogs,
+    meals,
+    mealTemplates,
+    healthMarkers,
+    planPhases,
+    foodLibrary,
+  ] = await Promise.all([
+    db.from('user_profile').select('*'),
+    db.from('weight_logs').select('*').order('date', { ascending: true }),
+    db.from('workouts').select('*').order('date', { ascending: true }),
+    db.from('exercise_logs').select('*').order('date', { ascending: true }),
+    db.from('meals').select('*').order('date', { ascending: true }),
+    db.from('meal_templates').select('*').order('name', { ascending: true }),
+    db.from('health_markers').select('*').order('date', { ascending: true }),
+    db.from('plan_phases').select('*').order('phase_number', { ascending: true }),
+    db.from('food_library').select('*').order('name', { ascending: true }),
+  ])
+
+  const first = [
+    userProfile,
+    weightLogs,
+    workouts,
+    exerciseLogs,
+    meals,
+    mealTemplates,
+    healthMarkers,
+    planPhases,
+    foodLibrary,
+  ].find((r) => r.error)
+  if (first?.error) throw first.error
+
+  return {
+    user_profile: (userProfile.data ?? []) as unknown[],
+    weight_logs: (weightLogs.data ?? []) as unknown[],
+    workouts: (workouts.data ?? []) as unknown[],
+    exercise_logs: (exerciseLogs.data ?? []) as unknown[],
+    meals: (meals.data ?? []) as unknown[],
+    meal_templates: (mealTemplates.data ?? []) as unknown[],
+    health_markers: (healthMarkers.data ?? []) as unknown[],
+    plan_phases: (planPhases.data ?? []) as unknown[],
+    food_library: (foodLibrary.data ?? []) as unknown[],
+  }
+}
