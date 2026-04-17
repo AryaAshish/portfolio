@@ -5,11 +5,11 @@ import { createClient } from '@supabase/supabase-js'
 
 config({ path: resolve(process.cwd(), '.env.local') })
 
-const url = process.env.NEXT_PUBLIC_FITTRACK_SUPABASE_URL || ''
-const key = process.env.NEXT_PUBLIC_FITTRACK_SUPABASE_KEY || ''
+const url = process.env.FITTRACK_SUPABASE_URL || ''
+const key = process.env.FITTRACK_SUPABASE_KEY || ''
 
 if (!url || !key) {
-  console.error('NEXT_PUBLIC_FITTRACK_SUPABASE_URL and NEXT_PUBLIC_FITTRACK_SUPABASE_KEY must be set in .env.local')
+  console.error('FITTRACK_SUPABASE_URL and FITTRACK_SUPABASE_KEY must be set in .env.local')
   process.exit(1)
 }
 

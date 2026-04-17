@@ -1,11 +1,14 @@
 /**
  * FitTrack — Supabase data layer
  *
- * All reads and writes for the fittrack section of the app.
- * Uses a dedicated client so it doesn't conflict with the portfolio client.
- * RLS is disabled on the fittrack project — this is intentional (single-user app).
+ * Server-only module. Do NOT import from files with `'use client'`.
+ * The `server-only` import below causes a build error if that happens.
+ *
+ * RLS is disabled on the fittrack project — intentional for single-user.
+ * The anon role has no write grants; mutations require the service-role
+ * key held in FITTRACK_SUPABASE_KEY (never shipped to the browser).
  */
-
+import 'server-only'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { componentsToText, sumComponents } from './fittrack/macro-compute'
 
@@ -13,11 +16,11 @@ let fittrackClient: SupabaseClient | null = null
 
 function getFittrackDb(): SupabaseClient {
   if (!fittrackClient) {
-    const url = process.env.NEXT_PUBLIC_FITTRACK_SUPABASE_URL
-    const key = process.env.NEXT_PUBLIC_FITTRACK_SUPABASE_KEY
+    const url = process.env.FITTRACK_SUPABASE_URL
+    const key = process.env.FITTRACK_SUPABASE_KEY
     if (!url || !key) {
       throw new Error(
-        'NEXT_PUBLIC_FITTRACK_SUPABASE_URL and NEXT_PUBLIC_FITTRACK_SUPABASE_KEY are required for FitTrack'
+        'FITTRACK_SUPABASE_URL and FITTRACK_SUPABASE_KEY are required for FitTrack'
       )
     }
     fittrackClient = createClient(url, key, { auth: { persistSession: false } })
