@@ -1,10 +1,20 @@
 import { config } from 'dotenv'
-import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Client } from 'pg'
 import bcrypt from 'bcryptjs'
 
 config({ path: resolve(process.cwd(), '.env.local') })
+
+const AUTH_USERS_DDL = `
+CREATE TABLE IF NOT EXISTS auth_users (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  username text UNIQUE NOT NULL,
+  password_hash text NOT NULL,
+  role text NOT NULL CHECK (role IN ('admin', 'fittrack')),
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS auth_users_username_idx ON auth_users(username);
+`
 
 function required(name: string): string {
   const v = process.env[name]
@@ -37,19 +47,13 @@ async function main() {
   const ftUsername = required('FITTRACK_USERNAME')
   const ftPassword = required('FITTRACK_PASSWORD')
 
-  const migrationPath = resolve(
-    process.cwd(),
-    'supabase/migrations/20260418_create_auth_users.sql'
-  )
-  const migrationSql = readFileSync(migrationPath, 'utf8')
-
   const connectionString = buildConnectionString()
   const client = new Client({ connectionString, ssl: { rejectUnauthorized: false } })
   await client.connect()
 
   try {
-    console.log('Applying auth_users migration...')
-    await client.query(migrationSql)
+    console.log('Ensuring auth_users table exists...')
+    await client.query(AUTH_USERS_DDL)
 
     console.log('Hashing credentials...')
     const adminHash = await bcrypt.hash(adminPassword, 10)

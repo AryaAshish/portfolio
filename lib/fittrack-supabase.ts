@@ -67,6 +67,15 @@ export interface MealComponent {
   calories: number
   carbs_g: number
   fat_g: number
+  schema_version?: number
+}
+
+export const MEAL_COMPONENT_SCHEMA_VERSION = 1
+
+function stampComponents(components: MealComponent[]): MealComponent[] {
+  return components.map((c) =>
+    c.schema_version ? c : { ...c, schema_version: MEAL_COMPONENT_SCHEMA_VERSION }
+  )
 }
 
 export interface Meal {
@@ -970,8 +979,9 @@ export async function addMealWithComponents(entry: {
   components: MealComponent[]
   notes?: string | null
 }): Promise<Meal> {
-  const totals = sumComponents(entry.components)
-  const items = componentsToText(entry.components) || '-'
+  const versioned = stampComponents(entry.components)
+  const totals = sumComponents(versioned)
+  const items = componentsToText(versioned) || '-'
 
   const { data, error } = await getFittrackDb()
     .from('meals')
@@ -985,7 +995,7 @@ export async function addMealWithComponents(entry: {
       fat_g: totals.fat_g,
       image_url: null,
       notes: entry.notes ?? null,
-      components: entry.components,
+      components: versioned,
     })
     .select()
     .single()
@@ -999,8 +1009,9 @@ export async function saveMealAsTemplate(entry: {
   meal_type: Meal['meal_type'] | null
   components: MealComponent[]
 }): Promise<MealTemplate> {
-  const totals = sumComponents(entry.components)
-  const items = entry.components.map((c) => ({ qty: c.qty, food: c.food_name, unit: c.unit }))
+  const versioned = stampComponents(entry.components)
+  const totals = sumComponents(versioned)
+  const items = versioned.map((c) => ({ qty: c.qty, food: c.food_name, unit: c.unit }))
 
   const { data, error } = await getFittrackDb()
     .from('meal_templates')

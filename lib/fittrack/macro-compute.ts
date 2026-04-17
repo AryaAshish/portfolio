@@ -1,5 +1,7 @@
 import type { FoodLibraryItem, MealComponent } from '@/lib/fittrack-supabase'
 
+const MEAL_COMPONENT_SCHEMA_VERSION = 1
+
 export type ScaledMacros = {
   protein_g: number
   calories: number
@@ -56,6 +58,7 @@ export function componentFromFood(food: FoodLibraryItem, qty: number): MealCompo
     calories: scaled.calories,
     carbs_g: scaled.carbs_g,
     fat_g: scaled.fat_g,
+    schema_version: MEAL_COMPONENT_SCHEMA_VERSION,
   }
 }
 

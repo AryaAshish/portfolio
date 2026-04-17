@@ -117,6 +117,11 @@ describe('componentFromFood', () => {
     const c = componentFromFood(food({ serving_unit: null }), 100)
     expect(c.unit).toBe('g')
   })
+
+  it('stamps schema_version=1 so future jsonb shape changes stay backward-compatible', () => {
+    const c = componentFromFood(food(), 100)
+    expect(c.schema_version).toBe(1)
+  })
 })
 
 describe('sumComponents', () => {
@@ -155,6 +160,13 @@ describe('sumComponents', () => {
     expect(r.calories).toBe(0)
     expect(r.carbs_g).toBe(0)
     expect(r.fat_g).toBe(3)
+  })
+
+  it('reads legacy rows without schema_version (pre-versioning backward-compat)', () => {
+    const legacy = comp()
+    delete (legacy as { schema_version?: number }).schema_version
+    const r = sumComponents([legacy])
+    expect(r).toEqual({ protein_g: 3.2, calories: 58, carbs_g: 4.5, fat_g: 3 })
   })
 })
 
