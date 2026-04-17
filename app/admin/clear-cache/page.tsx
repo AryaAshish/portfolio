@@ -59,7 +59,7 @@ export default function ClearCachePage() {
           <h1 className="font-serif text-3xl text-ocean-deep mb-6">Clear Cache</h1>
           
           <p className="text-ocean-base mb-6">
-            If you're seeing old images or content after making changes, use these tools to clear the cache.
+            If you&apos;re seeing old images or content after making changes, use these tools to clear the cache.
           </p>
 
           <div className="space-y-4">

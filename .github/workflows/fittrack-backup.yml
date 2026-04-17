@@ -1,0 +1,71 @@
+name: FitTrack Nightly Backup
+
+on:
+  schedule:
+    - cron: "30 18 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: fittrack-backup
+  cancel-in-progress: false
+
+jobs:
+  dump:
+    name: pg_dump both projects
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Install postgresql-client 16
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-16
+
+      - name: Resolve backup metadata
+        id: meta
+        run: |
+          STAMP=$(date -u +'%Y-%m-%dT%H%M%SZ')
+          echo "stamp=$STAMP" >> "$GITHUB_OUTPUT"
+          echo "artifact=fittrack-backup-$STAMP" >> "$GITHUB_OUTPUT"
+
+      - name: Dump FitTrack database
+        env:
+          FITTRACK_DB_URL: ${{ secrets.FITTRACK_DB_URL }}
+        run: |
+          if [ -z "$FITTRACK_DB_URL" ]; then
+            echo "::error::FITTRACK_DB_URL secret is not set"
+            exit 1
+          fi
+          pg_dump "$FITTRACK_DB_URL" \
+            --no-owner \
+            --no-privileges \
+            --format=custom \
+            --file=fittrack.dump
+          gzip -9 fittrack.dump
+
+      - name: Dump Portfolio database
+        env:
+          PORTFOLIO_DB_URL: ${{ secrets.PORTFOLIO_DB_URL }}
+        run: |
+          if [ -z "$PORTFOLIO_DB_URL" ]; then
+            echo "::error::PORTFOLIO_DB_URL secret is not set"
+            exit 1
+          fi
+          pg_dump "$PORTFOLIO_DB_URL" \
+            --no-owner \
+            --no-privileges \
+            --format=custom \
+            --file=portfolio.dump
+          gzip -9 portfolio.dump
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.artifact }}
+          path: |
+            fittrack.dump.gz
+            portfolio.dump.gz
+          retention-days: 90
+          if-no-files-found: error

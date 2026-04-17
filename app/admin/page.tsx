@@ -2,41 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { BlogPost } from '@/types'
 
 export default function AdminPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
-  const [authenticated, setAuthenticated] = useState(false)
-  const [password, setPassword] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
-    const auth = localStorage.getItem('admin_authenticated')
-    if (auth === 'true') {
-      setAuthenticated(true)
-      fetchPosts()
-    } else {
-      setLoading(false)
-    }
+    fetchPosts()
   }, [])
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const response = await fetch('/api/admin/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
-
-    const data = await response.json()
-    if (data.success) {
-      localStorage.setItem('admin_authenticated', 'true')
-      setAuthenticated(true)
-      fetchPosts()
-    } else {
-      alert('Invalid password')
-    }
-  }
 
   const fetchPosts = async () => {
     try {
@@ -48,6 +24,16 @@ export default function AdminPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' })
+    } catch (err) {
+      console.error(err)
+    }
+    router.replace('/admin/login')
+    router.refresh()
   }
 
   const handleDelete = async (slug: string) => {
@@ -64,39 +50,9 @@ export default function AdminPage() {
         alert('Failed to delete post')
       }
     } catch (error) {
+      console.error('Error deleting post:', error)
       alert('Error deleting post')
     }
-  }
-
-  if (!authenticated) {
-    return (
-      <div className="min-h-screen bg-neutral-off flex items-center justify-center">
-        <div className="bg-neutral-white rounded-xl p-8 shadow-lg max-w-md w-full">
-          <h1 className="font-serif text-3xl text-ocean-deep mb-6">Admin Login</h1>
-          <form onSubmit={handleLogin}>
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium text-ocean-deep mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-ocean-light bg-neutral-white text-ocean-deep focus:outline-none focus:ring-2 focus:ring-teal-base"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full px-6 py-3 bg-teal-base text-neutral-white rounded-lg font-medium hover:bg-teal-dark transition-colors"
-            >
-              Login
-            </button>
-          </form>
-        </div>
-      </div>
-    )
   }
 
   if (loading) {
@@ -113,10 +69,7 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="font-serif text-4xl text-ocean-deep">Content Management</h1>
           <button
-            onClick={() => {
-              localStorage.removeItem('admin_authenticated')
-              setAuthenticated(false)
-            }}
+            onClick={handleLogout}
             className="px-6 py-3 bg-ocean-light text-ocean-deep rounded-lg font-medium hover:bg-ocean-base transition-colors"
           >
             Logout

@@ -1,5 +1,5 @@
-const CACHE_NAME = 'portfolio-v2'
-const RUNTIME_CACHE = 'portfolio-runtime-v2'
+const CACHE_NAME = 'portfolio-v4'
+const RUNTIME_CACHE = 'portfolio-runtime-v4'
 
 const STATIC_ASSETS = [
   '/',
@@ -38,12 +38,32 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
   
-  // Skip caching for admin routes
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/admin')) {
+  if (
+    url.pathname.startsWith('/admin') ||
+    url.pathname.startsWith('/api/admin') ||
+    url.pathname.startsWith('/fittrack') ||
+    url.pathname.startsWith('/api/fittrack')
+  ) {
+    return
+  }
+
+  if (
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.startsWith('/_next/data/') ||
+    url.pathname.includes('hot-update')
+  ) {
+    return
+  }
+
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request).catch(() =>
+        caches.match(event.request).then((cached) => cached || new Response('Offline', { status: 503 }))
+      )
+    )
     return
   }
   
-  // Network-first strategy for images to prevent stale cached images
   if (event.request.destination === 'image' || url.pathname.includes('/_next/image')) {
     event.respondWith(
       fetch(event.request)

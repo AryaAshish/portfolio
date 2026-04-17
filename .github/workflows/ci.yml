@@ -10,9 +10,9 @@ on:
       - dev
 
 jobs:
-  lint-and-build:
+  lint-test-build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,7 +27,12 @@ jobs:
         run: npm ci
 
       - name: Run linter
-        run: npm run lint -- --max-warnings=0 || true
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:run
+        env:
+          AUTH_COOKIE_SECRET: ${{ secrets.AUTH_COOKIE_SECRET }}
 
       - name: Build project
         run: npm run build
@@ -35,4 +40,6 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
+          FITTRACK_SUPABASE_URL: ${{ secrets.FITTRACK_SUPABASE_URL }}
+          FITTRACK_SUPABASE_KEY: ${{ secrets.FITTRACK_SUPABASE_KEY }}
+          AUTH_COOKIE_SECRET: ${{ secrets.AUTH_COOKIE_SECRET }}

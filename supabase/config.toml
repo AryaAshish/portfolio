@@ -1,0 +1,30 @@
+# Supabase CLI config for the two projects backing this repo.
+#
+# This repo tracks two Supabase databases:
+#   - portfolio  (musafir.codes public site)
+#   - fittrack   (private FitTrack app)
+#
+# The Supabase CLI only links one project at a time. Link whichever one
+# you need to work on, then switch as required:
+#
+#   supabase link --project-ref <portfolio_ref>
+#   supabase link --project-ref <fittrack_ref>
+#
+# Project refs (also visible in the dashboard URL):
+#   portfolio: <replace-with-ref>
+#   fittrack:  xqrbguwakhuvtpajxbqz
+#
+# Migrations live under supabase/migrations/<project>/ instead of the
+# CLI default supabase/migrations/. When you need to apply a batch, point
+# psql at the chosen subfolder explicitly — see supabase/migrations/README.md.
+
+project_id = "xqrbguwakhuvtpajxbqz"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
