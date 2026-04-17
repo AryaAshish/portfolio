@@ -31,3 +31,17 @@ export const WORKOUT_COLORS: Record<string, { bg: string; text: string; label: s
 export function workoutColor(type: string) {
   return WORKOUT_COLORS[type?.toLowerCase()] ?? WORKOUT_COLORS.rest
 }
+
+export const PHASE_SWATCHES: Array<{ bg: string; text: string; border: string }> = [
+  { bg: '#dbeafe', text: '#1d4ed8', border: '#3b82f6' },
+  { bg: '#dcfce7', text: '#15803d', border: '#22c55e' },
+  { bg: '#fef3c7', text: '#b45309', border: '#f59e0b' },
+  { bg: '#f3e8ff', text: '#7c3aed', border: '#a855f7' },
+  { bg: '#ffe4e6', text: '#be123c', border: '#e11d48' },
+  { bg: '#e0e7ff', text: '#4338ca', border: '#6366f1' },
+]
+
+export function phaseSwatch(phaseNumber: number) {
+  const idx = Math.max(0, phaseNumber - 1)
+  return PHASE_SWATCHES[idx % PHASE_SWATCHES.length]
+}

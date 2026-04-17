@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import {
   getUserProfile,
   getTodayMacros,
@@ -9,15 +10,20 @@ import {
   getAllWorkouts,
   getExercisesForWorkoutType,
   getWeeklyGymStreak,
+  getPlanPhases,
 } from '@/lib/fittrack-supabase'
 import {
-  currentPhase,
   currentWeekMonday,
-  planDayNumber,
   todayISO,
   todayWeekIndex,
 } from '@/fittrack/plan-config'
-import { FT } from './_components/tokens'
+import {
+  getCurrentPhase,
+  getPlanDayNumber,
+  getPlanStartISO,
+  getPlanTotalDays,
+} from '@/lib/fittrack/plan-helpers'
+import { FT, phaseSwatch } from './_components/tokens'
 import { WorkoutLogForm } from './_components/WorkoutLogForm'
 import { WorkoutCard } from './_components/WorkoutCard'
 import { WeekStrip } from './_components/WeekStrip'
@@ -40,7 +46,7 @@ export default async function TodayPage() {
   const today = todayISO()
   const mondayDate = currentWeekMonday()
 
-  const [profile, todayMacros, todayWorkout, weekWorkouts, recentWorkouts, streak] =
+  const [profile, todayMacros, todayWorkout, weekWorkouts, recentWorkouts, streak, planPhases] =
     await Promise.all([
       getUserProfile(),
       getTodayMacros(today),
@@ -48,6 +54,7 @@ export default async function TodayPage() {
       getWorkoutsForWeek(mondayDate),
       getAllWorkouts(3),
       getWeeklyGymStreak(),
+      getPlanPhases(),
     ])
 
   const exerciseLogs = todayWorkout
@@ -71,26 +78,44 @@ export default async function TodayPage() {
     exercisesByType[t] = typeResults[i]
   })
 
-  const activePhase = currentPhase()
-  const dayNum = planDayNumber()
+  const activePhase = getCurrentPhase(today, planPhases)
+  const planStartISO = getPlanStartISO(planPhases)
+  const totalPlanDays = getPlanTotalDays(planPhases)
+  const dayNum = planStartISO ? getPlanDayNumber(today, planStartISO) : 1
+  const swatch = activePhase ? phaseSwatch(activePhase.phase_number) : phaseSwatch(1)
   const weekIdx = todayWeekIndex()
 
   const proteinTarget = profile?.daily_protein_target ?? 145
   const calorieTarget = profile?.daily_calorie_target ?? 1900
 
   const phasePct = (() => {
-    const elapsed = Math.floor((Date.now() - activePhase.start.getTime()) / 86_400_000)
-    const total = Math.floor((activePhase.end.getTime() - activePhase.start.getTime()) / 86_400_000)
-    return total > 0 ? Math.min(100, Math.round((elapsed / total) * 100)) : 0
+    if (!activePhase) return 0
+    const start = Date.UTC(
+      Number(activePhase.start_date.slice(0, 4)),
+      Number(activePhase.start_date.slice(5, 7)) - 1,
+      Number(activePhase.start_date.slice(8, 10))
+    )
+    const end = Date.UTC(
+      Number(activePhase.end_date.slice(0, 4)),
+      Number(activePhase.end_date.slice(5, 7)) - 1,
+      Number(activePhase.end_date.slice(8, 10))
+    )
+    const total = Math.floor((end - start) / 86_400_000)
+    const elapsed = Math.floor((Date.now() - start) / 86_400_000)
+    return total > 0 ? Math.max(0, Math.min(100, Math.round((elapsed / total) * 100))) : 0
   })()
 
   return (
     <div className="space-y-5">
       {/* Greeting + Weekly Streak */}
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-medium" style={{ color: FT.textMuted }}>
-          Day {dayNum} of 84 &middot; {activePhase.name} phase
-        </p>
+        <Link
+          href="/fittrack/plan"
+          className="text-xs font-medium hover:underline"
+          style={{ color: FT.textMuted }}
+        >
+          Day {dayNum} of {totalPlanDays || '-'} &middot; {activePhase?.name ?? 'No phase'} phase
+        </Link>
         <div className="flex items-center gap-1.5">
           {streak.thisWeek.target > 0 && (
             <span
@@ -187,23 +212,31 @@ export default async function TodayPage() {
       </div>
 
       {/* Phase Progress */}
-      <div
-        className="rounded-xl p-3"
-        style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
-      >
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-xs font-semibold" style={{ color: FT.textSecondary }}>
-            Phase {activePhase.number}: {activePhase.name}
-          </p>
-          <span className="text-xs" style={{ color: FT.textMuted }}>{phasePct}%</span>
-        </div>
-        <div className="h-1.5 rounded-full" style={{ background: activePhase.accentBg }}>
-          <div
-            className="h-1.5 rounded-full transition-all"
-            style={{ width: `${phasePct}%`, background: activePhase.borderActive }}
-          />
-        </div>
-      </div>
+      {activePhase && (
+        <Link
+          href="/fittrack/plan"
+          className="block rounded-xl p-3"
+          style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
+        >
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-xs font-semibold" style={{ color: FT.textSecondary }}>
+              Phase {activePhase.phase_number}: {activePhase.name}
+            </p>
+            <span className="text-xs" style={{ color: FT.textMuted }}>{phasePct}%</span>
+          </div>
+          <div className="h-1.5 rounded-full" style={{ background: swatch.bg }}>
+            <div
+              className="h-1.5 rounded-full transition-all"
+              style={{ width: `${phasePct}%`, background: swatch.border }}
+            />
+          </div>
+          {activePhase.focus && (
+            <p className="text-[11px] mt-2" style={{ color: FT.textMuted }}>
+              {activePhase.focus}
+            </p>
+          )}
+        </Link>
+      )}
     </div>
   )
 }
