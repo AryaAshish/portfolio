@@ -899,6 +899,68 @@ export async function getMealTemplateById(id: string): Promise<MealTemplate | nu
   return data as MealTemplate
 }
 
+// ─────────────────────────────────────────────────────────────
+// Plan phases
+// ─────────────────────────────────────────────────────────────
+
+export interface PlanPhaseRow {
+  id: string
+  phase_number: number
+  name: string
+  start_date: string
+  end_date: string
+  focus: string | null
+  created_at: string
+}
+
+export async function getPlanPhases(): Promise<PlanPhaseRow[]> {
+  const { data, error } = await getFittrackDb()
+    .from('plan_phases')
+    .select('*')
+    .order('phase_number', { ascending: true })
+  if (error) throw error
+  return (data ?? []) as PlanPhaseRow[]
+}
+
+export async function replacePlanPhases(
+  phases: Array<Omit<PlanPhaseRow, 'id' | 'created_at'>>
+): Promise<void> {
+  const db = getFittrackDb()
+  const { error: delErr } = await db.from('plan_phases').delete().neq('phase_number', -1)
+  if (delErr) throw delErr
+  if (phases.length === 0) return
+  const { error: insErr } = await db.from('plan_phases').insert(phases)
+  if (insErr) throw insErr
+}
+
+const DEFAULT_PLAN_PHASES: Array<Omit<PlanPhaseRow, 'id' | 'created_at'>> = [
+  {
+    phase_number: 1,
+    name: 'Foundation',
+    start_date: '2026-04-14',
+    end_date: '2026-05-11',
+    focus: 'Caloric deficit, establish training habit, cut body fat',
+  },
+  {
+    phase_number: 2,
+    name: 'Body Composition',
+    start_date: '2026-05-12',
+    end_date: '2026-06-08',
+    focus: 'Progressive overload, recheck bloodwork at Week 8',
+  },
+  {
+    phase_number: 3,
+    name: 'Peak Condition',
+    start_date: '2026-06-09',
+    end_date: '2026-07-06',
+    focus: 'Lean out final 4 weeks, full bloodwork, strength maintenance',
+  },
+]
+
+export async function resetPlanPhasesToDefaults(): Promise<void> {
+  await replacePlanPhases(DEFAULT_PLAN_PHASES)
+}
+
 export async function addMealWithComponents(entry: {
   date: string
   meal_type: Meal['meal_type']
