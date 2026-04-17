@@ -8,7 +8,8 @@ import {
 
 export async function ingestMotraWorkout(
   text: string,
-  typeOverride?: Workout['type'] | null
+  typeOverride?: Workout['type'] | null,
+  dateOverride?: string | null
 ): Promise<{ workoutId: string }> {
   const parsed = parseMotraShareText(text)
   if (parsed.exerciseLogs.length === 0) {
@@ -16,7 +17,7 @@ export async function ingestMotraWorkout(
   }
 
   const workout = await saveWorkout({
-    date: parsed.date,
+    date: dateOverride ?? parsed.date,
     title: parsed.title,
     type: typeOverride ?? parsed.workoutType,
     duration_mins: parsed.durationMins,

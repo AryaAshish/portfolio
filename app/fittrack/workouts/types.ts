@@ -1,7 +1,22 @@
 import type { ExerciseLog } from '@/lib/fittrack-supabase'
 
+export type LogWorkoutConflictMode = 'add' | 'override'
+
+export type LogWorkoutExisting = {
+  id: string
+  title: string | null
+  type: string
+  date: string
+}
+
 export type LogWorkoutResult =
   | { ok: true; workoutId: string }
+  | {
+      ok: false
+      code: 'DATE_CONFLICT'
+      existing: LogWorkoutExisting
+      message: string
+    }
   | { ok: false; code: string; message: string }
 
 export type UpdateWorkoutResult =
