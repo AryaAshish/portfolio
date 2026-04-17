@@ -7,6 +7,7 @@
  */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { componentsToText, sumComponents } from './fittrack/macro-compute'
 
 let fittrackClient: SupabaseClient | null = null
 
@@ -53,6 +54,18 @@ export interface WeightLog {
   created_at: string
 }
 
+export interface MealComponent {
+  food_id: string
+  food_name: string
+  qty: number
+  unit: string
+  per_serving_size: number | null
+  protein_g: number
+  calories: number
+  carbs_g: number
+  fat_g: number
+}
+
 export interface Meal {
   id: string
   date: string
@@ -64,6 +77,7 @@ export interface Meal {
   fat_g: number | null
   image_url: string | null
   notes: string | null
+  components?: MealComponent[] | null
   created_at: string
 }
 
@@ -881,6 +895,63 @@ export async function getMealTemplateById(id: string): Promise<MealTemplate | nu
     .single()
 
   if (error?.code === 'PGRST116') return null
+  if (error) throw error
+  return data as MealTemplate
+}
+
+export async function addMealWithComponents(entry: {
+  date: string
+  meal_type: Meal['meal_type']
+  components: MealComponent[]
+  notes?: string | null
+}): Promise<Meal> {
+  const totals = sumComponents(entry.components)
+  const items = componentsToText(entry.components) || '-'
+
+  const { data, error } = await getFittrackDb()
+    .from('meals')
+    .insert({
+      date: entry.date,
+      meal_type: entry.meal_type,
+      items,
+      protein_g: totals.protein_g,
+      calories: totals.calories,
+      carbs_g: totals.carbs_g,
+      fat_g: totals.fat_g,
+      image_url: null,
+      notes: entry.notes ?? null,
+      components: entry.components,
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Meal
+}
+
+export async function saveMealAsTemplate(entry: {
+  name: string
+  meal_type: Meal['meal_type'] | null
+  components: MealComponent[]
+}): Promise<MealTemplate> {
+  const totals = sumComponents(entry.components)
+  const items = entry.components.map((c) => ({ qty: c.qty, food: c.food_name, unit: c.unit }))
+
+  const { data, error } = await getFittrackDb()
+    .from('meal_templates')
+    .insert({
+      name: entry.name,
+      meal_type: entry.meal_type,
+      items,
+      total_protein_g: totals.protein_g,
+      total_calories: totals.calories,
+      total_carbs_g: totals.carbs_g,
+      total_fat_g: totals.fat_g,
+      notes: null,
+    })
+    .select()
+    .single()
+
   if (error) throw error
   return data as MealTemplate
 }
