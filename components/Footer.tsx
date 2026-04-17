@@ -78,6 +78,14 @@ export function Footer() {
         </div>
         <div className="mt-8 pt-8 border-t border-ocean-dark/30 text-center text-sm text-neutral-white/70">
           <p>&copy; {new Date().getFullYear()} Portfolio. All rights reserved.</p>
+          <p className="mt-2 text-xs">
+            <Link
+              href="/admin/login"
+              className="text-neutral-white/40 hover:text-teal-light transition-colors"
+            >
+              Admin
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

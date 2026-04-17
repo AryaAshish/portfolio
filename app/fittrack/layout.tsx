@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { FitNav } from './_components/FitNav'
+import { FirstLoginModal } from './_components/FirstLoginModal'
+import { LogoutButton } from './_components/LogoutButton'
 import { FT } from './_components/tokens'
 
 const spaceGrotesk = Space_Grotesk({
@@ -46,6 +49,7 @@ export default function FitTrackLayout({
         <span className="font-grotesk text-[13px] font-semibold tracking-tight" style={{ color: FT.textPrimary }}>
           FitTrack
         </span>
+        <LogoutButton />
       </header>
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-lg mx-auto px-4 py-5">
@@ -53,6 +57,9 @@ export default function FitTrackLayout({
         </div>
       </div>
       <FitNav />
+      <Suspense fallback={null}>
+        <FirstLoginModal />
+      </Suspense>
     </div>
   )
 }

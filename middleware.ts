@@ -7,7 +7,10 @@ const ADMIN_PUBLIC_PATHS = new Set([
   '/api/admin/logout',
 ])
 
-const FITTRACK_API_PUBLIC_PATHS = new Set(['/api/fittrack/log-workout'])
+const FITTRACK_API_PUBLIC_PATHS = new Set([
+  '/api/fittrack/log-workout',
+  '/api/fittrack/logout',
+])
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl

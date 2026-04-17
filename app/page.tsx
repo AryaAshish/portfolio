@@ -3,6 +3,7 @@ import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { AnimatedSection } from '@/components/AnimatedSection'
 import { BlogCard } from '@/components/BlogCard'
 import { LifeMomentCard } from '@/components/LifeMomentCard'
+import { OpenFitTrackLink } from '@/app/fittrack/_components/OpenFitTrackLink'
 import { getHomeContent } from '@/lib/home'
 import { getRecentPosts, getRecentLifeMoments, getAboutTeaser } from '@/lib/homepage'
 import { verifyCookie } from '@/lib/auth/cookie'
@@ -27,6 +28,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   if (ftSession && ftSession.role === 'fittrack' && ftDefault) {
     redirect('/fittrack')
   }
+
+  const showOpenFitTrack = !!ftSession && ftSession.role === 'fittrack'
 
   const [content, recentPosts, recentMoments] = await Promise.all([
     getHomeContent(),
@@ -202,6 +205,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <NewsletterSignup source="homepage" />
         </div>
       </section>
+
+      {showOpenFitTrack && <OpenFitTrackLink />}
     </div>
   )
 }
