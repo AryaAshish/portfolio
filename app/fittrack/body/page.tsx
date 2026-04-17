@@ -4,6 +4,7 @@ import {
   getTodayMacros,
   getMealsForDate,
   getMealTemplates,
+  getFoodLibrary,
   getWeightTrend,
   getLatestWeight,
   getHealthMarkers,
@@ -37,12 +38,13 @@ export default async function BodyPage({
   const selectedDate = searchParams.date || today
   const isToday = selectedDate === today
 
-  const [profile, macros, meals, templates, weightData, latestWeight, markers] =
+  const [profile, macros, meals, templates, foods, weightData, latestWeight, markers] =
     await Promise.all([
       getUserProfile(),
       getTodayMacros(selectedDate),
       getMealsForDate(selectedDate),
       getMealTemplates(),
+      getFoodLibrary(),
       getWeightTrend(90),
       getLatestWeight(),
       getHealthMarkers(),
@@ -90,7 +92,7 @@ export default async function BodyPage({
         <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: FT.textMuted }}>
           Log a Meal
         </p>
-        <MealForm date={selectedDate} templates={templates} />
+        <MealForm date={selectedDate} templates={templates} foods={foods} />
       </div>
 
       {/* Meals for selected date */}

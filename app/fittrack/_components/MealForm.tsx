@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { MealTemplate } from '@/lib/fittrack-supabase'
+import type { FoodLibraryItem, MealTemplate } from '@/lib/fittrack-supabase'
 import { addMealAction } from '../meals/actions'
+import { MealComposer } from './MealComposer'
 import { FT } from './tokens'
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
@@ -11,12 +12,15 @@ type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 export function MealForm({
   date,
   templates,
+  foods,
 }: {
   date: string
   templates: MealTemplate[]
+  foods: FoodLibraryItem[]
 }) {
   const router = useRouter()
   const [showForm, setShowForm] = useState(false)
+  const [showComposer, setShowComposer] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -92,15 +96,31 @@ export function MealForm({
         </div>
       )}
 
-      {!showForm ? (
-        <button
-          type="button"
-          onClick={() => setShowForm(true)}
-          className="text-xs font-medium"
-          style={{ color: FT.accent }}
-        >
-          + Add manually
-        </button>
+      {showComposer ? (
+        <MealComposer
+          date={date}
+          foods={foods}
+          onCancel={() => setShowComposer(false)}
+        />
+      ) : !showForm ? (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <button
+            type="button"
+            onClick={() => setShowComposer(true)}
+            className="text-xs font-semibold"
+            style={{ color: FT.accent }}
+          >
+            + Build from items
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowForm(true)}
+            className="text-xs font-medium"
+            style={{ color: FT.textSecondary }}
+          >
+            + Add manually
+          </button>
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-2">
           <div className="flex gap-2">
