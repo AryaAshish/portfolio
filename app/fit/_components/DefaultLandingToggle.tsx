@@ -5,41 +5,54 @@ import { FT } from '@/app/fittrack/_components/tokens'
 
 export function DefaultLandingToggle({ initial }: { initial: boolean }) {
   const [enabled, setEnabled] = useState(initial)
-  const [pending, setPending] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   async function toggle() {
     const next = !enabled
-    setPending(true)
+    const prev = enabled
+    setSaving(true)
+    setEnabled(next)
     try {
-      await fetch('/api/fit/default-landing', {
+      const res = await fetch('/api/fit/default-landing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: next }),
       })
-      setEnabled(next)
+      if (!res.ok) setEnabled(prev)
     } catch (err) {
       console.error(err)
+      setEnabled(prev)
+    } finally {
+      setSaving(false)
     }
-    setPending(false)
   }
 
   return (
-    <button
-      onClick={toggle}
-      disabled={pending}
-      className="flex items-center gap-2 text-xs disabled:opacity-50"
-      style={{ color: FT.textSecondary }}
+    <div
+      className="flex items-center justify-between gap-3 rounded-lg p-3"
+      style={{ border: `1px solid ${FT.border}`, background: FT.surface }}
     >
-      <span
-        className="inline-block w-8 h-[18px] rounded-full relative transition-colors"
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium" style={{ color: FT.textPrimary }}>
+          Default landing on this device
+        </div>
+        <div className="text-xs mt-0.5" style={{ color: FT.textSecondary }}>
+          Tap the installed app icon and open FitTrack directly.
+        </div>
+      </div>
+      <button
+        onClick={toggle}
+        disabled={saving}
+        aria-pressed={enabled}
+        aria-label="Toggle default landing"
+        className="relative inline-flex items-center h-6 rounded-full w-11 transition-colors flex-shrink-0 disabled:opacity-60"
         style={{ background: enabled ? FT.accent : FT.border }}
       >
         <span
-          className="absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform"
-          style={{ left: enabled ? '14px' : '2px' }}
+          className="inline-block h-5 w-5 rounded-full bg-white shadow transition-transform"
+          style={{ transform: enabled ? 'translateX(1.375rem)' : 'translateX(0.125rem)' }}
         />
-      </span>
-      Default landing page
-    </button>
+      </button>
+    </div>
   )
 }

@@ -15,13 +15,19 @@ export function FirstLoginModal() {
   async function handleChoice(enabled: boolean) {
     setSubmitting(enabled ? 'yes' : 'no')
     try {
-      await fetch('/api/fit/default-landing', {
+      const res = await fetch('/api/fit/default-landing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled }),
       })
+      if (!res.ok) {
+        setSubmitting(null)
+        return
+      }
     } catch (err) {
       console.error(err)
+      setSubmitting(null)
+      return
     }
     router.replace('/fit')
     router.refresh()

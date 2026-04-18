@@ -1,11 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export function SignupForm() {
-  const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -37,8 +35,8 @@ export function SignupForm() {
         return
       }
 
-      router.replace('/fit?first=1')
-      router.refresh()
+      setPending(false)
+      window.location.href = '/fit?first=1'
     } catch {
       setError('Network error. Please try again.')
       setPending(false)
