@@ -79,12 +79,14 @@ export function WorkoutCard({
   comparisons,
   linkableExercises = false,
   editable = false,
+  basePath = '/fittrack',
 }: {
   workout: Workout
   exerciseLogs: ExerciseLog[]
   comparisons?: ExerciseComparison[]
   linkableExercises?: boolean
   editable?: boolean
+  basePath?: '/fittrack' | '/fit'
 }) {
   const wc = workoutColor(workout.type)
   const title = workout.title || workout.notes || 'Workout'
@@ -120,7 +122,7 @@ export function WorkoutCard({
             {workout.calories_burned != null && <span>{workout.calories_burned} cal</span>}
             {editable && (
               <Link
-                href={`/fittrack/train/${workout.id}/edit`}
+                href={`${basePath}/train/${workout.id}/edit`}
                 className="ml-auto text-xs font-medium underline-offset-2 hover:underline"
                 style={{ color: FT.accent }}
               >
@@ -135,7 +137,7 @@ export function WorkoutCard({
                 const comp = compMap.get(g.name)
                 const nameEl = linkableExercises ? (
                   <Link
-                    href={`/fittrack/train?exercise=${encodeURIComponent(g.name)}`}
+                    href={`${basePath}/train?exercise=${encodeURIComponent(g.name)}`}
                     className="text-xs font-semibold underline-offset-2 hover:underline"
                     style={{ color: FT.accent }}
                   >
@@ -173,7 +175,7 @@ export function WorkoutCard({
                     const el = linkableExercises ? (
                       <Link
                         key={name}
-                        href={`/fittrack/train?exercise=${encodeURIComponent(name)}`}
+                        href={`${basePath}/train?exercise=${encodeURIComponent(name)}`}
                         className="text-[11px] px-2 py-0.5 rounded-full underline-offset-2 hover:underline"
                         style={{ background: FT.borderSubtle, color: FT.textSecondary }}
                       >

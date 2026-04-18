@@ -9,10 +9,12 @@ export function WeekStrip({
   mondayDate,
   todayIdx,
   workouts,
+  basePath = '/fittrack',
 }: {
   mondayDate: string
   todayIdx: number
   workouts: DayWorkout[]
+  basePath?: '/fittrack' | '/fit'
 }) {
   const byDate = new Map(workouts.map((w) => [w.date, w]))
 
@@ -29,7 +31,7 @@ export function WeekStrip({
         return (
           <Link
             key={iso}
-            href={`/fittrack/train?day=${iso}`}
+            href={`${basePath}/train?day=${iso}`}
             className="flex flex-col items-center gap-1 flex-1 py-2 rounded-lg transition-colors"
             style={{
               background: isToday ? FT.accentBg : 'transparent',

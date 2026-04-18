@@ -10,8 +10,8 @@ import type {
 import { logMotraWorkoutFromForm } from '../workouts/actions'
 import { FT, WORKOUT_COLORS } from '@/app/fittrack/_components/tokens'
 
-type TypeChoice = 'auto' | 'push' | 'pull' | 'legs' | 'auxiliary' | 'cardio'
-const TYPE_CHOICES: TypeChoice[] = ['auto', 'push', 'pull', 'legs', 'auxiliary', 'cardio']
+type TypeChoice = 'auto' | 'push' | 'pull' | 'legs' | 'auxiliary' | 'cardio' | 'rest'
+const TYPE_CHOICES: TypeChoice[] = ['auto', 'push', 'pull', 'legs', 'auxiliary', 'cardio', 'rest']
 
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10)

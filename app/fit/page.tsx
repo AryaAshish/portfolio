@@ -5,39 +5,87 @@ import {
   getUserProfile,
   getTodayMacros,
   getWorkoutForDate,
+  getWorkoutsForWeek,
+  getExerciseLogsForWorkout,
+  getExerciseComparisons,
+  getAllWorkouts,
+  getExercisesForWorkoutType,
   getWeeklyGymStreak,
   getPlanPhases,
 } from '@/lib/fit-public/data'
-import { todayISO } from '@/fittrack/plan-config'
+import {
+  currentWeekMonday,
+  todayISO,
+  todayWeekIndex,
+} from '@/fittrack/plan-config'
 import {
   getCurrentPhase,
   getPlanDayNumber,
   getPlanStartISO,
   getPlanTotalDays,
 } from '@/lib/fittrack/plan-helpers'
-import { FT, phaseSwatch, workoutColor } from '@/app/fittrack/_components/tokens'
+import { FT, phaseSwatch } from '@/app/fittrack/_components/tokens'
+import { WorkoutLogFormPublic } from './_components/WorkoutLogFormPublic'
+import { WorkoutCard } from '@/app/fittrack/_components/WorkoutCard'
+import { WeekStrip } from '@/app/fittrack/_components/WeekStrip'
 import { OverviewProgressBar } from '@/app/fittrack/_components/OverviewProgressBar'
+import { DayTypePicker } from '@/app/fittrack/_components/DayTypePicker'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'FitTrack' }
 
+const ROTATION = ['push', 'pull', 'legs', 'auxiliary', 'cardio']
+
+function inferNextType(lastType: string | null): string {
+  if (!lastType) return 'push'
+  const idx = ROTATION.indexOf(lastType.toLowerCase())
+  if (idx === -1) return 'push'
+  return ROTATION[(idx + 1) % ROTATION.length]
+}
+
 export default async function FitOverviewPage() {
   const today = todayISO()
+  const mondayDate = currentWeekMonday()
   const client = createFitPublicServerClient()
 
-  const [profile, todayMacros, todayWorkout, streak, planPhases] = await Promise.all([
-    getUserProfile(client),
-    getTodayMacros(client, today),
-    getWorkoutForDate(client, today),
-    getWeeklyGymStreak(client),
-    getPlanPhases(client),
-  ])
+  const [profile, todayMacros, todayWorkout, weekWorkouts, recentWorkouts, streak, planPhases] =
+    await Promise.all([
+      getUserProfile(client),
+      getTodayMacros(client, today),
+      getWorkoutForDate(client, today),
+      getWorkoutsForWeek(client, mondayDate),
+      getAllWorkouts(client, 3),
+      getWeeklyGymStreak(client),
+      getPlanPhases(client),
+    ])
+
+  const exerciseLogs = todayWorkout
+    ? await getExerciseLogsForWorkout(client, todayWorkout.id)
+    : []
+
+  const exerciseNames = [...new Set(exerciseLogs.map((l) => l.exercise_name))]
+  const comparisons = exerciseNames.length > 0
+    ? await getExerciseComparisons(client, exerciseNames, today)
+    : []
+
+  const lastType = recentWorkouts.length > 0 ? recentWorkouts[0].type : null
+  const inferredType = todayWorkout ? todayWorkout.type : inferNextType(lastType)
+
+  const allTypes = ['push', 'pull', 'legs', 'auxiliary', 'cardio']
+  const exercisesByType: Record<string, Awaited<ReturnType<typeof getExercisesForWorkoutType>>> = {}
+  const typeResults = await Promise.all(
+    allTypes.map((t) => getExercisesForWorkoutType(client, t))
+  )
+  allTypes.forEach((t, i) => {
+    exercisesByType[t] = typeResults[i]
+  })
 
   const activePhase = getCurrentPhase(today, planPhases)
   const planStartISO = getPlanStartISO(planPhases)
   const totalPlanDays = getPlanTotalDays(planPhases)
   const dayNum = planStartISO ? getPlanDayNumber(today, planStartISO) : 1
   const swatch = activePhase ? phaseSwatch(activePhase.phase_number) : phaseSwatch(1)
+  const weekIdx = todayWeekIndex()
 
   const proteinTarget = profile?.daily_protein_target ?? 145
   const calorieTarget = profile?.daily_calorie_target ?? 1900
@@ -62,9 +110,13 @@ export default async function FitOverviewPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium" style={{ color: FT.textMuted }}>
+        <Link
+          href="/fit/plan"
+          className="text-xs font-medium hover:underline"
+          style={{ color: FT.textMuted }}
+        >
           Day {dayNum} of {totalPlanDays || '-'} &middot; {activePhase?.name ?? 'No phase'} phase
-        </span>
+        </Link>
         <div className="flex items-center gap-1.5">
           {streak.thisWeek.target > 0 && (
             <span
@@ -74,6 +126,7 @@ export default async function FitOverviewPage() {
                 color: streak.thisWeek.met ? FT.success : FT.textSecondary,
                 border: `1px solid ${FT.border}`,
               }}
+              title="Gym days this week (push / pull / legs / auxiliary)"
             >
               {streak.thisWeek.count}/{streak.thisWeek.target} this week
             </span>
@@ -82,6 +135,7 @@ export default async function FitOverviewPage() {
             <span
               className="text-xs font-bold px-2 py-0.5 rounded-full"
               style={{ background: FT.warningBg, color: FT.warning }}
+              title="Consecutive weeks hitting your gym target"
             >
               {streak.weeksStreak}w streak
             </span>
@@ -89,36 +143,30 @@ export default async function FitOverviewPage() {
         </div>
       </div>
 
+      <WorkoutLogFormPublic hasWorkoutToday={!!todayWorkout} />
+
       {todayWorkout && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: FT.textMuted }}>
+            Today
+          </p>
+          <WorkoutCard workout={todayWorkout} exerciseLogs={exerciseLogs} comparisons={comparisons} linkableExercises editable basePath="/fit" />
+        </div>
+      )}
+
+      <DayTypePicker inferredType={inferredType} exercisesByType={exercisesByType} />
+
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: FT.textMuted }}>
+          This Week
+        </p>
         <div
           className="rounded-xl p-3"
           style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
         >
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: FT.textMuted }}>
-              Today&apos;s Workout
-            </p>
-            <span
-              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-              style={{
-                background: workoutColor(todayWorkout.type ?? '').bg,
-                color: workoutColor(todayWorkout.type ?? '').text,
-              }}
-            >
-              {workoutColor(todayWorkout.type ?? '').label}
-            </span>
-          </div>
-          {todayWorkout.title && (
-            <p className="text-sm font-medium" style={{ color: FT.textPrimary }}>
-              {todayWorkout.title}
-            </p>
-          )}
-          <div className="flex gap-3 mt-1 text-xs" style={{ color: FT.textMuted }}>
-            {todayWorkout.duration_mins && <span>{todayWorkout.duration_mins} min</span>}
-            {todayWorkout.volume_kg && <span>{Number(todayWorkout.volume_kg).toLocaleString()} kg</span>}
-          </div>
+          <WeekStrip mondayDate={mondayDate} todayIdx={weekIdx} workouts={weekWorkouts} basePath="/fit" />
         </div>
-      )}
+      </div>
 
       <div
         className="rounded-xl p-3"
@@ -132,24 +180,37 @@ export default async function FitOverviewPage() {
             <span style={{ color: FT.textSecondary }}>Protein</span>
             <span className="font-semibold" style={{ color: FT.textPrimary }}>
               {Math.round(todayMacros.protein_g)}
-              <span className="font-normal" style={{ color: FT.textMuted }}> /{proteinTarget}g</span>
+              <span className="font-normal" style={{ color: FT.textMuted }}>
+                {' '}/{proteinTarget}g
+              </span>
             </span>
           </div>
-          <OverviewProgressBar value={todayMacros.protein_g} max={proteinTarget} color={FT.accent} />
+          <OverviewProgressBar
+            value={todayMacros.protein_g}
+            max={proteinTarget}
+            color={FT.accent}
+          />
           <div className="flex items-center justify-between text-sm">
             <span style={{ color: FT.textSecondary }}>Calories</span>
             <span className="font-semibold" style={{ color: FT.textPrimary }}>
               {Math.round(todayMacros.calories)}
-              <span className="font-normal" style={{ color: FT.textMuted }}> /{calorieTarget}</span>
+              <span className="font-normal" style={{ color: FT.textMuted }}>
+                {' '}/{calorieTarget}
+              </span>
             </span>
           </div>
-          <OverviewProgressBar value={todayMacros.calories} max={calorieTarget} color="#7c3aed" />
+          <OverviewProgressBar
+            value={todayMacros.calories}
+            max={calorieTarget}
+            color="#7c3aed"
+          />
         </div>
       </div>
 
       {activePhase && (
-        <div
-          className="rounded-xl p-3"
+        <Link
+          href="/fit/plan"
+          className="block rounded-xl p-3"
           style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
         >
           <div className="flex items-center justify-between mb-1.5">
@@ -169,25 +230,8 @@ export default async function FitOverviewPage() {
               {activePhase.focus}
             </p>
           )}
-        </div>
+        </Link>
       )}
-
-      <div className="flex gap-2">
-        <Link
-          href="/fit/body"
-          className="flex-1 rounded-xl p-3 text-center text-sm font-medium"
-          style={{ background: FT.surface, border: `1px solid ${FT.border}`, color: FT.accent }}
-        >
-          Body &amp; Meals
-        </Link>
-        <Link
-          href="/fit/train"
-          className="flex-1 rounded-xl p-3 text-center text-sm font-medium"
-          style={{ background: FT.surface, border: `1px solid ${FT.border}`, color: FT.accent }}
-        >
-          Train
-        </Link>
-      </div>
     </div>
   )
 }
