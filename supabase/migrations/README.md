@@ -45,4 +45,4 @@ psql "$FITTRACK_PUBLIC_DB_URL" -f supabase/migrations/fittrack-public/0000_init.
 # same — multi-user schema with RLS enabled
 ```
 
-`0000_init.sql` is idempotent against an already-populated database, so it's safe to re-run.
+`0000_init.sql` for `portfolio/` and `fittrack/` is idempotent (`CREATE TABLE IF NOT EXISTS`). The `fittrack-public/` baseline uses `CREATE POLICY` without `IF NOT EXISTS`, so re-running it on a database that already has the policies will fail. To re-apply, drop existing policies first or use `apply_migration` which handles this.
