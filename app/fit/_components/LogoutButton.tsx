@@ -1,22 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { FT } from '@/app/fittrack/_components/tokens'
 
 export function LogoutButton() {
-  const router = useRouter()
   const [pending, setPending] = useState(false)
 
   async function handleLogout() {
     setPending(true)
     try {
-      await fetch('/api/fit/auth/logout', { method: 'POST' })
+      const res = await fetch('/api/fit/auth/logout', { method: 'POST' })
+      if (!res.ok) {
+        setPending(false)
+        return
+      }
     } catch (err) {
       console.error(err)
+      setPending(false)
+      return
     }
-    router.replace('/')
-    router.refresh()
+    window.location.href = '/'
   }
 
   return (
