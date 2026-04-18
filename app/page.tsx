@@ -7,6 +7,7 @@ import { OpenFitTrackLink } from '@/app/fittrack/_components/OpenFitTrackLink'
 import { getHomeContent } from '@/lib/home'
 import { getRecentPosts, getRecentLifeMoments, getAboutTeaser } from '@/lib/homepage'
 import { verifyCookie } from '@/lib/auth/cookie'
+import { createFitPublicServerClient } from '@/lib/fit-public/client-server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -27,6 +28,21 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   if (ftSession && ftSession.role === 'fittrack' && ftDefault) {
     redirect('/fittrack')
+  }
+
+  if (!publicMode && !ftSession) {
+    const fitDefault = cookieStore.get('fit_default_landing')?.value === '1'
+    if (fitDefault) {
+      try {
+        const sb = createFitPublicServerClient()
+        const { data: { user } } = await sb.auth.getUser()
+        if (user) {
+          redirect('/fit')
+        }
+      } catch {
+        // env vars may not be set yet; silently skip
+      }
+    }
   }
 
   const showOpenFitTrack = !!ftSession && ftSession.role === 'fittrack'
