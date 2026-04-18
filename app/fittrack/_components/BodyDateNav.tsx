@@ -4,9 +4,10 @@ import { useRouter } from 'next/navigation'
 import { FT } from './tokens'
 
 function shiftDate(iso: string, days: number): string {
-  const d = new Date(iso + 'T00:00:00')
-  d.setDate(d.getDate() + days)
-  return d.toISOString().split('T')[0]
+  const [y, m, d] = iso.split('-').map(Number)
+  const ms = Date.UTC(y, m - 1, d + days)
+  const dt = new Date(ms)
+  return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, '0')}-${String(dt.getUTCDate()).padStart(2, '0')}`
 }
 
 function formatDisplay(iso: string, todayIso: string): string {
@@ -15,15 +16,15 @@ function formatDisplay(iso: string, todayIso: string): string {
   return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
 }
 
-export function BodyDateNav({ date, today }: { date: string; today: string }) {
+export function BodyDateNav({ date, today, basePath = '/fittrack' }: { date: string; today: string; basePath?: string }) {
   const router = useRouter()
   const isToday = date === today
 
   function go(iso: string) {
     if (iso === today) {
-      router.push('/fittrack/body')
+      router.push(`${basePath}/body`)
     } else {
-      router.push(`/fittrack/body?date=${iso}`)
+      router.push(`${basePath}/body?date=${iso}`)
     }
   }
 

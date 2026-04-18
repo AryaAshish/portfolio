@@ -3,6 +3,9 @@ import { createFitPublicServerClient } from '@/lib/fit-public/client-server'
 import {
   getUserProfile,
   getTodayMacros,
+  getMealsForDate,
+  getMealTemplates,
+  getFoodLibrary,
   getWeightTrend,
   getLatestWeight,
   getHealthMarkers,
@@ -13,6 +16,9 @@ import { OverviewProgressBar } from '@/app/fittrack/_components/OverviewProgress
 import { WeightChart } from '@/app/fittrack/_components/WeightChart'
 import { WeightLogForm } from './WeightLogFormPublic'
 import { BodyDateNav } from '@/app/fittrack/_components/BodyDateNav'
+import { MealFormPublic } from '@/app/fit/_components/MealFormPublic'
+import { MealListPublic } from '@/app/fit/_components/MealListPublic'
+import { WeeklyTargetEditorPublic } from '@/app/fit/_components/WeeklyTargetEditorPublic'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Body' }
@@ -36,10 +42,13 @@ export default async function FitBodyPage({
 
   const client = createFitPublicServerClient()
 
-  const [profile, macros, weightData, latestWeight, markers] =
+  const [profile, macros, meals, templates, foods, weightData, latestWeight, markers] =
     await Promise.all([
       getUserProfile(client),
       getTodayMacros(client, selectedDate),
+      getMealsForDate(client, selectedDate),
+      getMealTemplates(client),
+      getFoodLibrary(client),
       getWeightTrend(client, 90),
       getLatestWeight(client),
       getHealthMarkers(client),
@@ -52,6 +61,7 @@ export default async function FitBodyPage({
   const flagged = markers.filter(
     (m) => m.status === 'critical' || m.status === 'high' || m.status === 'low'
   )
+  const allMarkers = markers
 
   const dateLabel = isToday
     ? "Today\u2019s Macros"
@@ -59,7 +69,7 @@ export default async function FitBodyPage({
 
   return (
     <div className="space-y-5">
-      <BodyDateNav date={selectedDate} today={today} />
+      <BodyDateNav date={selectedDate} today={today} basePath="/fit" />
 
       <div
         className="rounded-xl p-3"
@@ -75,6 +85,20 @@ export default async function FitBodyPage({
           <MacroRow label="Fat" value={macros.fat_g} target={null} color="#be123c" unit="g" />
         </div>
       </div>
+
+      <div
+        className="rounded-xl p-3"
+        style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
+      >
+        <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: FT.textMuted }}>
+          Log a Meal
+        </p>
+        <MealFormPublic date={selectedDate} templates={templates} foods={foods} />
+      </div>
+
+      <MealListPublic meals={meals} isToday={isToday} />
+
+      <WeeklyTargetEditorPublic current={profile?.weekly_gym_target ?? 3} />
 
       <div
         className="rounded-xl p-3"
@@ -131,6 +155,39 @@ export default async function FitBodyPage({
             })}
           </div>
         </div>
+      )}
+
+      {allMarkers.length > 0 && (
+        <details>
+          <summary
+            className="text-xs font-semibold uppercase tracking-wide cursor-pointer"
+            style={{ color: FT.textMuted }}
+          >
+            All Health Markers ({allMarkers.length})
+          </summary>
+          <div className="mt-2 space-y-1">
+            {allMarkers.map((m) => {
+              const sc = STATUS_COLORS[m.status ?? 'normal'] ?? STATUS_COLORS.normal
+              return (
+                <div
+                  key={m.id}
+                  className="flex items-center justify-between rounded-lg px-3 py-2"
+                  style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
+                >
+                  <div>
+                    <p className="text-xs font-medium" style={{ color: FT.textPrimary }}>{m.marker_name}</p>
+                    <p className="text-[10px]" style={{ color: FT.textMuted }}>{m.date}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-semibold" style={{ color: sc.text }}>
+                      {m.value} {m.unit}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </details>
       )}
     </div>
   )
