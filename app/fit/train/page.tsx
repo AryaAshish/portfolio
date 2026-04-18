@@ -11,8 +11,8 @@ import {
   getExerciseSessionHistory,
 } from '@/lib/fit-public/data'
 import { FT, workoutColor } from '@/app/fittrack/_components/tokens'
+import { WorkoutCard } from '@/app/fittrack/_components/WorkoutCard'
 import { ExerciseDetail } from '@/app/fittrack/_components/ExerciseDetail'
-import { WorkoutLogFormPublic } from '../_components/WorkoutLogFormPublic'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Train' }
@@ -64,27 +64,6 @@ function groupByWeek(workouts: WorkoutData): WeekGroup[] {
   return Array.from(map.values()).sort((a, b) => b.monday.localeCompare(a.monday))
 }
 
-function formatSet(s: any): string {
-  if (s.duration_secs != null) {
-    const m = Math.floor(s.duration_secs / 60)
-    const sec = s.duration_secs % 60
-    return `${m}:${String(sec).padStart(2, '0')}`
-  }
-  const prefix = s.set_type === 'warmup' ? 'W ' : s.set_type === 'dropset' ? 'D ' : ''
-  return `${prefix}${s.reps ?? 0}x${s.weight_kg ?? 0}kg`
-}
-
-function groupByExercise(logs: any[]): { name: string; sets: any[] }[] {
-  const groups: { name: string; sets: any[] }[] = []
-  const seen = new Map<string, { name: string; sets: any[] }>()
-  for (const log of logs) {
-    let g = seen.get(log.exercise_name)
-    if (!g) { g = { name: log.exercise_name, sets: [] }; seen.set(log.exercise_name, g); groups.push(g) }
-    g.sets.push(log)
-  }
-  return groups.sort((a, b) => a.name.localeCompare(b.name))
-}
-
 export default async function FitTrainPage({
   searchParams,
 }: {
@@ -115,8 +94,7 @@ export default async function FitTrainPage({
 
   const calByDate = new Map(calendarWorkouts.map((w: any) => [w.date, w]))
 
-  type WorkoutWithLogs = { workout: any; logs: any[] }
-  let selectedWorkouts: WorkoutWithLogs[] = []
+  let selectedWorkouts: { workout: any; logs: any[] }[] = []
   if (selectedDay) {
     const dayWorkouts = await getAllWorkoutsForDate(client, selectedDay)
     selectedWorkouts = await Promise.all(
@@ -126,8 +104,6 @@ export default async function FitTrainPage({
       }))
     )
   }
-
-  const hasWorkoutToday = allWorkouts.some((w) => w.date === now.toISOString().split('T')[0])
 
   const startOfMonth = new Date(calYear, calMonth - 1, 1)
   const daysInMonth = new Date(calYear, calMonth, 0).getDate()
@@ -146,8 +122,6 @@ export default async function FitTrainPage({
 
   return (
     <div className="space-y-5">
-      <WorkoutLogFormPublic hasWorkoutToday={hasWorkoutToday} />
-
       <div className="rounded-xl p-3" style={{ background: FT.surface, border: `1px solid ${FT.border}` }}>
         <div className="flex items-center justify-between mb-3">
           <Link href={`/fit/train?year=${prevY}&month=${prevM}`} className="p-1 rounded" style={{ color: FT.textMuted }}>←</Link>
@@ -191,42 +165,9 @@ export default async function FitTrainPage({
           <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: FT.textMuted }}>{formatDate(selectedDay)}</p>
           {selectedWorkouts.length > 0 ? (
             <div className="space-y-2">
-              {selectedWorkouts.map(({ workout, logs }) => {
-                const wc = workoutColor(workout.type)
-                const groups = groupByExercise(logs)
-                return (
-                  <div key={workout.id} className="rounded-xl overflow-hidden" style={{ border: `1px solid ${FT.border}`, background: FT.surface }}>
-                    <div className="flex">
-                      <div className="w-1 flex-shrink-0" style={{ background: wc.text }} />
-                      <div className="flex-1 p-3">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <p className="text-sm font-semibold leading-snug line-clamp-2" style={{ color: FT.textPrimary }}>
-                            {workout.title || workout.notes || 'Workout'}
-                          </p>
-                          <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style={{ background: wc.bg, color: wc.text }}>{wc.label}</span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3 text-xs mb-2" style={{ color: FT.textMuted }}>
-                          {workout.duration_mins != null && <span>{workout.duration_mins} min</span>}
-                          {workout.volume_kg && <span>{formatVolume(workout.volume_kg)}</span>}
-                          <Link href={`/fit/train/${workout.id}/edit`} className="ml-auto text-xs font-medium underline-offset-2 hover:underline" style={{ color: FT.accent }}>Edit</Link>
-                        </div>
-                        {groups.length > 0 && (
-                          <div className="space-y-1.5 pt-1" style={{ borderTop: `1px solid ${FT.borderSubtle}` }}>
-                            {groups.map((g) => (
-                              <div key={g.name} className="flex items-start justify-between gap-2">
-                                <div className="flex-1 min-w-0">
-                                  <Link href={`/fit/train?exercise=${encodeURIComponent(g.name)}`} className="text-xs font-semibold underline-offset-2 hover:underline" style={{ color: FT.accent }}>{g.name} →</Link>
-                                  <p className="text-xs truncate" style={{ color: FT.textMuted }}>{g.sets.map(formatSet).join(' · ')}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
+              {selectedWorkouts.map(({ workout, logs }) => (
+                <WorkoutCard key={workout.id} workout={workout} exerciseLogs={logs} linkableExercises editable basePath="/fit" />
+              ))}
             </div>
           ) : (
             <div className="rounded-xl p-4 text-center text-sm" style={{ background: FT.surface, border: `1px solid ${FT.border}`, color: FT.textMuted }}>Rest day</div>
@@ -260,6 +201,7 @@ export default async function FitTrainPage({
                           <span>{formatDate(w.date)}</span>
                           {w.duration_mins != null && <span>{w.duration_mins} min</span>}
                           {vol && <span>{vol}</span>}
+                          {w.calories_burned != null && <span>{w.calories_burned} cal</span>}
                         </div>
                       </div>
                     </Link>
