@@ -47,6 +47,7 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith('/fit')) {
     if (FIT_PUBLIC_PATHS.has(pathname)) {
       const response = NextResponse.next()
+      response.headers.set('x-fit-pathname', pathname)
       const client = createFitPublicMiddlewareClient(req, response)
       if (client) {
         const { data: { user } } = await client.auth.getUser()
@@ -61,6 +62,7 @@ export async function middleware(req: NextRequest) {
     }
 
     const response = NextResponse.next()
+    response.headers.set('x-fit-pathname', pathname)
     const client = createFitPublicMiddlewareClient(req, response)
     if (!client) {
       return new NextResponse(null, { status: 404 })

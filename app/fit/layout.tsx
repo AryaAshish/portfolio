@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
+import { headers } from 'next/headers'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { FitNav } from '@/app/fittrack/_components/FitNav'
 import { FirstLoginModal } from './_components/FirstLoginModal'
@@ -26,11 +27,28 @@ export const metadata: Metadata = {
   description: 'Personal fitness tracker',
 }
 
+const AUTH_PATHS = ['/fit/login', '/fit/signup', '/fit/forgot-password', '/fit/reset-password']
+
 export default function FitPublicLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const headersList = headers()
+  const pathname = headersList.get('x-fit-pathname') || ''
+  const isAuthPage = AUTH_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))
+
+  if (isAuthPage) {
+    return (
+      <div
+        className={`${spaceGrotesk.variable} ${inter.variable}`}
+        style={{ background: FT.canvas, fontFamily: 'var(--font-inter-fit), Inter, sans-serif' }}
+      >
+        {children}
+      </div>
+    )
+  }
+
   return (
     <div
       className={`${spaceGrotesk.variable} ${inter.variable} fixed inset-0 z-50 flex flex-col`}

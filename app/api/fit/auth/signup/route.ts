@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
       } catch (deleteErr) {
         console.error(deleteErr)
       }
+      await supabase.auth.signOut()
       return NextResponse.json({ ok: false, error: 'Account setup failed. Please try again.' }, { status: 500 })
     }
 
