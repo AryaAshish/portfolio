@@ -1,11 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { FT } from './tokens'
 
 export function LogoutButton() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   async function handleLogout() {
@@ -15,8 +13,7 @@ export function LogoutButton() {
     } catch (err) {
       console.error(err)
     }
-    router.replace('/')
-    router.refresh()
+    window.location.href = '/'
   }
 
   return (

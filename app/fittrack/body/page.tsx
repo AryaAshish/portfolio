@@ -15,6 +15,7 @@ import { OverviewProgressBar } from '../_components/OverviewProgressBar'
 import { MealForm } from '../_components/MealForm'
 import { MealList } from '../_components/MealList'
 import { WeightChart } from '../_components/WeightChart'
+import { WeightLogForm } from '../_components/WeightLogForm'
 import { BodyDateNav } from '../_components/BodyDateNav'
 import { WeeklyTargetEditor } from '../_components/WeeklyTargetEditor'
 
@@ -100,6 +101,17 @@ export default async function BodyPage({
 
       {/* Weekly Gym Target */}
       <WeeklyTargetEditor current={profile?.weekly_gym_target ?? 3} />
+
+      {/* Log Weight */}
+      <div
+        className="rounded-xl p-3"
+        style={{ background: FT.surface, border: `1px solid ${FT.border}` }}
+      >
+        <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: FT.textMuted }}>
+          Log Weight
+        </p>
+        <WeightLogForm date={selectedDate} latestKg={latestWeight?.weight_kg ?? null} />
+      </div>
 
       {/* Weight Trend */}
       <div

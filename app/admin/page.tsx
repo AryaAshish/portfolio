@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { BlogPost } from '@/types'
 
 export default function AdminPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
   useEffect(() => {
     fetchPosts()
@@ -32,8 +30,7 @@ export default function AdminPage() {
     } catch (err) {
       console.error(err)
     }
-    router.replace('/admin/login')
-    router.refresh()
+    window.location.href = '/admin/login'
   }
 
   const handleDelete = async (slug: string) => {

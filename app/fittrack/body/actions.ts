@@ -1,22 +1,41 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { updateWeeklyGymTarget } from '@/lib/fittrack-supabase'
+import { upsertWeight, updateWeeklyGymTarget } from '@/lib/fittrack-supabase'
+import { normalizeWeightInput } from '@/lib/fittrack/weight-input'
+
+export async function logWeightAction(formData: FormData) {
+  const raw = {
+    date: formData.get('date') as string | undefined,
+    weight_kg: formData.get('weight_kg') as string | undefined,
+    body_fat_pct: formData.get('body_fat_pct') as string | undefined,
+    notes: formData.get('notes') as string | undefined,
+  }
+
+  const result = normalizeWeightInput(raw)
+  if (!result.ok) {
+    return { ok: false as const, errors: result.errors }
+  }
+
+  try {
+    await upsertWeight(result.data)
+    return { ok: true as const }
+  } catch (err) {
+    console.error(err)
+    return {
+      ok: false as const,
+      errors: [{ field: '_form', message: 'Failed to save. Please try again.' }],
+    }
+  }
+}
 
 export async function updateWeeklyTargetAction(
   target: number
 ): Promise<{ ok: true } | { ok: false; message: string }> {
-  if (!Number.isFinite(target)) {
-    return { ok: false, message: 'Invalid target' }
-  }
-  const t = Math.max(0, Math.min(7, Math.floor(target)))
   try {
-    await updateWeeklyGymTarget(t)
-    revalidatePath('/fittrack')
-    revalidatePath('/fittrack/body')
+    await updateWeeklyGymTarget(target)
     return { ok: true }
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    return { ok: false, message: msg }
+  } catch (err) {
+    console.error(err)
+    return { ok: false, message: 'Failed to update target.' }
   }
 }

@@ -78,7 +78,13 @@ export function Footer() {
         </div>
         <div className="mt-8 pt-8 border-t border-ocean-dark/30 text-center text-sm text-neutral-white/70">
           <p>&copy; {new Date().getFullYear()} Portfolio. All rights reserved.</p>
-          <p className="mt-2 text-xs">
+          <p className="mt-2 text-xs space-x-3">
+            <Link
+              href="/fit"
+              className="text-neutral-white/40 hover:text-teal-light transition-colors"
+            >
+              FitTrack
+            </Link>
             <Link
               href="/admin/login"
               className="text-neutral-white/40 hover:text-teal-light transition-colors"

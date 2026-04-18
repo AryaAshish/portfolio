@@ -125,7 +125,31 @@ function parseSetLine(
       duration_secs: null,
     }
   }
-  const cardio = line.match(/^(\d+):\s*(\d{1,2}):(\d{2})\s*$/i)
+  const bwReps = line.match(/^(\d+):\s*(\d+)\s*reps?\s*x\s*BW\s*$/i)
+  if (bwReps) {
+    return {
+      date,
+      exercise_name: exerciseName,
+      set_number: parseInt(bwReps[1], 10),
+      set_type: 'working',
+      reps: parseInt(bwReps[2], 10),
+      weight_kg: null,
+      duration_secs: null,
+    }
+  }
+  const dist = line.match(/^(\d+):\s*([\d.]+)\s*m\s*x\s*([\d.]+)\s*kg/i)
+  if (dist) {
+    return {
+      date,
+      exercise_name: exerciseName,
+      set_number: parseInt(dist[1], 10),
+      set_type: 'working',
+      reps: null,
+      weight_kg: parseFloat(dist[3]),
+      duration_secs: null,
+    }
+  }
+  const cardio = line.match(/^(\d+):\s*(\d{1,2}):(\d{2})(\s*x\s*BW)?\s*$/i)
   if (cardio) {
     const mins = parseInt(cardio[2], 10)
     const secs = parseInt(cardio[3], 10)

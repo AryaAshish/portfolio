@@ -4,9 +4,11 @@ This folder is the source of truth for every schema change applied to the two Su
 
 ```
 supabase/migrations/
-├── portfolio/        # musafir.codes portfolio (NEXT_PUBLIC_SUPABASE_URL)
+├── portfolio/           # musafir.codes portfolio (NEXT_PUBLIC_SUPABASE_URL)
 │   └── 0000_init.sql
-└── fittrack/         # private FitTrack app (FITTRACK_SUPABASE_URL)
+├── fittrack/            # owner-only FitTrack (FITTRACK_SUPABASE_URL)
+│   └── 0000_init.sql
+└── fittrack-public/     # multi-user FitTrack (NEXT_PUBLIC_FITTRACK_PUBLIC_SUPABASE_URL)
     └── 0000_init.sql
 ```
 
@@ -23,11 +25,11 @@ The short version:
 
 ## Adding a migration
 
-1. Write a new file under `portfolio/` or `fittrack/` with a `YYYYMMDDHHMM_short_description.sql` prefix, for example `202604190900_add_owner_id_to_meals.sql`.
+1. Write a new file under `portfolio/`, `fittrack/`, or `fittrack-public/` with a `YYYYMMDDHHMM_short_description.sql` prefix, for example `202604190900_add_owner_id_to_meals.sql`.
 2. Wrap DDL in `IF NOT EXISTS` / `IF EXISTS` so the file is idempotent.
 3. Open a PR with the migration and the code that consumes it in the same change.
 4. Once merged, apply it to the target project. Two options:
-   - Supabase MCP `apply_migration` (FitTrack only — the MCP is configured for that project).
+   - Supabase MCP `apply_migration` (FitTrack and FitTrack-Public — both are configured).
    - `psql "$PORTFOLIO_DB_URL" -f supabase/migrations/portfolio/<file>.sql` for portfolio, using the connection string from 1Password.
 
 ## Rebuilding a project from scratch
@@ -38,6 +40,9 @@ psql "$PORTFOLIO_DB_URL" -f supabase/migrations/portfolio/0000_init.sql
 
 psql "$FITTRACK_DB_URL" -f supabase/migrations/fittrack/0000_init.sql
 # same — apply every subsequent file in lexicographic order
+
+psql "$FITTRACK_PUBLIC_DB_URL" -f supabase/migrations/fittrack-public/0000_init.sql
+# same — multi-user schema with RLS enabled
 ```
 
-`0000_init.sql` is idempotent against an already-populated database, so it's safe to re-run.
+`0000_init.sql` for `portfolio/` and `fittrack/` is idempotent (`CREATE TABLE IF NOT EXISTS`). The `fittrack-public/` baseline uses `CREATE POLICY` without `IF NOT EXISTS`, so re-running it on a database that already has the policies will fail. To re-apply, drop existing policies first or use `apply_migration` which handles this.
