@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   dump:
-    name: pg_dump both projects
+    name: pg_dump all projects
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -30,9 +30,19 @@ jobs:
           echo "stamp=$STAMP" >> "$GITHUB_OUTPUT"
           echo "artifact=fittrack-backup-$STAMP" >> "$GITHUB_OUTPUT"
 
+      - name: Verify backup passphrase
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::BACKUP_PASSPHRASE secret is not set"
+            exit 1
+          fi
+
       - name: Dump FitTrack database
         env:
           FITTRACK_DB_URL: ${{ secrets.FITTRACK_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
           if [ -z "$FITTRACK_DB_URL" ]; then
             echo "::error::FITTRACK_DB_URL secret is not set"
@@ -43,11 +53,30 @@ jobs:
             --no-privileges \
             --format=custom \
             --file=fittrack.dump
-          gzip -9 fittrack.dump
+          gpg --batch --yes -c --passphrase "$BACKUP_PASSPHRASE" fittrack.dump
+          rm fittrack.dump
+
+      - name: Dump FitTrack Public database
+        env:
+          FITTRACK_PUBLIC_DB_URL: ${{ secrets.FITTRACK_PUBLIC_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$FITTRACK_PUBLIC_DB_URL" ]; then
+            echo "::error::FITTRACK_PUBLIC_DB_URL secret is not set"
+            exit 1
+          fi
+          pg_dump "$FITTRACK_PUBLIC_DB_URL" \
+            --no-owner \
+            --no-privileges \
+            --format=custom \
+            --file=fittrack-public.dump
+          gpg --batch --yes -c --passphrase "$BACKUP_PASSPHRASE" fittrack-public.dump
+          rm fittrack-public.dump
 
       - name: Dump Portfolio database
         env:
           PORTFOLIO_DB_URL: ${{ secrets.PORTFOLIO_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
           if [ -z "$PORTFOLIO_DB_URL" ]; then
             echo "::error::PORTFOLIO_DB_URL secret is not set"
@@ -58,14 +87,16 @@ jobs:
             --no-privileges \
             --format=custom \
             --file=portfolio.dump
-          gzip -9 portfolio.dump
+          gpg --batch --yes -c --passphrase "$BACKUP_PASSPHRASE" portfolio.dump
+          rm portfolio.dump
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.meta.outputs.artifact }}
           path: |
-            fittrack.dump.gz
-            portfolio.dump.gz
+            fittrack.dump.gpg
+            fittrack-public.dump.gpg
+            portfolio.dump.gpg
           retention-days: 90
           if-no-files-found: error
