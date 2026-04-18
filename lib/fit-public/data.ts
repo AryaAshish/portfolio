@@ -28,9 +28,9 @@ async function requireUserId(client: Client): Promise<string> {
 }
 
 function daysAgoStr(days: number): string {
-  const d = new Date()
-  d.setDate(d.getDate() - days)
-  return d.toISOString().split('T')[0]
+  const now = new Date()
+  const utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - days)
+  return new Date(utc).toISOString().split('T')[0]
 }
 
 function shiftISODate(iso: string, days: number): string {
@@ -129,13 +129,15 @@ export async function addMealWithComponents(client: Client, entry: {
 }
 
 export async function updateMeal(client: Client, id: string, updates: Partial<Omit<Meal, 'id' | 'created_at'>>): Promise<Meal> {
-  const { data, error } = await client.from('meals').update(updates).eq('id', id).select().single()
+  const uid = await requireUserId(client)
+  const { data, error } = await client.from('meals').update(updates).eq('id', id).eq('user_id', uid).select().single()
   if (error) throw error
   return data as Meal
 }
 
 export async function deleteMeal(client: Client, id: string): Promise<void> {
-  const { error } = await client.from('meals').delete().eq('id', id)
+  const uid = await requireUserId(client)
+  const { error } = await client.from('meals').delete().eq('id', id).eq('user_id', uid)
   if (error) throw error
 }
 
@@ -184,12 +186,14 @@ export async function saveWorkout(client: Client, entry: Omit<Workout, 'id' | 'c
 }
 
 export async function updateWorkout(client: Client, id: string, patch: Partial<Pick<Workout, 'type' | 'title' | 'notes'>>): Promise<void> {
-  const { error } = await client.from('workouts').update(patch).eq('id', id)
+  const uid = await requireUserId(client)
+  const { error } = await client.from('workouts').update(patch).eq('id', id).eq('user_id', uid)
   if (error) throw error
 }
 
 export async function deleteWorkoutById(client: Client, id: string): Promise<void> {
-  const { error } = await client.from('workouts').delete().eq('id', id)
+  const uid = await requireUserId(client)
+  const { error } = await client.from('workouts').delete().eq('id', id).eq('user_id', uid)
   if (error) throw error
 }
 
@@ -246,12 +250,14 @@ export async function insertExerciseLog(client: Client, log: Omit<ExerciseLog, '
 }
 
 export async function updateExerciseLog(client: Client, id: string, patch: Partial<Pick<ExerciseLog, 'reps' | 'weight_kg' | 'set_type' | 'duration_secs' | 'set_number' | 'exercise_name'>>): Promise<void> {
-  const { error } = await client.from('exercise_logs').update(patch).eq('id', id)
+  const uid = await requireUserId(client)
+  const { error } = await client.from('exercise_logs').update(patch).eq('id', id).eq('user_id', uid)
   if (error) throw error
 }
 
 export async function deleteExerciseLog(client: Client, id: string): Promise<void> {
-  const { error } = await client.from('exercise_logs').delete().eq('id', id)
+  const uid = await requireUserId(client)
+  const { error } = await client.from('exercise_logs').delete().eq('id', id).eq('user_id', uid)
   if (error) throw error
 }
 
@@ -305,9 +311,10 @@ export async function getExerciseComparisons(client: Client, exerciseNames: stri
     const prevDate = prevLogs?.[0]?.date ?? null
     const prevSets = prevDate ? (prevLogs ?? []).filter((l: any) => l.date === prevDate) : []
     const prevMaxWeight = prevSets.length > 0 ? Math.max(...prevSets.map((s: any) => Number(s.weight_kg ?? 0))) : null
-    const { data: currentLogs } = await client
+    const { data: currentLogs, error: curErr } = await client
       .from('exercise_logs').select('weight_kg')
       .eq('exercise_name', name).eq('date', currentDate).not('weight_kg', 'is', null)
+    if (curErr) continue
     const currentMaxWeight = currentLogs && currentLogs.length > 0
       ? Math.max(...currentLogs.map((s: any) => Number(s.weight_kg ?? 0))) : null
     const deltaPercent = prevMaxWeight && currentMaxWeight && prevMaxWeight > 0
@@ -402,12 +409,22 @@ export async function getPlanPhases(client: Client): Promise<PlanPhaseRow[]> {
 
 export async function replacePlanPhases(client: Client, phases: Array<Omit<PlanPhaseRow, 'id' | 'created_at'>>): Promise<void> {
   const uid = await requireUserId(client)
-  const { error: delErr } = await client.from('plan_phases').delete().neq('phase_number', -1)
+  const { error: delErr } = await client.from('plan_phases').delete().eq('user_id', uid).neq('phase_number', -1)
   if (delErr) throw delErr
   if (phases.length === 0) return
   const withUid = phases.map((p) => ({ ...p, user_id: uid }))
   const { error: insErr } = await client.from('plan_phases').insert(withUid)
   if (insErr) throw insErr
+}
+
+const DEFAULT_PUBLIC_PLAN_PHASES: Array<Omit<PlanPhaseRow, 'id' | 'created_at'>> = [
+  { phase_number: 1, name: 'Foundation', start_date: '2026-04-14', end_date: '2026-05-11', focus: 'Caloric deficit, establish training habit, cut body fat' },
+  { phase_number: 2, name: 'Body Composition', start_date: '2026-05-12', end_date: '2026-06-08', focus: 'Progressive overload, recheck bloodwork at Week 8' },
+  { phase_number: 3, name: 'Peak Condition', start_date: '2026-06-09', end_date: '2026-07-06', focus: 'Lean out final 4 weeks, full bloodwork, strength maintenance' },
+]
+
+export async function resetPlanPhasesToDefaults(client: Client): Promise<void> {
+  await replacePlanPhases(client, DEFAULT_PUBLIC_PLAN_PHASES)
 }
 
 // ── Health Markers ─────────────────────────────────────────
@@ -431,7 +448,7 @@ export async function getWeeklyGymStreak(client: Client) {
 }
 
 export async function updateWeeklyGymTarget(client: Client, target: number): Promise<void> {
-  const safe = Math.max(0, Math.floor(target))
+  const safe = Math.min(7, Math.max(1, Math.floor(target)))
   const profile = await getUserProfile(client)
   if (!profile) throw new Error('No user profile found')
   const { error } = await client.from('user_profile').update({ weekly_gym_target: safe }).eq('id', profile.id)
