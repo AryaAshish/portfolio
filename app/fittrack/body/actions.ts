@@ -23,7 +23,7 @@ export async function logWeightAction(formData: FormData) {
     console.error(err)
     return {
       ok: false as const,
-      errors: [{ field: 'weight_kg', message: 'Failed to save. Please try again.' }],
+      errors: [{ field: '_form', message: 'Failed to save. Please try again.' }],
     }
   }
 }

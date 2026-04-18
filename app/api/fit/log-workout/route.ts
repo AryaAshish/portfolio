@@ -31,9 +31,10 @@ export async function POST(req: NextRequest) {
     return json({ ok: true, workoutId }, 200)
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
-    if (msg.startsWith('No sets') || msg.includes('Could not')) {
+    const isParseError = msg.startsWith('No sets') || msg.includes('Could not') || msg.includes('parse') || msg.includes('Parse')
+    if (isParseError) {
       return json({ ok: false, code: 'PARSE_ERROR', message: msg }, 400)
     }
-    return json({ ok: false, code: 'DB_ERROR', message: msg }, 500)
+    return json({ ok: false, code: 'DB_ERROR', message: 'Failed to save workout' }, 500)
   }
 }

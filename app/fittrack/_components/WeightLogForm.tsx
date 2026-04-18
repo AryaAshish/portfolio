@@ -68,10 +68,13 @@ export function WeightLogForm({ date, latestKg }: { date: string; latestKg: numb
             disabled={pending}
           />
         </div>
-        {(errors.weight_kg || errors.body_fat_pct) && (
-          <p className="text-xs mt-1" style={{ color: FT.danger }}>
-            {errors.weight_kg || errors.body_fat_pct}
-          </p>
+        {(errors.weight_kg || errors.body_fat_pct || errors.date || errors._form) && (
+          <div className="text-xs mt-1 space-y-0.5" style={{ color: FT.danger }}>
+            {errors.date && <p>{errors.date}</p>}
+            {errors.weight_kg && <p>{errors.weight_kg}</p>}
+            {errors.body_fat_pct && <p>{errors.body_fat_pct}</p>}
+            {errors._form && <p>{errors._form}</p>}
+          </div>
         )}
       </div>
 
