@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Space_Grotesk, Inter } from 'next/font/google'
-import { FitPublicNav } from './_components/FitPublicNav'
+import { FitNav } from '@/app/fittrack/_components/FitNav'
 import { FirstLoginModal } from './_components/FirstLoginModal'
 import { LogoutButton } from './_components/LogoutButton'
 import { FT } from '@/app/fittrack/_components/tokens'
@@ -50,7 +50,7 @@ export default function FitPublicLayout({
           {children}
         </div>
       </div>
-      <FitPublicNav />
+      <FitNav basePath="/fit" />
       <Suspense fallback={null}>
         <FirstLoginModal />
       </Suspense>

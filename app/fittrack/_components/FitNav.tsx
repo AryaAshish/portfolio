@@ -4,9 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FT } from './tokens'
 
-const TABS = [
+type TabDef = {
+  path: string
+  label: string
+  icon: (active: boolean) => React.ReactNode
+}
+
+const TAB_DEFS: TabDef[] = [
   {
-    href: '/fittrack',
+    path: '',
     label: 'Today',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? FT.accent : FT.textMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -16,7 +22,7 @@ const TABS = [
     ),
   },
   {
-    href: '/fittrack/train',
+    path: '/train',
     label: 'Train',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? FT.accent : FT.textMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -27,7 +33,7 @@ const TABS = [
     ),
   },
   {
-    href: '/fittrack/body',
+    path: '/body',
     label: 'Body',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? FT.accent : FT.textMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +43,7 @@ const TABS = [
   },
 ]
 
-export function FitNav() {
+export function FitNav({ basePath = '/fittrack' }: { basePath?: '/fittrack' | '/fit' }) {
   const pathname = usePathname()
 
   return (
@@ -50,10 +56,11 @@ export function FitNav() {
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
-      {TABS.map(({ href, label, icon }) => {
+      {TAB_DEFS.map(({ path, label, icon }) => {
+        const href = basePath + path
         const isActive =
-          href === '/fittrack'
-            ? pathname === '/fittrack'
+          path === ''
+            ? pathname === basePath
             : pathname.startsWith(href)
 
         return (
