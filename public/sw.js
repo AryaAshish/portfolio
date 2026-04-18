@@ -1,5 +1,5 @@
-const CACHE_NAME = 'portfolio-v4'
-const RUNTIME_CACHE = 'portfolio-runtime-v4'
+const CACHE_NAME = 'portfolio-v5'
+const RUNTIME_CACHE = 'portfolio-runtime-v5'
 
 const STATIC_ASSETS = [
   '/',
@@ -42,7 +42,9 @@ self.addEventListener('fetch', (event) => {
     url.pathname.startsWith('/admin') ||
     url.pathname.startsWith('/api/admin') ||
     url.pathname.startsWith('/fittrack') ||
-    url.pathname.startsWith('/api/fittrack')
+    url.pathname.startsWith('/api/fittrack') ||
+    url.pathname.startsWith('/fit') ||
+    url.pathname.startsWith('/api/fit')
   ) {
     return
   }
