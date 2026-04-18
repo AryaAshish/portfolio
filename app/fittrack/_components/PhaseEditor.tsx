@@ -136,7 +136,7 @@ export function PhaseEditor({ initial }: { initial: PlanPhaseRow[] }) {
             >
               <div className="flex items-center gap-2">
                 <span
-                  className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold"
+                  className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold whitespace-nowrap"
                   style={{ background: swatch.bg, color: swatch.fg }}
                 >
                   Phase {d.phase_number}
@@ -145,44 +145,44 @@ export function PhaseEditor({ initial }: { initial: PlanPhaseRow[] }) {
                   value={d.name}
                   onChange={(e) => updateRow(idx, { name: e.target.value })}
                   placeholder="Phase name"
-                  className="rounded-lg border px-2 py-1.5 text-sm font-semibold flex-1"
+                  className="rounded-lg border px-2 py-1.5 text-sm font-semibold flex-1 min-w-0"
                   style={{ borderColor: FT.border, background: FT.surface, color: FT.textPrimary }}
                 />
-                <div className="flex gap-1 flex-shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => moveUp(idx)}
-                    disabled={idx === 0 || pending}
-                    className="rounded px-2 py-1 text-xs disabled:opacity-30"
-                    style={{ background: FT.canvas, color: FT.textSecondary }}
-                    aria-label="Move up"
-                  >
-                    up
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => moveDown(idx)}
-                    disabled={idx === drafts.length - 1 || pending}
-                    className="rounded px-2 py-1 text-xs disabled:opacity-30"
-                    style={{ background: FT.canvas, color: FT.textSecondary }}
-                    aria-label="Move down"
-                  >
-                    down
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => deleteRow(idx)}
-                    disabled={pending || drafts.length <= 1}
-                    className="rounded px-2 py-1 text-xs disabled:opacity-30"
-                    style={{ background: FT.dangerBg, color: FT.danger }}
-                  >
-                    Remove
-                  </button>
-                </div>
+              </div>
+              <div className="flex gap-1 justify-end">
+                <button
+                  type="button"
+                  onClick={() => moveUp(idx)}
+                  disabled={idx === 0 || pending}
+                  className="rounded px-2 py-1 text-xs disabled:opacity-30"
+                  style={{ background: FT.canvas, color: FT.textSecondary }}
+                  aria-label="Move up"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveDown(idx)}
+                  disabled={idx === drafts.length - 1 || pending}
+                  className="rounded px-2 py-1 text-xs disabled:opacity-30"
+                  style={{ background: FT.canvas, color: FT.textSecondary }}
+                  aria-label="Move down"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  onClick={() => deleteRow(idx)}
+                  disabled={pending || drafts.length <= 1}
+                  className="rounded px-2 py-1 text-xs disabled:opacity-30"
+                  style={{ background: FT.dangerBg, color: FT.danger }}
+                >
+                  Remove
+                </button>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <label className="flex flex-col gap-1">
+                <label className="flex flex-col gap-1 min-w-0">
                   <span className="text-[10px] uppercase font-semibold tracking-wide" style={{ color: FT.textMuted }}>
                     Start
                   </span>
@@ -190,11 +190,11 @@ export function PhaseEditor({ initial }: { initial: PlanPhaseRow[] }) {
                     type="date"
                     value={d.start_date}
                     onChange={(e) => updateRow(idx, { start_date: e.target.value })}
-                    className="rounded-lg border px-2 py-1.5 text-xs"
+                    className="rounded-lg border px-2 py-1.5 text-xs w-full"
                     style={{ borderColor: FT.border, background: FT.surface, color: FT.textPrimary }}
                   />
                 </label>
-                <label className="flex flex-col gap-1">
+                <label className="flex flex-col gap-1 min-w-0">
                   <span className="text-[10px] uppercase font-semibold tracking-wide" style={{ color: FT.textMuted }}>
                     End
                   </span>
@@ -202,7 +202,7 @@ export function PhaseEditor({ initial }: { initial: PlanPhaseRow[] }) {
                     type="date"
                     value={d.end_date}
                     onChange={(e) => updateRow(idx, { end_date: e.target.value })}
-                    className="rounded-lg border px-2 py-1.5 text-xs"
+                    className="rounded-lg border px-2 py-1.5 text-xs w-full"
                     style={{ borderColor: FT.border, background: FT.surface, color: FT.textPrimary }}
                   />
                 </label>
