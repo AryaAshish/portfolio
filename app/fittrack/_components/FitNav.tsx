@@ -48,14 +48,17 @@ export function FitNav({ basePath = '/fittrack' }: { basePath?: '/fittrack' | '/
 
   return (
     <nav
-      className="flex-shrink-0 flex items-stretch justify-around border-t"
+      className="flex-shrink-0 border-t"
       style={{
         background: FT.surface,
         borderColor: FT.border,
-        height: 56,
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
+      <div
+        className="flex items-stretch justify-around"
+        style={{ height: 56 }}
+      >
       {TAB_DEFS.map(({ path, label, icon }) => {
         const href = basePath + path
         const isActive =
@@ -79,6 +82,7 @@ export function FitNav({ basePath = '/fittrack' }: { basePath?: '/fittrack' | '/
           </Link>
         )
       })}
+      </div>
     </nav>
   )
 }
