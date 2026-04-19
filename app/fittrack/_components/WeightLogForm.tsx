@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { FT } from './tokens'
 import { logWeightAction } from '../body/actions'
@@ -10,24 +10,37 @@ export function WeightLogForm({ date, latestKg }: { date: string; latestKg: numb
   const formRef = useRef<HTMLFormElement>(null)
   const [pending, setPending] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    if (!success) return
+    const t = setTimeout(() => setSuccess(false), 3000)
+    return () => clearTimeout(t)
+  }, [success])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setPending(true)
     setErrors({})
+    setSuccess(false)
 
     const fd = new FormData(e.currentTarget)
-    const result = await logWeightAction(fd)
+    try {
+      const result = await logWeightAction(fd)
 
-    if (result.ok) {
-      formRef.current?.reset()
-      router.refresh()
-    } else {
-      const errs: Record<string, string> = {}
-      for (const err of result.errors) {
-        errs[err.field] = err.message
+      if (result.ok) {
+        formRef.current?.reset()
+        setSuccess(true)
+        router.refresh()
+      } else {
+        const errs: Record<string, string> = {}
+        for (const err of result.errors) {
+          errs[err.field] = err.message
+        }
+        setErrors(errs)
       }
-      setErrors(errs)
+    } catch {
+      setErrors({ _form: 'Something went wrong. Please try again.' })
     }
     setPending(false)
   }
@@ -35,6 +48,15 @@ export function WeightLogForm({ date, latestKg }: { date: string; latestKg: numb
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-2.5">
       <input type="hidden" name="date" value={date} />
+
+      {success && (
+        <div
+          className="text-xs font-medium rounded-lg px-3 py-2"
+          style={{ background: FT.successBg, color: FT.success }}
+        >
+          Weight logged successfully.
+        </div>
+      )}
 
       <div>
         <div className="flex items-center gap-2">
@@ -58,7 +80,7 @@ export function WeightLogForm({ date, latestKg }: { date: string; latestKg: numb
             step="0.1"
             min="0"
             max="70"
-            placeholder="BF%"
+            placeholder="BF% (optional)"
             className="w-20 rounded-lg px-3 py-2 text-sm"
             style={{
               background: FT.canvas,
